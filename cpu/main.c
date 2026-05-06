@@ -24,12 +24,6 @@ int main(void) {
         return 1;
     }
 
-    // Validar que el exponente no desborde int en las matrices
-    if (input > 14) {
-        printf("Error: input debe ser <= 14 para no desbordar int\n");
-        return 1;
-    }
-
     // Calcular dimensiones a partir del exponente
     Parametros p = {
         .input = input,

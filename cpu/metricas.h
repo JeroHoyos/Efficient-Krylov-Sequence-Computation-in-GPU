@@ -9,6 +9,8 @@ typedef struct {
     double    *tiempos_iter;
     double     tiempo_promedio;
     long       pico_mem_kb;
+    long      *rss_iter;
+    double    *cpu_iter;
     long       tam_A_bytes;
     long       tam_Z_bytes;
     long       fallos_pagina_menor;

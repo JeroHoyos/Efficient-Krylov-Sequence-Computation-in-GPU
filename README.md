@@ -6,7 +6,7 @@ Benchmark en C que mide el rendimiento de multiplicación de matrices (`Z = A ·
 
 ## Ejecución
 
-El programa recibe un **exponente** (`input`) que define el tamaño del problema: `m = 2^input` (máximo 14).
+El programa recibe un **exponente** (`input`) que define el tamaño del problema: `m = 2^input`.
 
 ```bash
 make              # compila y ejecuta con exponente 8 (por defecto)
@@ -18,6 +18,22 @@ También se puede correr directamente tras compilar:
 
 ```bash
 echo 8 | ./bench_O0
+```
+
+Para ejecutar todos los exponentes del 10 al 20:
+
+```bash
+make EXP=10
+make EXP=11   
+make EXP=12    
+make EXP=13    
+make EXP=14    
+make EXP=15    
+make EXP=16  
+make EXP=17 
+make EXP=18  
+make EXP=19  
+make EXP=20    
 ```
 
 ---

@@ -8,6 +8,7 @@
 #include "matrices.h"
 #include "metricas.h"
 #include "perfil.h"
+#include "parametros.h"
 
 void ejecutar_iteracion(float **A, float **Z_actual, Parametros p, float ***out_Z_nueva, float ***out_snap) {
 
@@ -47,15 +48,23 @@ void ejecutar_bucle(float **A, float **Z, Parametros p, float ***resultado,
 
     for (int iter = 0; iter < p.l; iter++) {
 
-        // Registrar el tiempo de inicio de esta iteración
+        // Registrar CPU y tiempo de pared al inicio de la iteración
+        long long cpu_antes = leer_cpu_us_proceso();
         double t0 = tiempo_actual();
         ejecutar_iteracion(A, Z_actual, p, &Z_nueva, &resultado[iter]);
+        double wall = tiempo_actual() - t0;
 
         // Guardar el tiempo que tomó esta iteración
-        m->tiempos_iter[iter] = tiempo_actual() - t0;
+        m->tiempos_iter[iter] = wall;
 
-        // Actualizar el pico de memoria si el RSS actual es mayor
+        // Calcular CPU% como (tiempo_cpu / tiempo_pared) * 100
+        long long cpu_despues = leer_cpu_us_proceso();
+        double cpu_s = (double)(cpu_despues - cpu_antes) / 1e6;
+        m->cpu_iter[iter] = wall > 0.0 ? (cpu_s / wall) * 100.0 : 0.0;
+
+        // Registrar y actualizar RSS por iteración
         long rss = leer_rss_kb();
+        m->rss_iter[iter] = rss;
         if (rss > m->pico_mem_kb) m->pico_mem_kb = rss;
 
         // Guardar el snapshot de esta iteración en disco

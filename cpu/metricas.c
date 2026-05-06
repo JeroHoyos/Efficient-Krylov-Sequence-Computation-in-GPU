@@ -14,8 +14,10 @@ void metricas_init(Metricas *m, int l) {
     m->tiempo_total         = 0.0;
     m->tiempo_promedio      = 0.0;
 
-    // Reservar arreglo de tiempos por iteración
+    // Reservar arreglos por iteración
     m->tiempos_iter         = calloc(l, sizeof(double));
+    m->rss_iter             = calloc(l, sizeof(long));
+    m->cpu_iter             = calloc(l, sizeof(double));
 
     // Inicializar campos de memoria en cero
     m->pico_mem_kb          = 0;
@@ -29,8 +31,9 @@ void metricas_init(Metricas *m, int l) {
 
 void metricas_free(Metricas *m) {
 
-    // Liberar arreglo de tiempos por iteración
     free(m->tiempos_iter);
+    free(m->rss_iter);
+    free(m->cpu_iter);
 }
 
 long leer_rss_kb(void) {
@@ -125,10 +128,15 @@ static void escribir_metricas(FILE *out, const Metricas *m, int l) {
         fprintf(out, "  Desv. estandar     : %.6f s\n", desv);
     }
 
-    // Imprimir tiempo individual de cada iteración
+    // Imprimir tabla por iteración: tiempo, CPU% y memoria RSS
     fprintf(out, "\n  [DETALLE POR ITERACION]\n");
+    fprintf(out, "  %-8s  %-14s  %-10s  %-12s\n",
+            "Iter", "Tiempo (s)", "CPU (%)", "Mem RSS (MB)");
+    fprintf(out, "  %-8s  %-14s  %-10s  %-12s\n",
+            "--------", "--------------", "----------", "------------");
     for (int i = 0; i < l; i++)
-        fprintf(out, "  Iter %3d           : %.6f s\n", i, m->tiempos_iter[i]);
+        fprintf(out, "  %-8d  %-14.6f  %-10.2f  %-12.2f\n",
+                i, m->tiempos_iter[i], m->cpu_iter[i], m->rss_iter[i] / 1024.0);
 
     fprintf(out, "\n================================================\n");
 }
