@@ -12,6 +12,32 @@
 #include "parametros.h"
 #include "benchmark.h"
 
+/* Crea el directorio de salida con timestamp y registra su nombre en .last_outdir.
+   Devuelve 0 en éxito, -1 en error. */
+int crear_outdir(int input, char *outdir, size_t size) {
+    // Obtener timestamp actual y formatearlo como MMDD_HHMM
+    time_t t = time(NULL);
+    struct tm *tm_info = localtime(&t);
+    char ts[16];
+    strftime(ts, sizeof(ts), "%m%d_%H%M%S", tm_info);
+
+    // Construir nombre del directorio con formato cpu_<input>_<timestamp>
+    snprintf(outdir, size, "cpu_%d_%s", input, ts);
+
+    // Crear el directorio físicamente
+    if (MKDIR(outdir) != 0) {
+        fprintf(stderr, "Error: no se pudo crear directorio %s\n", outdir);
+        return -1;
+    }
+
+    // Registrar el nombre del directorio en .last_outdir
+    FILE *lf = fopen(".last_outdir", "w");
+    if (lf) { fprintf(lf, "%s\n", outdir); fclose(lf); }
+
+    printf("Directorio de salida: %s\n", outdir);
+    return 0;
+}
+
 /* Punto de entrada: lee el exponente, configura los parámetros y lanza el benchmark. */
 int main(void) {
     int input;
@@ -36,26 +62,10 @@ int main(void) {
     // Calcular número de iteraciones como (2*m)/n
     p.l = (2 * p.m) / p.n;
 
-    // Obtener fecha y hora actual para nombrar el directorio
-    time_t t = time(NULL);
-    struct tm *tm_info = localtime(&t);
-    char ts[16];
-    strftime(ts, sizeof(ts), "%m%d_%H%M", tm_info);
+    // Crear directorio de salida con timestamp
     char outdir[64];
-    snprintf(outdir, sizeof(outdir), "cpu_%d_%s", input, ts);
-
-    // Crear directorio de salida con la marca de tiempo
-    if (MKDIR(outdir) != 0) {
-        fprintf(stderr, "Error: no se pudo crear directorio %s\n", outdir);
+    if (crear_outdir(input, outdir, sizeof(outdir)) != 0)
         return 1;
-    }
-
-    // Registrar el directorio de salida para uso del Makefile
-    FILE *lf = fopen(".last_outdir", "w");
-    if (lf) { fprintf(lf, "%s\n", outdir); fclose(lf); }
-
-    // Imprimir el directorio de salida
-    printf("Directorio de salida: %s\n", outdir);
 
     // Mostrar parámetros y ejecutar el benchmark
     print_parametros(p);

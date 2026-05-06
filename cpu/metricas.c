@@ -5,6 +5,8 @@
 #ifdef _WIN32
   #include <windows.h>
   #include <psapi.h>
+#else
+  #include <sys/utsname.h>
 #endif
 #include "metricas.h"
 
@@ -74,16 +76,83 @@ long leer_rss_kb(void) {
 static void fmt_bytes(char *buf, size_t bufsz, long bytes) {
 
     // Formatear en GB si supera 1 GB
-    if      (bytes >= 1024L * 1024 * 1024) snprintf(buf, bufsz, "%ld bytes (%.2f GB)", bytes, bytes / (1024.0 * 1024.0 * 1024.0));
+    if      (bytes >= 1024L * 1024 * 1024) snprintf(buf, bufsz, "%ld bytes (%.6f GB)", bytes, bytes / (1024.0 * 1024.0 * 1024.0));
 
     // Formatear en MB si supera 1 MB
-    else if (bytes >= 1024L * 1024)        snprintf(buf, bufsz, "%ld bytes (%.2f MB)", bytes, bytes / (1024.0 * 1024.0));
+    else if (bytes >= 1024L * 1024)        snprintf(buf, bufsz, "%ld bytes (%.6f MB)", bytes, bytes / (1024.0 * 1024.0));
 
     // Formatear en KB si supera 1 KB
-    else if (bytes >= 1024L)               snprintf(buf, bufsz, "%ld bytes (%.2f KB)", bytes, bytes / 1024.0);
+    else if (bytes >= 1024L)               snprintf(buf, bufsz, "%ld bytes (%.6f KB)", bytes, bytes / 1024.0);
 
     // Formatear en bytes si es menor a 1 KB
     else                                   snprintf(buf, bufsz, "%ld bytes", bytes);
+}
+
+/* Escribe la sección [SISTEMA] con info de CPU, RAM y OS en el stream out. */
+static void imprimir_info_sistema(FILE *out) {
+#ifdef _WIN32
+    SYSTEM_INFO si;
+    GetSystemInfo(&si);
+    MEMORYSTATUSEX ms = { .dwLength = sizeof(ms) };
+    GlobalMemoryStatusEx(&ms);
+    fprintf(out, "\n  [SISTEMA]\n");
+    fprintf(out, "  CPU (nucleos logicos): %lu\n", (unsigned long)si.dwNumberOfProcessors);
+    fprintf(out, "  RAM total            : %.2f GB\n", ms.ullTotalPhys / (1024.0 * 1024.0 * 1024.0));
+#else
+    fprintf(out, "\n  [SISTEMA]\n");
+
+    /* Modelo y cantidad de núcleos lógicos desde /proc/cpuinfo */
+    FILE *f = fopen("/proc/cpuinfo", "r");
+    if (f) {
+        char line[256];
+        char modelo[256] = "(desconocido)";
+        int  nucleos = 0;
+        while (fgets(line, sizeof(line), f)) {
+            if (strncmp(line, "model name", 10) == 0) {
+                char *sep = strchr(line, ':');
+                if (sep) {
+                    sep++;
+                    while (*sep == ' ' || *sep == '\t') sep++;
+                    sep[strcspn(sep, "\n")] = '\0';
+                    if (nucleos == 0) strncpy(modelo, sep, sizeof(modelo) - 1);
+                }
+                nucleos++;
+            }
+        }
+        fclose(f);
+        fprintf(out, "  CPU modelo           : %s\n", modelo);
+        fprintf(out, "  CPU nucleos logicos  : %d\n", nucleos);
+    }
+
+    /* RAM total y disponible desde /proc/meminfo */
+    f = fopen("/proc/meminfo", "r");
+    if (f) {
+        char line[256];
+        long mem_total_kb = -1, mem_free_kb = -1;
+        while (fgets(line, sizeof(line), f)) {
+            if (strncmp(line, "MemTotal:", 9) == 0)
+                sscanf(line + 9, " %ld", &mem_total_kb);
+            else if (strncmp(line, "MemAvailable:", 13) == 0)
+                sscanf(line + 13, " %ld", &mem_free_kb);
+            if (mem_total_kb != -1 && mem_free_kb != -1) break;
+        }
+        fclose(f);
+        if (mem_total_kb > 0)
+            fprintf(out, "  RAM total            : %ld KB (%.2f GB)\n",
+                    mem_total_kb, mem_total_kb / (1024.0 * 1024.0));
+        if (mem_free_kb > 0)
+            fprintf(out, "  RAM disponible       : %ld KB (%.2f GB)\n",
+                    mem_free_kb, mem_free_kb / (1024.0 * 1024.0));
+    }
+
+    /* Kernel y hostname desde uname */
+    struct utsname u;
+    if (uname(&u) == 0) {
+        fprintf(out, "  Sistema operativo    : %s %s\n", u.sysname, u.release);
+        fprintf(out, "  Arquitectura         : %s\n",    u.machine);
+        fprintf(out, "  Hostname             : %s\n",    u.nodename);
+    }
+#endif
 }
 
 /* Escribe el informe completo de métricas en el stream de salida out. */
@@ -113,6 +182,9 @@ static void escribir_metricas(FILE *out, const Metricas *m, int l) {
     fprintf(out, "            INFORME DE METRICAS\n");
     fprintf(out, "================================================\n");
 
+    // Imprimir información del sistema donde se ejecuta
+    imprimir_info_sistema(out);
+
     // Imprimir parámetros de configuración
     fprintf(out, "\n  [CONFIGURACION]\n");
     fprintf(out, "  Exponente (input)  : %d\n",       m->p.input);
@@ -126,7 +198,7 @@ static void escribir_metricas(FILE *out, const Metricas *m, int l) {
     fprintf(out, "  Matriz A           : %s\n", buf);
     fmt_bytes(buf, sizeof(buf), m->tam_Z_bytes);
     fprintf(out, "  Matriz Z           : %s\n", buf);
-    fprintf(out, "  Pico RSS           : %ld KB (%.2f MB)\n",
+    fprintf(out, "  Pico RSS           : %ld KB (%.6f MB)\n",
             m->pico_mem_kb, m->pico_mem_kb / 1024.0);
     fprintf(out, "  Fallos pag. menor  : %ld\n", m->fallos_pagina_menor);
     fprintf(out, "  Fallos pag. mayor  : %ld\n", m->fallos_pagina_mayor);
@@ -143,12 +215,12 @@ static void escribir_metricas(FILE *out, const Metricas *m, int l) {
 
     // Imprimir tabla por iteración: tiempo, CPU% y memoria RSS
     fprintf(out, "\n  [DETALLE POR ITERACION]\n");
-    fprintf(out, "  %-8s  %-14s  %-10s  %-12s\n",
+    fprintf(out, "  %-8s  %-16s  %-16s  %-16s\n",
             "Iter", "Tiempo (s)", "CPU (%)", "Mem RSS (MB)");
-    fprintf(out, "  %-8s  %-14s  %-10s  %-12s\n",
-            "--------", "--------------", "----------", "------------");
+    fprintf(out, "  %-8s  %-16s  %-16s  %-16s\n",
+            "--------", "----------------", "----------------", "----------------");
     for (int i = 0; i < l; i++)
-        fprintf(out, "  %-8d  %-14.6f  %-10.2f  %-12.2f\n",
+        fprintf(out, "  %-8d  %-16.9f  %-16.6f  %-16.6f\n",
                 i, m->tiempos_iter[i], m->cpu_iter[i], m->rss_iter[i] / 1024.0);
 
     fprintf(out, "\n================================================\n");

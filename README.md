@@ -73,6 +73,8 @@ efficient-krylov-sequence-computation-in-gpu/
 │   ├── perfil.c / .h
 │   └── parametros.c / .h
 │
+├── bin/                  # Compiled binaries (bench_O0, bench_pg)
+│
 ├── gpu/                  # (coming) CUDA-accelerated implementation
 │
 ├── Makefile
@@ -90,39 +92,69 @@ The CPU version is written in **plain C with no compiler optimizations** (`-O0`)
 ### Build & Run
 
 ```bash
-make              # compile and run with default exponent (EXP=8)
-make EXP=10       # run with m = 2^10
-make clean        # remove binary
+make              # compile only (produces bin/bench_O0)
+make run          # compile and run with default exponent (EXP=8)
+make run EXP=10   # compile and run with m = 2^10
+make clean        # remove bin/, gmon.out, .last_outdir
+make clean-runs   # delete all generated report directories (cpu_*/)
 ```
 
-Or run directly after compiling:
+### Profiling with gprof
+
+The `pg` target compiles with `-pg` and automatically runs `gprof` to produce a flat profile:
 
 ```bash
-echo 10 | ./bench_O0
+make pg EXP=10    # compile with -pg, run, and save gprof report
 ```
+
+The profile is saved alongside the other metrics as `metricas_pg.txt` in the run directory. The flat profile shows time distribution across functions — for the CPU baseline, ~100 % of wall time falls in `multiplicar_matrices`.
 
 ### EXP 10 → 20
 
 ```bash
-make EXP=10
-make EXP=11   
-make EXP=12    
-make EXP=13    
-make EXP=14    
-make EXP=15    
-make EXP=16  
-make EXP=17 
-make EXP=18  
-make EXP=19  
-make EXP=20    
+make run EXP=10
+make run EXP=11
+make run EXP=12
+make run EXP=13
+make run EXP=14
+make run EXP=15
+make run EXP=16
+make run EXP=17
+make run EXP=18
+make run EXP=19
+make run EXP=20
 ```
 
 ### Output
 
-Each run creates a timestamped directory `cpu_{exp}_MMDD_HHMM/` containing:
+Each run creates a timestamped directory `cpu_{exp}_MMDD_HHMMSS/` containing:
 
-- `resultado_N.txt` — snapshot of the first *n* rows of *Z* after iteration *N*
-- `metricas.txt` — wall time per iteration, total time, peak RSS memory, CPU%, and page faults
+| File | Contents |
+| ---- | -------- |
+| `resultado_N.txt` | Snapshot of the first *n* rows of *Z* after iteration *N* |
+| `metricas.txt` | Full metrics report (see below) |
+| `metricas_pg.txt` | gprof flat + call-graph profile *(only for `make pg` runs)* |
+
+#### Metrics report sections
+
+```
+[SISTEMA]      CPU model, logical cores, total/available RAM, OS, kernel, architecture
+[CONFIGURACION] Exponent, matrix dimensions, block size, iteration count
+[MEMORIA]      Size of A and Z in bytes, peak RSS, minor/major page faults
+[TIEMPOS]      Total, average, min, max, and std-dev of per-iteration wall time
+[DETALLE]      Per-iteration table: wall time (s), CPU usage (%), memory RSS (MB)
+```
+
+Sample run (`EXP=10`, Intel Core i3-1005G1, 3.2 GB RAM):
+
+```
+  Total              : 6.265240 s
+  Promedio / iter    : 0.383529 s
+  Minimo             : 0.374585 s  (iter  9)
+  Maximo             : 0.414318 s  (iter  2)
+  Desv. estandar     : 0.010402 s
+  Pico RSS           : 9260 KB (9.04 MB)
+```
 
 ([back to top](#efficient-krylov-sequence-computation-in-gpu))
 
@@ -147,6 +179,8 @@ Each run creates a timestamped directory `cpu_{exp}_MMDD_HHMM/` containing:
 
 #### GPU *(when available)*
 
+- NVIDIA GPU with CUDA Toolkit ≥ 11
+
 ### Clone
 
 ```bash
@@ -157,7 +191,7 @@ cd efficient-krylov-sequence-computation-in-gpu
 ### Run CPU benchmark
 
 ```bash
-make EXP=10
+make run EXP=10
 ```
 
 ([back to top](#efficient-krylov-sequence-computation-in-gpu))
