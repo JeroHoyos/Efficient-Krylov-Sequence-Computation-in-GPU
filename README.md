@@ -42,7 +42,7 @@ The benchmark computes a **block Krylov sequence** — a generalization that rep
 | ------ | ----------- | ----- |
 | `m` | Problem size (matrix dimension) | 2¹⁰ ≤ m ≤ 2²⁰ |
 | `n` | Block size (constant) | 128 |
-| `A` | Square matrix (*m × m*, float) | random |
+| `A` | Square matrix (*m × m*, float) | random row-stochastic |
 | `Z` | Block matrix (*m × n*, float) | random |
 | `l` | Number of iterations | `l = 2m/n` |
 
@@ -55,6 +55,30 @@ For `i = 0, 1, ..., l − 1`:
 3. Update `Z ← A · Z` for the next iteration
 
 The result is a sequence of *l* snapshots of size *n×n*, capturing the evolution of the block Krylov sequence.
+
+([back to top](#efficient-krylov-sequence-computation-in-gpu))
+
+---
+
+## Numerical Behavior of the Snapshots
+
+**Matrix A** is generated as a **row-stochastic matrix**: random values in [0, 1] with each row normalized to sum to 1. **Z** is initialized with random values in [0, 1].
+
+Repeated multiplication by a row-stochastic matrix is a Markov chain iteration. Each column of Z converges toward the stationary distribution of A scaled by that column's initial sum. For a large random stochastic matrix the stationary distribution is approximately uniform (≈ 1/m per row), and a random column of length m sums to ≈ m/2, so the converged value is:
+
+$$\frac{m/2}{m} = 0.5$$
+
+Because m = 2^input is large, concentration of measure makes this essentially constant across different random seeds. **Every run converges to ≈ 0.5 regardless of the seed.**
+
+### Why 0.5 is ideal for a performance benchmark
+
+| Convergence | Effect |
+| ----------- | ------ |
+| **→ ∞** | `float` overflows to `inf`/`NaN`; FPU behavior becomes non-representative |
+| **→ 0** | Values enter subnormal range; x86 handles subnormals in microcode, adding 10–100× slowdown that distorts timings |
+| **→ 0.5** | Values stay well inside normalized `float` range; the FPU operates in its optimal mode throughout all iterations |
+
+The stochastic normalization is therefore not incidental — it keeps the computation numerically well-conditioned for the entire benchmark run.
 
 ([back to top](#efficient-krylov-sequence-computation-in-gpu))
 
@@ -73,7 +97,17 @@ efficient-krylov-sequence-computation-in-gpu/
 │   ├── perfil.c / .h
 │   └── parametros.c / .h
 │
-├── bin/                  # Compiled binaries (bench_O0, bench_pg)
+├── gen_matrices/         # Matrix generator (writes A, Z and params to disk)
+│   ├── main.c
+│   ├── gen.c
+│   └── gen.h
+│
+├── matrices/             # Generated input matrices (created by `make gen`)
+│   ├── A.txt
+│   ├── Z.txt
+│   └── params.txt
+│
+├── bin/                  # Compiled binaries (bench_O0, bench_pg, gen_matrices)
 │
 ├── gpu/                  # (coming) CUDA-accelerated implementation
 │
@@ -89,14 +123,24 @@ efficient-krylov-sequence-computation-in-gpu/
 
 The CPU version is written in **plain C with no compiler optimizations** (`-O0`). Its purpose is to establish a performance baseline: correct output, straightforward code, no SIMD, no parallelism, no cache tuning.
 
+Matrices are generated once and saved to disk by `gen_matrices`, then read by the benchmark binary. This separation allows different implementations (CPU, GPU) to run against the exact same input.
+
 ### Build & Run
 
+The typical workflow is:
+
 ```bash
-make              # compile only (produces bin/bench_O0)
-make run          # compile and run with default exponent (EXP=8)
-make run EXP=10   # compile and run with m = 2^10
-make clean        # remove bin/, gmon.out, .last_outdir
-make clean-runs   # delete all generated report directories (cpu_*/)
+# 1. Generate matrices for a given exponent (m = 2^EXP)
+make gen EXP=10          # writes matrices/A.txt, Z.txt, params.txt
+
+# 2. Run the benchmark against the generated matrices
+make run                 # reads from matrices/ by default
+make run MATDIR=matrices # same, explicit path
+
+# Other targets
+make clean               # remove bin/, gmon.out, .last_outdir
+make clean-runs          # delete all generated report directories (cpu_*/)
+make clean-matrices      # delete the matrices/ directory
 ```
 
 ### Profiling with gprof
@@ -104,25 +148,25 @@ make clean-runs   # delete all generated report directories (cpu_*/)
 The `pg` target compiles with `-pg` and automatically runs `gprof` to produce a flat profile:
 
 ```bash
-make pg EXP=10    # compile with -pg, run, and save gprof report
+make gen EXP=10          # generate matrices first
+make pg                  # compile with -pg, run, and save gprof report
 ```
 
 The profile is saved alongside the other metrics as `metricas_pg.txt` in the run directory. The flat profile shows time distribution across functions — for the CPU baseline, ~100 % of wall time falls in `multiplicar_matrices`.
 
-### EXP 10 → 20
+### Sweeping EXP 10 → 20
 
 ```bash
-make run EXP=10
-make run EXP=11
-make run EXP=12
-make run EXP=13
-make run EXP=14
-make run EXP=15
-make run EXP=16
-make run EXP=17
-make run EXP=18
-make run EXP=19
-make run EXP=20
+for EXP in $(seq 10 20); do make gen EXP=$EXP && make run; done
+```
+
+Or individually:
+
+```bash
+make gen EXP=10 && make run
+make gen EXP=11 && make run
+# ...
+make gen EXP=20 && make run
 ```
 
 ### Output
@@ -138,11 +182,11 @@ Each run creates a timestamped directory `cpu_{exp}_MMDD_HHMMSS/` containing:
 #### Metrics report sections
 
 ```
-[SISTEMA]      CPU model, logical cores, total/available RAM, OS, kernel, architecture
+[SISTEMA]       CPU model, logical cores, total/available RAM, OS, kernel, architecture
 [CONFIGURACION] Exponent, matrix dimensions, block size, iteration count
-[MEMORIA]      Size of A and Z in bytes, peak RSS, minor/major page faults
-[TIEMPOS]      Total, average, min, max, and std-dev of per-iteration wall time
-[DETALLE]      Per-iteration table: wall time (s), CPU usage (%), memory RSS (MB)
+[MEMORIA]       Size of A and Z in bytes, peak RSS, minor/major page faults
+[TIEMPOS]       Total, average, min, max, and std-dev of per-iteration wall time
+[DETALLE]       Per-iteration table: wall time (s), CPU usage (%), memory RSS (MB)
 ```
 
 Sample run (`EXP=10`, Intel Core i3-1005G1, 3.2 GB RAM):
@@ -191,7 +235,8 @@ cd efficient-krylov-sequence-computation-in-gpu
 ### Run CPU benchmark
 
 ```bash
-make run EXP=10
+make gen EXP=10   # generate input matrices
+make run          # run benchmark
 ```
 
 ([back to top](#efficient-krylov-sequence-computation-in-gpu))

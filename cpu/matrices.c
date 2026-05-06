@@ -151,6 +151,55 @@ void guardar_resultado_txt(float **mat, int filas, int cols, int iter, const cha
     printf("  Guardado: %s\n", nombre);
 }
 
+/* Lee una matriz [filas x cols] desde un archivo de texto con floats separados por espacios. */
+float **leer_matriz_txt(const char *ruta, int filas, int cols) {
+
+    // Abrir el archivo para lectura
+    FILE *f = fopen(ruta, "r");
+    if (!f) {
+        fprintf(stderr, "Error: no se pudo abrir %s\n", ruta);
+        return NULL;
+    }
+
+    // Reservar arreglo de punteros a filas
+    float **mat = malloc(filas * sizeof(float *));
+
+    for (int i = 0; i < filas; i++) {
+
+        // Reservar memoria para cada fila
+        mat[i] = malloc(cols * sizeof(float));
+
+        for (int j = 0; j < cols; j++)
+            // Leer cada elemento del archivo
+            fscanf(f, "%f", &mat[i][j]);
+    }
+
+    // Cerrar el archivo y retornar la matriz
+    fclose(f);
+    return mat;
+}
+
+/* Carga A (m×m) y Z (m×n) desde A.txt y Z.txt dentro de dir. Retorna 0 en éxito, -1 en error. */
+int cargar_matrices(const char *dir, int m, int n, float ***out_A, float ***out_Z) {
+    char ruta[256];
+
+    // Construir la ruta de A.txt y cargar la matriz A
+    snprintf(ruta, sizeof(ruta), "%s/A.txt", dir);
+    printf("  Cargando A desde %s...\n", ruta);
+    *out_A = leer_matriz_txt(ruta, m, m);
+    if (!*out_A) return -1;
+
+    // Construir la ruta de Z.txt y cargar la matriz Z
+    snprintf(ruta, sizeof(ruta), "%s/Z.txt", dir);
+    printf("  Cargando Z desde %s...\n", ruta);
+    *out_Z = leer_matriz_txt(ruta, m, n);
+
+    // Si Z no se pudo cargar, liberar A antes de retornar error
+    if (!*out_Z) { liberar_matriz(*out_A, m); return -1; }
+
+    return 0;
+}
+
 /* Libera el arreglo de l snapshots, donde cada snapshot tiene n filas. */
 void liberar_resultado(float ***resultado, int l, int n) {
 

@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <time.h>
 #ifdef _WIN32
   #include <direct.h>
@@ -15,22 +14,18 @@
 /* Crea el directorio de salida con timestamp y registra su nombre en .last_outdir.
    Devuelve 0 en éxito, -1 en error. */
 int crear_outdir(int input, char *outdir, size_t size) {
-    // Obtener timestamp actual y formatearlo como MMDD_HHMM
     time_t t = time(NULL);
     struct tm *tm_info = localtime(&t);
     char ts[16];
     strftime(ts, sizeof(ts), "%m%d_%H%M%S", tm_info);
 
-    // Construir nombre del directorio con formato cpu_<input>_<timestamp>
     snprintf(outdir, size, "cpu_%d_%s", input, ts);
 
-    // Crear el directorio físicamente
     if (MKDIR(outdir) != 0) {
         fprintf(stderr, "Error: no se pudo crear directorio %s\n", outdir);
         return -1;
     }
 
-    // Registrar el nombre del directorio en .last_outdir
     FILE *lf = fopen(".last_outdir", "w");
     if (lf) { fprintf(lf, "%s\n", outdir); fclose(lf); }
 
@@ -38,37 +33,43 @@ int crear_outdir(int input, char *outdir, size_t size) {
     return 0;
 }
 
-/* Punto de entrada: lee el exponente, configura los parámetros y lanza el benchmark. */
+/* Lee los parametros desde dir/params.txt. Devuelve 0 en éxito, -1 en error. */
+int leer_params(const char *dir, Parametros *p) {
+    char ruta[256];
+    snprintf(ruta, sizeof(ruta), "%s/params.txt", dir);
+    FILE *f = fopen(ruta, "r");
+    if (!f) {
+        fprintf(stderr, "Error: no se pudo abrir %s\n", ruta);
+        return -1;
+    }
+    if (fscanf(f, "input %d\nm %d\nn %d\nl %d\n",
+               &p->input, &p->m, &p->n, &p->l) != 4) {
+        fprintf(stderr, "Error: formato invalido en %s\n", ruta);
+        fclose(f);
+        return -1;
+    }
+    fclose(f);
+    return 0;
+}
+
+/* Punto de entrada: lee el directorio de matrices, carga parametros y lanza el benchmark. */
 int main(void) {
-    int input;
-
-    // Solicitar el exponente al usuario
-    printf("Ingrese el exponente: ");
-
-    // Validar que la entrada sea un entero
-    if (scanf("%d", &input) != 1) {
-        printf("Error: entrada invalida\n");
+    char matrices_dir[256];
+    printf("Directorio de matrices (default: matrices): ");
+    if (scanf("%255s", matrices_dir) != 1) {
+        fprintf(stderr, "Error: entrada invalida\n");
         return 1;
     }
 
-    // Calcular dimensiones a partir del exponente
-    Parametros p = {
-        .input = input,
-        .m     = (int)pow(2, input),
-        .n     = 128,
-        .l     = 0
-    };
-
-    // Calcular número de iteraciones como (2*m)/n
-    p.l = (2 * p.m) / p.n;
-
-    // Crear directorio de salida con timestamp
-    char outdir[64];
-    if (crear_outdir(input, outdir, sizeof(outdir)) != 0)
+    Parametros p;
+    if (leer_params(matrices_dir, &p) != 0)
         return 1;
 
-    // Mostrar parámetros y ejecutar el benchmark
+    char outdir[64];
+    if (crear_outdir(p.input, outdir, sizeof(outdir)) != 0)
+        return 1;
+
     print_parametros(p);
-    benchmark(p, outdir);
+    benchmark(p, matrices_dir, outdir);
     return 0;
 }

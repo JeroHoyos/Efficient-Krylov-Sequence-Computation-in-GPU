@@ -24,6 +24,12 @@ float **multiplicar_matrices(float **A, int filas_A, int cols_A, float **B, int 
 /* Guarda la matriz mat [filas x cols] en un archivo de texto dentro de outdir. */
 void guardar_resultado_txt(float **mat, int filas, int cols, int iter, const char *outdir);
 
+/* Lee una matriz [filas x cols] desde un archivo de texto con floats separados por espacios. */
+float **leer_matriz_txt(const char *ruta, int filas, int cols);
+
+/* Carga A (m×m) y Z (m×n) desde A.txt y Z.txt dentro de dir. Retorna 0 en éxito, -1 en error. */
+int cargar_matrices(const char *dir, int m, int n, float ***out_A, float ***out_Z);
+
 /* Libera el arreglo de l snapshots, donde cada snapshot tiene n filas. */
 void liberar_resultado(float ***resultado, int l, int n);
 

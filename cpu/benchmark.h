@@ -11,7 +11,7 @@ void ejecutar_iteracion(float **A, float **Z_actual, Parametros p, float ***out_
 void ejecutar_bucle(float **A, float **Z, Parametros p, float ***resultado,
                     const char *outdir, Metricas *m);
 
-/* Punto de entrada del benchmark: inicializa matrices, ejecuta, reporta y libera. */
-void benchmark(Parametros p, const char *outdir);
+/* Punto de entrada del benchmark: carga matrices desde matrices_dir, ejecuta, reporta y libera. */
+void benchmark(Parametros p, const char *matrices_dir, const char *outdir);
 
 #endif

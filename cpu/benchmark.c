@@ -99,12 +99,17 @@ void ejecutar_bucle(float **A, float **Z, Parametros p, float ***resultado,
     liberar_matriz(Z_actual, p.m);
 }
 
-/* Inicializa matrices, ejecuta el benchmark, imprime y guarda métricas, y libera memoria. */
-void benchmark(Parametros p, const char *outdir) {
+/* Carga matrices desde matrices_dir, ejecuta el benchmark, imprime y guarda métricas, y libera memoria. */
+void benchmark(Parametros p, const char *matrices_dir, const char *outdir) {
 
-    // Inicializar las matrices A y Z con valores aleatorios
+    printf("\n=== Carga de matrices ===\n");
     float **A, **Z;
-    inicializar_matrices(p, &A, &Z);
+    if (cargar_matrices(matrices_dir, p.m, p.n, &A, &Z) != 0) {
+        fprintf(stderr, "Error: no se pudieron cargar las matrices desde '%s'\n", matrices_dir);
+        return;
+    }
+    print_tamano("A", p.m, p.m);
+    print_tamano("Z", p.m, p.n);
 
     // Reservar arreglo para guardar los snapshots de cada iteración
     float ***resultado = malloc(p.l * sizeof(float **));

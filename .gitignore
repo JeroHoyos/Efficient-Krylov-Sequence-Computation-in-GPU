@@ -2,6 +2,8 @@
 benchmark
 bench_O*
 bench_gprof
+bench_pg
+bin/bench_pg
 
 # Artefactos de profiling
 gmon.out
