@@ -5,135 +5,116 @@
   #include <windows.h>
 #endif
 #include "benchmark.h"
+#include "block_mul.h"
 #include "matrices.h"
 #include "metricas.h"
 #include "perfil.h"
 #include "parametros.h"
 
-/* Multiplica A×Z_actual y almacena el resultado y su snapshot en los punteros de salida. */
-void ejecutar_iteracion(float **A, float **Z_actual, Parametros p, float ***out_Z_nueva, float ***out_snap) {
-
-    // Multiplicar A por Z_actual y guardar la nueva matriz resultado
-    *out_Z_nueva = multiplicar_matrices(A, p.m, p.m, Z_actual, p.n);
-
-    // Guardar una copia del resultado como snapshot de la iteración
-    *out_snap    = copiar_snapshot(*out_Z_nueva, p.n);
-}
-
 /* Retorna el tiempo de pared actual en segundos con alta resolución. */
 static double tiempo_actual(void) {
 #ifdef _WIN32
-    // Usar QueryPerformanceCounter para alta resolución en Windows
     LARGE_INTEGER freq, count;
     QueryPerformanceFrequency(&freq);
     QueryPerformanceCounter(&count);
     return (double)count.QuadPart / freq.QuadPart;
 #else
-    // Usar CLOCK_MONOTONIC para alta resolución en sistemas POSIX
     struct timespec ts;
     clock_gettime(CLOCK_MONOTONIC, &ts);
     return ts.tv_sec + ts.tv_nsec * 1e-9;
 #endif
 }
 
-/* Ejecuta las p.l iteraciones del benchmark, midiendo tiempo, CPU y memoria por iteración. */
-void ejecutar_bucle(float **A, float **Z, Parametros p, float ***resultado,
+/* Ejecuta p.l iteraciones usando dos buffers Z alternados y un buffer de snapshot
+   reutilizables, evitando allocs dentro del bucle caliente. */
+void ejecutar_bucle(float **A, float **Z, Parametros p,
                     const char *outdir, Metricas *m) {
-    float **Z_actual = Z;
-    float **Z_nueva  = NULL;
+    /* Dos buffers Z para alternar: Z es el buffer inicial (cargado desde disco),
+       Z_alt es el segundo buffer pre-asignado. El swap de punteros evita copias. */
+    float **Z_alt = crear_matriz(p.m, p.n);
+    float **snap  = crear_matriz(p.n, p.n);
+
+    float **Z_cur = Z;
+    float **Z_nxt = Z_alt;
 
     printf("\n=== Ejecucion ===\n");
 
-    // Capturar fallos de página antes de comenzar el bucle
     long minflt_ini = leer_minflt();
     long majflt_ini = leer_majflt();
-
-    // Registrar el tiempo de inicio del benchmark completo
     double t_total_inicio = tiempo_actual();
 
     for (int iter = 0; iter < p.l; iter++) {
-
-        // Registrar CPU y tiempo de pared al inicio de la iteración
-        long long cpu_antes = leer_cpu_us_proceso();
+        /* Capturar wall y CPU en el mismo orden en ambos extremos para que
+           las dos ventanas de medición sean simétricas alrededor del trabajo. */
         double t0 = tiempo_actual();
-        ejecutar_iteracion(A, Z_actual, p, &Z_nueva, &resultado[iter]);
+        long long cpu_antes = leer_cpu_us_proceso();
+
+        multiplicar_en(A, p.m, p.m, Z_cur, p.n, Z_nxt);
+
+        long long cpu_despues = leer_cpu_us_proceso();
         double wall = tiempo_actual() - t0;
 
-        // Guardar el tiempo que tomó esta iteración
         m->tiempos_iter[iter] = wall;
 
-        // Calcular CPU% como (tiempo_cpu / tiempo_pared) * 100
-        long long cpu_despues = leer_cpu_us_proceso();
         double cpu_s = (double)(cpu_despues - cpu_antes) / 1e6;
         double pct = wall > 0.0 ? (cpu_s / wall) * 100.0 : 0.0;
         m->cpu_iter[iter] = pct > 100.0 ? 100.0 : pct;
 
-        // Registrar y actualizar RSS por iteración
         long rss = leer_rss_kb();
         m->rss_iter[iter] = rss;
         if (rss > m->pico_mem_kb) m->pico_mem_kb = rss;
 
-        // Guardar el snapshot de esta iteración en disco
-        guardar_resultado_txt(resultado[iter], p.n, p.n, iter, outdir);
+        copiar_snapshot_en(Z_nxt, p.n, snap);
+        guardar_resultado_txt(snap, p.n, p.n, iter, outdir);
 
-        // Liberar la Z anterior si ya no es la matriz inicial
-        if (Z_actual != Z) liberar_matriz(Z_actual, p.m);
-
-        // Avanzar Z_actual al resultado de esta iteración
-        Z_actual = Z_nueva;
+        /* Rotar buffers: el resultado pasa a ser la nueva entrada. */
+        float **tmp = Z_cur; Z_cur = Z_nxt; Z_nxt = tmp;
     }
 
-    // Registrar el tiempo total transcurrido
     m->tiempo_total        = tiempo_actual() - t_total_inicio;
-
-    // Calcular los fallos de página ocurridos durante el bucle
     m->fallos_pagina_menor = leer_minflt() - minflt_ini;
     m->fallos_pagina_mayor = leer_majflt() - majflt_ini;
 
-    // Calcular el tiempo promedio por iteración
     double suma = 0.0;
     for (int i = 0; i < p.l; i++) suma += m->tiempos_iter[i];
     m->tiempo_promedio = p.l > 0 ? suma / p.l : 0.0;
 
-    // Liberar la última matriz Z generada
-    liberar_matriz(Z_actual, p.m);
+    liberar_matriz(Z_alt, p.m);
+    liberar_matriz(snap, p.n);
 }
 
 /* Carga matrices desde matrices_dir, ejecuta el benchmark, imprime y guarda métricas, y libera memoria. */
 void benchmark(Parametros p, const char *matrices_dir, const char *outdir) {
+    double ram_pct = RAM_PCT / 100.0;
+    long long ram_kb = leer_ram_disponible_kb();
 
     printf("\n=== Carga de matrices ===\n");
-    float **A, **Z;
-    if (cargar_matrices(matrices_dir, p.m, p.n, &A, &Z) != 0) {
-        fprintf(stderr, "Error: no se pudieron cargar las matrices desde '%s'\n", matrices_dir);
-        return;
-    }
     print_tamano("A", p.m, p.m);
     print_tamano("Z", p.m, p.n);
 
-    // Reservar arreglo para guardar los snapshots de cada iteración
-    float ***resultado = malloc(p.l * sizeof(float **));
-
-    // Inicializar la estructura de métricas
     Metricas m;
     metricas_init(&m, p.l);
     m.p           = p;
-
-    // Registrar los tamaños en bytes de cada matriz
     m.tam_A_bytes = (long)p.m * p.m * sizeof(float);
     m.tam_Z_bytes = (long)p.m * p.n * sizeof(float);
 
-    // Ejecutar el bucle principal del benchmark
-    ejecutar_bucle(A, Z, p, resultado, outdir, &m);
+    if (matrices_caben_en_ram(p.m, p.n, ram_kb, ram_pct)) {
+        float **A, **Z;
+        if (cargar_matrices(matrices_dir, p.m, p.n, &A, &Z) != 0) {
+            fprintf(stderr, "Error: no se pudieron cargar las matrices desde '%s'\n", matrices_dir);
+            metricas_free(&m);
+            return;
+        }
+        ejecutar_bucle(A, Z, p, outdir, &m);
+        liberar_matriz(A, p.m);
+        liberar_matriz(Z, p.m);
+    } else {
+        int BS = calcular_block_size(ram_kb, ram_pct);
+        printf("  RAM insuficiente. Modo bloques (BS=%d, RAM_PCT=%d%%).\n", BS, RAM_PCT);
+        ejecutar_bucle_bloques(matrices_dir, p, outdir, &m, BS);
+    }
 
-    // Imprimir el informe de métricas en pantalla
     metricas_imprimir(&m, p.l);
-
-    // Guardar el informe de métricas en el directorio de salida
     metricas_guardar(&m, p.l, outdir);
-
-    // Liberar toda la memoria utilizada
     metricas_free(&m);
-    liberar_resultado(resultado, p.l, p.n);
-    liberar_matriz(A, p.m);
 }

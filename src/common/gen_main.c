@@ -10,31 +10,30 @@
 #endif
 #include "gen.h"
 
-/* Punto de entrada: lee el exponente, calcula parámetros, guarda params.txt y genera matrices. */
-int main(void) {
-
-    // Leer el exponente ingresado por el usuario
-    int input;
-    printf("Ingrese el exponente: ");
-    if (scanf("%d", &input) != 1) {
-        fprintf(stderr, "Error: entrada invalida\n");
+int main(int argc, char *argv[]) {
+    if (argc < 2) {
+        fprintf(stderr, "Uso: %s EXP\n", argv[0]);
         return 1;
     }
 
-    // Calcular dimensiones a partir del exponente
+    int input = atoi(argv[1]);
+    if (input <= 0) {
+        fprintf(stderr, "Error: EXP debe ser un entero positivo\n");
+        return 1;
+    }
+
     int m = (int)pow(2, input);
     int n = 128;
     int l = (2 * m) / n;
 
-    // Calcular tamaños en MB
-    float mb_A = (float)(m * m * sizeof(float)) / (1024 * 1024);
-    float mb_Z = (float)(m * n * sizeof(float)) / (1024 * 1024);
+    long long bytes_A = (long long)m * m * sizeof(float);
+    long long bytes_Z = (long long)m * n * sizeof(float);
+    double mb_A = bytes_A / (1024.0 * 1024.0);
+    double mb_Z = bytes_Z / (1024.0 * 1024.0);
 
-    // Crear el directorio de salida de matrices
     const char *dir = "data";
     MKDIR(dir);
 
-    // Guardar los parámetros en params.txt para que cpu los pueda leer
     char ruta[256];
     snprintf(ruta, sizeof(ruta), "%s/params.txt", dir);
     FILE *f = fopen(ruta, "w");
@@ -46,12 +45,11 @@ int main(void) {
                "A: %d x %d floats = %.1f MB\n"
                "Z: %d x %d floats = %.1f MB\n",
                input, m, n, l,
-               m, m, mb_A,
-               m, n, mb_Z);
+               m, m, (float)mb_A,
+               m, n, (float)mb_Z);
     fclose(f);
     printf("Params guardados en %s\n", ruta);
 
-    // Generar y guardar las matrices A y Z en disco
     generar_matrices(dir, m, n);
 
     printf("\nMatrices listas en '%s/'\n", dir);

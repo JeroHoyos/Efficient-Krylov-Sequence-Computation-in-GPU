@@ -12,28 +12,24 @@
 #include "benchmark.h"
 
 /* Crea el directorio de salida con timestamp y registra su nombre en .last_outdir.
-   Devuelve 0 en éxito, -1 en error. */
+   Retorna 0 en éxito, -1 en error. */
 int crear_outdir(int input, char *outdir, size_t size) {
     time_t t = time(NULL);
     struct tm *tm_info = localtime(&t);
     char ts[16];
     strftime(ts, sizeof(ts), "%m%d_%H%M%S", tm_info);
-
     snprintf(outdir, size, "cpu_%d_%s", input, ts);
-
     if (MKDIR(outdir) != 0) {
         fprintf(stderr, "Error: no se pudo crear directorio %s\n", outdir);
         return -1;
     }
-
     FILE *lf = fopen(".last_outdir", "w");
     if (lf) { fprintf(lf, "%s\n", outdir); fclose(lf); }
-
     printf("Directorio de salida: %s\n", outdir);
     return 0;
 }
 
-/* Lee los parametros desde dir/params.txt. Devuelve 0 en éxito, -1 en error. */
+/* Lee los parametros desde dir/params.txt. Retorna 0 en éxito, -1 en error. */
 int leer_params(const char *dir, Parametros *p) {
     char ruta[256];
     snprintf(ruta, sizeof(ruta), "%s/params.txt", dir);
@@ -52,14 +48,8 @@ int leer_params(const char *dir, Parametros *p) {
     return 0;
 }
 
-/* Punto de entrada: lee el directorio de matrices, carga parametros y lanza el benchmark. */
-int main(void) {
-    char matrices_dir[256];
-    printf("Directorio de matrices (default: matrices): ");
-    if (scanf("%255s", matrices_dir) != 1) {
-        fprintf(stderr, "Error: entrada invalida\n");
-        return 1;
-    }
+int main(int argc, char *argv[]) {
+    const char *matrices_dir = argc > 1 ? argv[1] : "data";
 
     Parametros p;
     if (leer_params(matrices_dir, &p) != 0)

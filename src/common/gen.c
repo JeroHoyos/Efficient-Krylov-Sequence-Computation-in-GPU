@@ -2,79 +2,80 @@
 #include <stdlib.h>
 #include "gen.h"
 
-/* Reserva e inicializa una matriz [filas x cols] con valores aleatorios entre 0 y 1. */
-static float **crear_matriz(int filas, int cols) {
+/* Genera A [m×m] row-stochastic fila a fila y la escribe en binario.
+   Nunca carga más de una fila en RAM (m floats). */
+static void gen_A_bin(const char *ruta, int m) {
+    FILE *f = fopen(ruta, "wb");
+    if (!f) { fprintf(stderr, "Error: no se pudo crear %s\n", ruta); return; }
 
-    // Reservar arreglo de punteros a filas
-    float **mat = malloc(filas * sizeof(float *));
+    // Buffer de una fila para mantener el working set en O(m) floats
+    float *fila = malloc(m * sizeof(float));
+    // Cada cuántas filas actualizar el progreso en pantalla
+    int periodo = m > 10 ? m / 10 : 1;
 
-    for (int i = 0; i < filas; i++) {
+    for (int i = 0; i < m; i++) {
+        // Generar valores aleatorios y acumular la suma para normalizar
+        float suma = 0.0f;
+        for (int j = 0; j < m; j++) {
+            fila[j] = (float)rand() / RAND_MAX;
+            suma += fila[j];
+        }
+        // Normalizar la fila para que sume 1 (propiedad row-estocástica)
+        for (int j = 0; j < m; j++) fila[j] /= suma;
+        // Escribir la fila en binario row-major
+        fwrite(fila, sizeof(float), m, f);
 
-        // Reservar memoria para cada fila
-        mat[i] = malloc(cols * sizeof(float));
-
-        for (int j = 0; j < cols; j++)
-            // Asignar valor aleatorio entre 0 y 1
-            mat[i][j] = (float)rand() / RAND_MAX;
+        if (i % periodo == 0) {
+            printf("\r  Generando A: %3d%%", (int)(100LL * i / m));
+            fflush(stdout);
+        }
     }
-    return mat;
-}
+    printf("\r  Guardada: %-40s\n", ruta);
 
-/* Guarda la matriz mat [filas x cols] como texto plano en la ruta indicada. */
-static void guardar_txt(float **mat, int filas, int cols, const char *ruta) {
-
-    // Abrir el archivo para escritura
-    FILE *f = fopen(ruta, "w");
-    if (!f) { fprintf(stderr, "Error: no se pudo abrir %s\n", ruta); return; }
-
-    // Escribir cada elemento separado por espacios, con salto de línea al final de cada fila
-    for (int i = 0; i < filas; i++) {
-        for (int j = 0; j < cols; j++)
-            fprintf(f, j < cols - 1 ? "%f " : "%f", mat[i][j]);
-        fprintf(f, "\n");
-    }
-
-    // Cerrar el archivo e informar la ruta guardada
+    free(fila);
     fclose(f);
-    printf("  Guardada: %s\n", ruta);
 }
 
-/* Libera la memoria de cada fila y del arreglo de punteros de la matriz. */
-static void liberar_matriz(float **mat, int filas) {
+/* Genera Z [m×n] aleatoria fila a fila y la escribe en binario.
+   Nunca carga más de una fila en RAM (n floats). */
+static void gen_Z_bin(const char *ruta, int m, int n) {
+    FILE *f = fopen(ruta, "wb");
+    if (!f) { fprintf(stderr, "Error: no se pudo crear %s\n", ruta); return; }
 
-    // Liberar memoria de cada fila
-    for (int i = 0; i < filas; i++) free(mat[i]);
+    // Buffer de una fila para mantener el working set en O(n) floats
+    float *fila = malloc(n * sizeof(float));
+    // Cada cuántas filas actualizar el progreso en pantalla
+    int periodo = m > 10 ? m / 10 : 1;
 
-    // Liberar arreglo de punteros a filas
-    free(mat);
+    for (int i = 0; i < m; i++) {
+        // Generar n valores aleatorios en [0, 1] para esta fila
+        for (int j = 0; j < n; j++)
+            fila[j] = (float)rand() / RAND_MAX;
+        // Escribir la fila en binario row-major
+        fwrite(fila, sizeof(float), n, f);
+
+        if (i % periodo == 0) {
+            printf("\r  Generando Z: %3d%%", (int)(100LL * i / m));
+            fflush(stdout);
+        }
+    }
+    printf("\r  Guardada: %-40s\n", ruta);
+
+    free(fila);
+    fclose(f);
 }
 
-/* Genera A (m×m) normalizada por filas y Z (m×n) aleatorias, y las guarda en dir. */
+/* Genera A (m×m) y Z (m×n) fila a fila y las guarda como binarios en dir. */
 void generar_matrices(const char *dir, int m, int n) {
     char ruta[256];
 
-    // Crear la matriz A cuadrada con valores aleatorios
+    // Generar y guardar la matriz A row-estocástica
     printf("Generando A [%d x %d]...\n", m, m);
-    float **A = crear_matriz(m, m);
+    snprintf(ruta, sizeof(ruta), "%s/A.bin", dir);
+    gen_A_bin(ruta, m);
 
-    // Normalizar cada fila de A para que sume 1 (matriz estocástica)
-    for (int i = 0; i < m; i++) {
-        float suma = 0.0f;
-        for (int j = 0; j < m; j++) {suma += A[i][j];}
-        for (int j = 0; j < m; j++) {A[i][j] /= suma;}
-    }
-
-    // Guardar A en disco y liberar su memoria
-    snprintf(ruta, sizeof(ruta), "%s/A.txt", dir);
-    guardar_txt(A, m, m, ruta);
-    liberar_matriz(A, m);
-
-    // Crear la matriz Z rectangular con valores aleatorios
+    // Generar y guardar la matriz Z aleatoria
     printf("Generando Z [%d x %d]...\n", m, n);
-    float **Z = crear_matriz(m, n);
-
-    // Guardar Z en disco y liberar su memoria
-    snprintf(ruta, sizeof(ruta), "%s/Z.txt", dir);
-    guardar_txt(Z, m, n, ruta);
-    liberar_matriz(Z, m);
+    snprintf(ruta, sizeof(ruta), "%s/Z.bin", dir);
+    gen_Z_bin(ruta, m, n);
 }

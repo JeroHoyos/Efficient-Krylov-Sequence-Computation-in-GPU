@@ -30,7 +30,4 @@ void metricas_imprimir(const Metricas *m, int l);
 /* Guarda el informe de métricas en un archivo dentro de outdir. */
 void metricas_guardar(const Metricas *m, int l, const char *outdir);
 
-/* Retorna el RSS actual del proceso en kilobytes. */
-long leer_rss_kb(void);
-
 #endif

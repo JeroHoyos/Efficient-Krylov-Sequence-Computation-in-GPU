@@ -10,4 +10,7 @@ long      leer_majflt(void);
 /* Retorna el tiempo de CPU consumido por el proceso en microsegundos. */
 long long leer_cpu_us_proceso(void);
 
+/* Retorna el RSS actual del proceso en kilobytes. */
+long leer_rss_kb(void);
+
 #endif

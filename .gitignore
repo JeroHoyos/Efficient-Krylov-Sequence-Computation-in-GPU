@@ -27,6 +27,7 @@ run_*/
 *.swo
 *~
 .claude
+CLAUDE.md
 
 # Archivos del sistema
 .DS_Store
