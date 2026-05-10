@@ -1,11 +1,12 @@
 # Cómputo Eficiente de Secuencias de Krylov en GPU
 
-> Benchmarking de multiplicación iterativa de matrices para generación de subespacios de Krylov — desde CPU base (C puro) hasta CUDA acelerado por GPU.
+> Benchmarking de multiplicación iterativa de matrices para generación de subespacios de Krylov — desde CPU base hasta CUDA.
+
+> [Guía Rápida de la ejecución](#inicio-rápido)
 
 ![C](https://img.shields.io/badge/C-00599C?style=flat&logo=c&logoColor=white)
 ![CUDA](https://img.shields.io/badge/CUDA-76B900?style=flat&logo=nvidia&logoColor=white)
 ![Estado](https://img.shields.io/badge/estado-en%20progreso-yellow)
-![Plataforma](https://img.shields.io/badge/plataforma-Linux%20%7C%20Windows-lightgrey)
 
 ---
 
@@ -24,11 +25,13 @@
 
 ## Subespacios de Krylov
 
-Un **subespacio de Krylov** de orden *r* generado por una matriz *m×m* *A* y un vector *v* es el subespacio vectorial generado por los productos matriz-vector sucesivos:
+Un **subespacio de Krylov** de orden *r* generado por una matriz *m×m* *A* y un vector *z* es el subespacio vectorial generado por los productos matriz-vector sucesivos:
 
-$$\mathcal{K}_r(A, v) = \text{span}\{v,\ Av,\ \ldots,\ A^{r-1}v\}$$
+$$\mathcal{K}_l(A, z) = \text{span}\{z,\ Az,\ \ldots,\ A^{l-1}z\}$$
 
-Los subespacios de Krylov son la base de los solvers iterativos para sistemas lineales grandes y problemas de autovalores (GMRES, Lanczos, Arnoldi). Su cómputo eficiente es crítico cuando *m* es grande, lo que los convierte en un objetivo ideal para aceleración por GPU.
+Los subespacios de Krylov son la base de los solvers iterativos para sistemas lineales grandes y problemas de autovalores (GMRES, Lanczos, Arnoldi). Su cómputo eficiente es crítico cuando *m* es grande, lo que los convierte en un objetivo ideal para su optimización.
+
+Para saber más, revisar la investigación que se hizo para el proyecto en <a href="docs/research.md">Ver investigación</a>
 
 ([volver arriba](#cómputo-eficiente-de-secuencias-de-krylov-en-gpu))
 
@@ -36,7 +39,7 @@ Los subespacios de Krylov son la base de los solvers iterativos para sistemas li
 
 ## Algoritmo
 
-El benchmark computa una **secuencia de Krylov por bloques** — una generalización que reemplaza el vector inicial por una matriz *Z*.
+El benchmark computa una **secuencia de Krylov por bloques** que reemplaza el vector inicial por una matriz *Z*.
 
 ### Parámetros
 
@@ -56,31 +59,13 @@ Para `i = 0, 1, ..., l − 1`:
 2. Guardar las primeras `n` filas del resultado como snapshot de la iteración `i`
 3. Actualizar `Z ← A · Z` para la siguiente iteración
 
-El resultado es una secuencia de *l* snapshots de tamaño *n×n*, capturando la evolución de la secuencia de Krylov por bloques.
+El resultado es una secuencia de *l* snapshots de tamaño *n×n*..
+
+Para saber con detalle cómo es la inicialización de las matrices, revisar en <a href="docs/generador.md.md">Ver documentación</a>
 
 ([volver arriba](#cómputo-eficiente-de-secuencias-de-krylov-en-gpu))
 
 ---
-
-## Comportamiento Numérico de los Snapshots
-
-**La matriz A** se genera como una **matriz row-estocástica**: valores aleatorios en [0, 1] con cada fila normalizada para sumar 1. **Z** se inicializa con valores aleatorios en [0, 1].
-
-La multiplicación repetida por una matriz row-estocástica es una iteración de cadena de Markov. Cada columna de Z converge hacia la distribución estacionaria de A escalada por la suma inicial de esa columna. Para una matriz estocástica aleatoria grande, la distribución estacionaria es aproximadamente uniforme (≈ 1/m por fila), y una columna aleatoria de longitud m suma ≈ m/2, por lo que el valor convergido es:
-
-$$\frac{m/2}{m} = 0.5$$
-
-Dado que m = 2^input es grande, la concentración de medida hace que esto sea esencialmente constante entre distintas semillas aleatorias. **Toda ejecución converge a ≈ 0.5 independientemente de la semilla.**
-
-### Por qué 0.5 es ideal para un benchmark de rendimiento
-
-| Convergencia | Efecto |
-| ------------ | ------ |
-| **→ ∞** | `float` desborda a `inf`/`NaN`; el comportamiento de la FPU deja de ser representativo |
-| **→ 0** | Los valores entran en el rango subnormal; x86 maneja subnormales en microcódigo, añadiendo una ralentización de 10–100× que distorsiona los tiempos |
-| **→ 0.5** | Los valores permanecen bien dentro del rango `float` normalizado; la FPU opera en su modo óptimo durante todas las iteraciones |
-
-La normalización estocástica no es accidental — mantiene el cómputo numéricamente bien condicionado durante toda la ejecución del benchmark.
 
 ([volver arriba](#cómputo-eficiente-de-secuencias-de-krylov-en-gpu))
 
@@ -88,38 +73,7 @@ La normalización estocástica no es accidental — mantiene el cómputo numéri
 
 ## Estructura del Proyecto
 
-```text
-.
-├── src/
-│   ├── cpu/
-│   │   ├── main.c          # Punto de entrada: lee parámetros, crea directorio de salida, llama al benchmark
-│   │   ├── benchmark.c     # Bucle principal, tiempos por iteración y recolección de métricas
-│   │   ├── matrices.c      # E/S de matrices, multiplicación, detección de RAM, conversión a binario
-│   │   ├── block_mul.c     # Multiplicación por bloques fuera de RAM usando archivos binarios
-│   │   ├── metricas.c      # Agregación de métricas y generación de reportes
-│   │   ├── parametros.c    # Impresión de parámetros
-│   │   └── perfil.c        # Contadores de rendimiento de bajo nivel (tiempo CPU, fallos de página, RSS)
-│   └── common/
-│       ├── gen_main.c      # Punto de entrada del generador de matrices
-│       └── gen.c           # Genera A row-estocástica y Z aleatoria
-│
-├── include/
-│   ├── cpu/                # Headers para todos los módulos de cpu/
-│   └── common/             # Headers para módulos de common/
-│
-├── data/                   # Matrices de entrada generadas (creadas con make gen)
-│   ├── A.bin               # Matriz m×m row-estocástica (float32 crudo, row-major)
-│   ├── Z.bin               # Matriz m×n aleatoria (float32 crudo, row-major)
-│   ├── Z_new.bin           # Archivo temporal usado en iteraciones fuera de RAM (transitorio)
-│   └── params.txt          # Parámetros almacenados (input, m, n, l)
-│
-├── build/                  # Binarios compilados
-│
-├── gpu/                    # (próximamente) Implementación acelerada con CUDA
-│
-├── Makefile
-└── README.md
-```
+WIP
 
 ([volver arriba](#cómputo-eficiente-de-secuencias-de-krylov-en-gpu))
 

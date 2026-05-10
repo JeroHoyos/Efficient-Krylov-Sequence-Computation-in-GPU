@@ -4,6 +4,7 @@ bench_O*
 bench_gprof
 bench_pg
 bin/bench_pg
+*.exe
 
 # Artefactos de profiling
 gmon.out

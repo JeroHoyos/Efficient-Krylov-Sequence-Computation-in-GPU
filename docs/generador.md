@@ -1,16 +1,31 @@
 # Generador de matrices (`src/common/`)
 
-## Propósito
+El generador produce las dos matrices de entrada `A` y `Z` y las persiste en disco antes de que corra el benchmark. 
 
-El generador produce las dos matrices de entrada —`A` y `Z`— y las persiste en disco antes de que corra el benchmark. Separarlos en binarios distintos permite que cualquier implementación futura (GPU, versión optimizada, etc.) trabaje exactamente con las mismas entradas sin necesidad de regenerarlas.
+## Diseño de las matrices
 
-## Por qué matrices row-estocásticas
+**La matriz A** se genera como una **matriz row-estocástica**: valores aleatorios en [0, 1] con cada fila normalizada para sumar 1. **Z** se inicializa con valores aleatorios en [0, 1].
 
-`A` se genera como una **matriz row-estocástica**: cada fila tiene valores aleatorios en [0,1] que se normalizan para que sumen exactamente 1. Esta propiedad es matemáticamente conveniente para el benchmark:
+La multiplicación repetida por una matriz row-estocástica es una iteración de cadena de Markov. Este proceso converja a un valor predecible se explica de forma natural al seguir el flujo de los datos mediante estos principios:
 
-- Multiplicar repetidamente por una matriz estocástica es una iteración de cadena de Markov. Las columnas de Z convergen hacia la distribución estacionaria de A escalada por la suma inicial de cada columna.
-- Para una matriz estocástica aleatoria grande, esa distribución es aproximadamente uniforme (~1/m por fila). Una columna aleatoria de longitud m suma ~m/2, por lo que el valor de convergencia es (m/2)/m = **0.5**.
-- Ese valor intermedio garantiza que los floats nunca desborden a `inf`/`NaN` ni entren en el rango subnormal (donde la FPU de x86 usa microcódigo y es 10–100× más lenta). El benchmark mide ciclos de multiplicación, no comportamiento excepcional de la FPU.
+* **Ley de los Grandes Números:** Asegura que, al trabajar con volúmenes de datos tan grandes, el promedio de los valores aleatorios iniciales en $Z$ se concentrará casi sin desviación en **0.5**. Esto define que la "masa total" que el sistema va a repartir sea siempre proporcional a $m/2$.
+* **Teorema de Perron-Frobenius:** Garantiza que, al multiplicar por la matriz estocástica, el sistema abandonará el caos inicial para estabilizarse en un estado de equilibrio único (distribución estacionaria), manteniendo siempre constante esa masa original de la columna.
+
+Como la matriz $A$ es inmensa y aleatoria, en la práctica se comporta como una matriz doblemente estocástica, repartiendo la masa de forma uniforme entre las $m$ filas. Al estabilizarse el sistema, el valor de cada celda es simplemente el resultado de esta operación:
+
+$$\frac{m/2}{m} = 0.5$$
+
+Dado que m = 2^input es grande, la **ejecución converge a ≈ 0.5 independientemente de la semilla.**
+
+## Por qué A es una matriz row-estocástica
+
+Este comportamiento matemático es intencional para mantener el procesador trabajando de forma óptima durante la prueba:
+
+| Convergencia | Efecto en el procesador |
+| --- | --- |
+| **→ ∞** | Desborda a `inf`/`NaN`. El procesador deja de hacer cálculos reales. |
+| **→ 0** | Se rinde y los deja en 0. El procesador deja de hacer cálculos reales al no poder manejar valores tan pequeños. |
+| **→ 0.5** | Los valores se mantienen en el rango normal. Al ser números ligeramente distintos, obligan al procesador a procesar variaciones reales constantemente, haciendo la prueba más realista. |
 
 ## Generación fila a fila
 
@@ -24,7 +39,7 @@ for (int i = 0; i < m; i++) {
 }
 ```
 
-Esto mantiene el working set constante en O(m) floats independientemente de cuánto mida la matriz completa. Para EXP=20 (m = 1 048 576), A ocupa ~4 TB — cargarla entera en memoria para generarla sería imposible. Escribiéndola fila a fila, el working set es siempre ~4 MB (una fila de floats).
+En lugar de intentar cargar toda la matriz, el programa la procesa fila por fila. En el caso extremo de EXP=20, la matriz completa pesaría unos colosales 4 TB, pero al cargar solo una fila a la vez, el consumo real de RAM se mantiene en apenas 4 MB.
 
 ## Formato binario raw
 
@@ -42,6 +57,7 @@ input <EXP>
 m <2^EXP>
 n 128
 l <2*m/n>
+A: m x m floats = <4*m MB>
+Z: m x n floats = <4*m MB>
 ```
 
-El benchmark lo lee al arrancar para conocer las dimensiones sin necesidad de que el usuario las reingrese. El valor `n = 128` es fijo (tamaño del bloque de Krylov); `l = 2m/n` da suficientes iteraciones para observar la convergencia.
