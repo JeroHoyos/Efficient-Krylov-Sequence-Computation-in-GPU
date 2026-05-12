@@ -1,16 +1,12 @@
 #ifndef BLOCK_MUL_H
 #define BLOCK_MUL_H
 
-#include "parametros.h"
-#include "metricas.h"
-
-#ifndef RAM_PCT
-#define RAM_PCT 50
-#endif
-
-/* Ejecuta p.l iteraciones de Z_{i+1} = A × Z_i leyendo desde archivos binarios
-   y procesando por bloques de BS×BS. Escribe snapshots n×n en outdir y métricas en m. */
-void ejecutar_bucle_bloques(const char *matrices_dir, Parametros p,
-                            const char *outdir, Metricas *m, int BS);
+/*
+ * Multiplica A [m x m] por Z_in [m x n] y guarda en Z_out [m x n].
+ * Implementación por bloques en CPU (cache-friendly).
+ */
+void multiplicar_en(float **A,  int m_a, int k,
+                    float **Zin, int n,
+                    float **Zout);
 
 #endif

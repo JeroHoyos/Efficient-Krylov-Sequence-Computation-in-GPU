@@ -1,57 +1,114 @@
-# Compilador
-CC = gcc
+# ============================================================
+#  Makefile — EFFICIENT-KRYLOV
+#  Uso:
+#    make              → benchmark CPU + generador
+#    make GPU=1        → benchmark GPU (CUDA) + generador
+#    make gen EXP=10   → genera matrices para 2^10
+#    make run          → ejecuta el benchmark
+#    make clean        → limpia build/
+# ============================================================
 
-# Archivos fuente del benchmark
-SRCS = src/cpu/main.c \
-       src/cpu/benchmark.c \
-       src/cpu/matrices.c \
-       src/cpu/parametros.c \
-       src/cpu/metricas.c \
-       src/cpu/perfil.c \
-       src/cpu/block_mul.c
+CC      = gcc
+NVCC    = nvcc
+CFLAGS  = -O2 -Wall -Wextra
+NVFLAGS = -O2 -arch=sm_75     # ajusta sm_XX a tu GPU
+LIBS    = -lm
 
-# Archivos fuente del generador
-GEN_SRCS = src/common/gen_main.c \
-           src/common/gen.c
+EXE_EXT := .exe
+MKDIR    = mkdir -p $(BINDIR)
+RMDIR    = rm -rf $(BINDIR)
 
-# Parámetros
-EXP = 8
-MATDIR = data
+BINDIR   = build
+SRC_COM  = src/common
+SRC_CPU  = src/cpu
+SRC_GPU  = src/gpu
+INC_COM  = include/common
+INC_CPU  = include/cpu
+INC_GPU  = include/gpu
 
-# Carpetas
-BINDIR = build
+IFLAGS_COM  = -I$(INC_COM)
+IFLAGS_CPU  = $(IFLAGS_COM) -I$(INC_CPU)
+IFLAGS_GPU  = $(IFLAGS_COM) -I$(INC_GPU)
 
-# Includes y flags
-IFLAGS = -Iinclude/cpu -Iinclude/common
-CFLAGS = -O0 -Wall -Wextra
+COMMON_SRCS = $(SRC_COM)/parametros.c \
+              $(SRC_COM)/matrices.c    \
+              $(SRC_COM)/metricas.c    \
+              $(SRC_COM)/perfil.c
 
-# Ejecutables
-BIN = $(BINDIR)/bench
-GEN_BIN = $(BINDIR)/gen_matrices
+# main.c y benchmark.c se compilan distinto según CPU/GPU (ver abajo).
+BENCH_SHARED = $(SRC_COM)/main.c      \
+               $(SRC_COM)/benchmark.c \
+               $(COMMON_SRCS)
 
-# Librerías
-LIBS = -lm
+GEN_SRCS = $(SRC_COM)/gen_main.c \
+           $(SRC_COM)/gen.c
 
-# Crear carpeta build
+GEN_BIN   = $(BINDIR)/gen_matrices$(EXE_EXT)
+BENCH_BIN = $(BINDIR)/bench$(EXE_EXT)
+
+# EXP controla el tamaño de la matriz (m = 2^EXP).
+# DATA es el directorio donde gen_matrices escribe los .bin.
+EXP  ?= 8
+DATA ?= data
+
+# ============================================================
+#  Selección CPU / GPU
+# ============================================================
+ifdef GPU
+  # nvcc compila en un solo paso todos los .c y .cu juntos;
+  # no hace falta separar objetos intermedios.
+  BENCH_BIN := $(BINDIR)/bench_gpu$(EXE_EXT)
+  MUL_SRC    = $(SRC_GPU)/block_mul_gpu.cu
+
+  $(BENCH_BIN): $(BENCH_SHARED) $(MUL_SRC) | $(BINDIR)
+	$(NVCC) $(NVFLAGS) $(IFLAGS_GPU) -DUSE_CUDA \
+	    -o $@ $^ $(LIBS)
+	@echo "[OK] Benchmark GPU compilado -> $@"
+
+else
+  MUL_SRC = $(SRC_CPU)/block_mul_cpu.c
+
+  $(BENCH_BIN): $(BENCH_SHARED) $(MUL_SRC) | $(BINDIR)
+	$(CC) $(CFLAGS) $(IFLAGS_CPU) \
+	    -o $@ $^ $(LIBS)
+	@echo "[OK] Benchmark CPU compilado -> $@"
+endif
+
+# ============================================================
+#  Targets comunes
+# ============================================================
+.PHONY: all gen run clean help
+
+all: $(BENCH_BIN) $(GEN_BIN)
+
+# '| $(BINDIR)' es una dependencia de orden: crea el directorio
+# si no existe, pero no re-linka si su timestamp cambia.
 $(BINDIR):
-	mkdir -p $(BINDIR)
+	$(MKDIR)
 
-# Compilar benchmark
-$(BIN): $(SRCS) | $(BINDIR)
-	$(CC) $(CFLAGS) $(IFLAGS) -o $@ $^ $(LIBS)
-
-# Compilar generador
 $(GEN_BIN): $(GEN_SRCS) | $(BINDIR)
-	$(CC) $(CFLAGS) $(IFLAGS) -o $@ $^ $(LIBS)
+	$(CC) $(CFLAGS) $(IFLAGS_COM) -o $@ $^ $(LIBS)
+	@echo "[OK] Generador compilado -> $@"
 
-# Generar matrices
 gen: $(GEN_BIN)
-	./$(GEN_BIN) $(EXP)
+	$(GEN_BIN) $(EXP)
 
-# Ejecutar benchmark
-run: $(BIN)
-	./$(BIN) $(MATDIR)
+run: $(BENCH_BIN)
+	$(BENCH_BIN)
 
-# Limpiar
+all-run: all run
+
 clean:
-	rm -rf $(BINDIR)
+	$(RMDIR)
+	@echo "[OK] build/ eliminado"
+
+help:
+	@echo ""
+	@echo "  make                   compila benchmark CPU + generador"
+	@echo "  make GPU=1             compila benchmark GPU (CUDA) + generador"
+	@echo "  make gen EXP=N         genera matrices para 2^N (default 8)"
+	@echo "  make run               ejecuta benchmark CPU"
+	@echo "  make run GPU=1         ejecuta benchmark GPU"
+	@echo "  make all-run           compila y ejecuta"
+	@echo "  make clean             elimina build/"
+	@echo ""

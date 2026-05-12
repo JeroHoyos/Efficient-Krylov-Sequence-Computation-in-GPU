@@ -1,20 +1,9 @@
 #ifndef GEN_H
 #define GEN_H
 
-/* Genera las matrices aleatorias y las guarda en archivos */
-void generar_matrices(
-    const char *dir, // carpeta donde se guardan las matrices
-    int m,           // tamaño de la matriz A (m x m)
-    int n            // número de columnas de la matriz Z (m x n)
-);
-
-/* Guarda los parámetros del experimento en params.txt */
-void guardar_parametros(
-    const char *dir, // carpeta donde se guarda params.txt
-    int input,       // exponente usado para calcular m = 2^input
-    int m,           // tamaño de la matriz A
-    int n,           // número de columnas de Z
-    int l            // parámetro derivado usado en el benchmark
-);
+void gen_A_bin(const char *ruta, int m);
+void gen_Z_bin(const char *ruta, int m, int n);
+void guardar_parametros(const char *dir, int input, int m, int n, int l);
+void generar_matrices(const char *dir, int m, int n);
 
 #endif
