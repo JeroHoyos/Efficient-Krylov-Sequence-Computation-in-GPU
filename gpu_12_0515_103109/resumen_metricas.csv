@@ -1,0 +1,2 @@
+iteraciones,tiempo_promedio_ms,tiempo_min_ms,tiempo_max_ms,gflops_promedio,gflops_min,gflops_max,gbps_promedio,gbps_min,gbps_max,intensidad_ops_byte
+64,5.023805,4.643936,6.434816,862.886483,667.457682,924.854940,3451.967264,2670.156636,3699.871349,0.249969

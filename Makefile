@@ -11,7 +11,8 @@
 CC      = gcc
 NVCC    = nvcc
 CFLAGS  = -O2 -Wall -Wextra
-NVFLAGS = -O2 -arch=sm_75     # ajusta sm_XX a tu GPU
+NVARCH  ?= sm_89              # RTX 40xx; se puede cambiar con NVARCH=sm_XX
+NVFLAGS = -O2 -arch=$(NVARCH)
 LIBS    = -lm
 
 EXE_EXT := .exe
@@ -62,7 +63,7 @@ ifdef GPU
 
   $(BENCH_BIN): $(BENCH_SHARED) $(MUL_SRC) | $(BINDIR)
 	$(NVCC) $(NVFLAGS) $(IFLAGS_GPU) -DUSE_CUDA \
-	    -o $@ $^ $(LIBS)
+	    -o $@ $^
 	@echo "[OK] Benchmark GPU compilado -> $@"
 
 else

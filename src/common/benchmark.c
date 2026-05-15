@@ -18,6 +18,14 @@ long long flops_mul(int m, int n) {
     return 2LL * m * m * n;
 }
 
+long long bytes_leidos_mul(int m, int n) {
+    return 2LL * m * m * n * (long long)sizeof(float);
+}
+
+long long bytes_escritos_mul(int m, int n) {
+    return 1LL * m * n * (long long)sizeof(float);
+}
+
 // Modo GPU
 #if !defined(USE_CUDA)
 
@@ -31,6 +39,8 @@ void ejecutar_bucle_cpu(float **A, float **Z,Parametros p, const char *outdir,Me
     float **Z_nxt = Z_alt;
 
     long long flops = flops_mul(p.m, p.n);
+    long long bytes_read = bytes_leidos_mul(p.m, p.n);
+    long long bytes_write = bytes_escritos_mul(p.m, p.n);
 
     printf("\n=== Ejecucion CPU (%d iter.) ===\n", p.l);
 
@@ -39,7 +49,7 @@ void ejecutar_bucle_cpu(float **A, float **Z,Parametros p, const char *outdir,Me
         multiplicar_en(A, p.m, p.m, Z_cur, p.n, Z_nxt);
         double dt = tiempo_ms_ahora() - t0;
 
-        metricas_registrar(met, dt, flops);
+        metricas_registrar(met, dt, flops, bytes_read, bytes_write);
         copiar_snapshot_en(Z_nxt, p.n, snap);
         guardar_resultado_txt(snap, p.n, p.n, i, outdir);
 
@@ -54,6 +64,8 @@ void ejecutar_bucle_cpu(float **A, float **Z,Parametros p, const char *outdir,Me
 }
 
 void benchmark(Parametros p, const char *matrices_dir,const char *outdir) {
+
+    double benchmark_t0 = tiempo_ms_ahora();
 
     printf("\n=== Carga de matrices ===\n");
     print_tamano("A", p.m, p.m);
@@ -70,9 +82,11 @@ void benchmark(Parametros p, const char *matrices_dir,const char *outdir) {
     metricas_init(&met, p.l);
 
     ejecutar_bucle_cpu(A, Z, p, outdir, &met);
+    double benchmark_total_ms = tiempo_ms_ahora() - benchmark_t0;
 
     metricas_imprimir(&met);
-    metricas_guardar_csv(&met, outdir);
+    printf("  Tiempo total benchmark: %8.3f ms\n", benchmark_total_ms);
+    metricas_guardar_csv(&met, outdir, benchmark_total_ms);
 
     liberar_matriz(A, p.m);
     liberar_matriz(Z, p.m);
@@ -89,13 +103,15 @@ void ejecutar_bucle_gpu(GpuCtx *ctx,Parametros p, const char *outdir,Metricas *m
     // El snapshot vive en host: solo necesitamos n×n floats, no m×m.
     float **snap_host = crear_matriz(p.n, p.n);
     long long flops   = flops_mul(p.m, p.n);
+    long long bytes_read = bytes_leidos_mul(p.m, p.n);
+    long long bytes_write = bytes_escritos_mul(p.m, p.n);
 
     printf("\n=== Ejecucion GPU (%d iter.) ===\n", p.l);
 
     for (int i = 0; i < p.l; i++) {
         double dt = gpu_multiplicar(ctx);
 
-        metricas_registrar(met, dt, flops);
+        metricas_registrar(met, dt, flops, bytes_read, bytes_write);
         gpu_copiar_snapshot(ctx, snap_host);
         guardar_resultado_txt(snap_host, p.n, p.n, i, outdir);
 
@@ -106,6 +122,8 @@ void ejecutar_bucle_gpu(GpuCtx *ctx,Parametros p, const char *outdir,Metricas *m
 }
 
 void benchmark(Parametros p, const char *matrices_dir,const char *outdir) {
+
+    double benchmark_t0 = tiempo_ms_ahora();
 
     printf("\n=== Carga de matrices (host) ===\n");
     print_tamano("A", p.m, p.m);
@@ -135,9 +153,11 @@ void benchmark(Parametros p, const char *matrices_dir,const char *outdir) {
     metricas_init(&met, p.l);
 
     ejecutar_bucle_gpu(&ctx, p, outdir, &met);
+    double benchmark_total_ms = tiempo_ms_ahora() - benchmark_t0;
 
     metricas_imprimir(&met);
-    metricas_guardar_csv(&met, outdir);
+    printf("  Tiempo total benchmark: %8.3f ms\n", benchmark_total_ms);
+    metricas_guardar_csv(&met, outdir, benchmark_total_ms);
 
     gpu_ctx_free(&ctx);
     metricas_free(&met);

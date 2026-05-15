@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
-    // Calculando parametros
+    // Calculando parámetros
     int m = (int)pow(2, input);
     int n = 128;
     int l = (2 * m) / n;
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]) {
     const char *dir = "data";
     _mkdir(dir);
 
-    // Care vergas lean el código
+    
     guardar_parametros(dir, input, m, n, l);
     generar_matrices(dir, m, n);
 
