@@ -92,7 +92,7 @@ $(GEN_BIN): $(GEN_SRCS) | $(BINDIR)
 	@echo "[OK] Generador compilado -> $@"
 
 gen: $(GEN_BIN)
-	$(GEN_BIN) $(EXP)
+	./$(GEN_BIN) $(EXP)
 
 run: $(BENCH_BIN)
 	$(BENCH_BIN)
@@ -102,14 +102,3 @@ all-run: all run
 clean:
 	$(RMDIR)
 	@echo "[OK] build/ eliminado"
-
-help:
-	@echo ""
-	@echo "  make                   compila benchmark CPU + generador"
-	@echo "  make GPU=1             compila benchmark GPU (CUDA) + generador"
-	@echo "  make gen EXP=N         genera matrices para 2^N (default 8)"
-	@echo "  make run               ejecuta benchmark CPU"
-	@echo "  make run GPU=1         ejecuta benchmark GPU"
-	@echo "  make all-run           compila y ejecuta"
-	@echo "  make clean             elimina build/"
-	@echo ""

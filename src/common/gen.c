@@ -1,81 +1,116 @@
+//! gen.c - Generación de los binarios de las matrices A y Z, y guardar los parámetros en un archivo de texto.
+//!
+//! Este módulo contiene las funciones para generar la matriz A, Z y guardar los parámetros de la sesión.
+//! La función main() se encuentra en gen_main.c, que organiza el flujo general del programa.
+//!
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <direct.h>
 #include "gen.h"
 
-// Genera A [m x m] como matriz estocástica por filas y la guarda en binario.
+/// Genera la matriz A en formato binario.
+///
+/// La matriz A es cuadrada [m x m] y derecha estocástica (cada fila suma 1.0).
+///
+/// # Argumentos
+/// - `ruta`: Ruta del archivo binario donde se guardará la matriz A.
+/// - `m`: Tamaño de la matriz (número de filas y columnas).
+///
 void gen_A_bin(const char *ruta, int m) {
-    FILE *f = fopen(ruta, "wb");
-    if (!f) { fprintf(stderr, "Error: no se pudo crear %s\n", ruta); return; }
 
-    // Se reserva solo una fila a la vez para mantener el uso de RAM constante
-    // sin importar el tamaño de m.
+    FILE *f = fopen(ruta, "wb");
+    if (!f) {
+        fprintf(stderr, "Error: no se pudo crear %s\n", ruta);
+        return;
+    }
+
+    // Se reutiliza el mismo buffer de fila en cada iteración para evitar reservas repetidas.
     float *fila = malloc(m * sizeof(float));
 
-    // 'periodo' controla cada cuántas filas se actualiza el porcentaje.
-    // El mínimo de 1 evita división por cero cuando m <= 10.
-    int periodo = (m > 10) ? m / 10 : 1;
-
     for (int i = 0; i < m; i++) {
+
         float suma = 0;
+
         for (int j = 0; j < m; j++) {
             fila[j] = (float)rand() / RAND_MAX;
-            suma   += fila[j];
+            suma    += fila[j];
         }
-        // Normaliza la fila para que sume 1.0 (distribución estocástica).
-        for (int j = 0; j < m; j++) fila[j] /= suma;
-        fwrite(fila, sizeof(float), m, f);
 
-        if (i % periodo == 0) {
-            printf("\r  Generando A: %3d%%", (int)(100LL * i / m));
-            fflush(stdout);
+        // Divide cada elemento por la suma de la fila para que sume exactamente 1.0.
+        for (int j = 0; j < m; j++) {
+            fila[j] /= suma;
         }
+
+        fwrite(fila, sizeof(float), m, f);
     }
-    // '%-40s' alinea a la izquierda con relleno para borrar cualquier
-    // texto residual del porcentaje que quedara en la misma línea.
-    printf("\r  Guardada: %-40s\n", ruta);
+
     free(fila);
     fclose(f);
+    printf("Guardada: %-40s\n", ruta);
 }
 
-// Genera Z [m x n] con flotantes aleatorios en [0, 1) y la guarda en binario.
+/// Genera la matriz Z en formato binario.
+///
+/// La matriz Z es rectangular [m x n] con valores flotantes aleatorios en [0, 1).
+///
+/// # Argumentos
+/// - `ruta`: Ruta del archivo binario donde se guardará la matriz Z.
+/// - `m`: Número de filas de la matriz Z.
+/// - `n`: Número de columnas de la matriz Z.
+///
 void gen_Z_bin(const char *ruta, int m, int n) {
-    
-    FILE *f = fopen(ruta, "wb");
-    if (!f) { fprintf(stderr, "Error: no se pudo crear %s\n", ruta); return; }
 
-    // 'n' columnas por fila, mucho menor que m, así que la reserva es pequeña.
+    FILE *f = fopen(ruta, "wb");
+    if (!f) {
+        fprintf(stderr, "Error: no se pudo crear %s\n", ruta);
+        return;
+    }
+
+    // Se reutiliza el mismo buffer de fila en cada iteración para evitar reservas repetidas.
     float *fila = malloc(n * sizeof(float));
-    int periodo = (m > 10) ? m / 10 : 1;
 
     for (int i = 0; i < m; i++) {
-        for (int j = 0; j < n; j++) fila[j] = (float)rand() / RAND_MAX;
-        fwrite(fila, sizeof(float), n, f);
 
-        if (i % periodo == 0) {
-            printf("\r  Generando Z: %3d%%", (int)(100LL * i / m));
-            fflush(stdout);
+        for (int j = 0; j < n; j++) {
+            fila[j] = (float)rand() / RAND_MAX;
         }
+
+        fwrite(fila, sizeof(float), n, f);
     }
-    printf("\r  Guardada: %-40s\n", ruta);
+
     free(fila);
     fclose(f);
+    printf("Guardada: %-40s\n", ruta);
 }
 
-// Guarda los parámetros de la sesión en 'data/params.txt' como texto plano.
+/// Guarda los parámetros de la sesión en un archivo de texto.
+///
+/// Escribe input, m, n, l y el tamaño en MB de las matrices A y Z en params.txt
+/// dentro del directorio especificado.
+///
+/// # Argumentos
+/// - `dir`: Directorio donde se guardará el archivo de parámetros.
+/// - `input`: Exponente dado por el usuario (m = 2^input).
+/// - `m`: Número de filas y columnas de A; número de filas de Z.
+/// - `n`: Número de columnas de Z (128).
+/// - `l`: (2*m)/n.
+///
 void guardar_parametros(const char *dir, int input, int m, int n, int l) {
+
     double mb_A = (long long)m * m * sizeof(float) / (1024.0 * 1024.0);
     double mb_Z = (long long)m * n * sizeof(float) / (1024.0 * 1024.0);
-
-    // Crea el directorio antes de intentar abrir el archivo dentro de él.
-    // _mkdir() falla si ya existe, pero eso no es un error — se ignora.
-    _mkdir(dir);
 
     char ruta[256];
     snprintf(ruta, sizeof(ruta), "%s/params.txt", dir);
 
-    FILE *f = fopen(ruta, "w");
-    if (!f) { fprintf(stderr, "Error: no se pudo abrir %s\n", ruta); return; }
+    // Aunque la extensión es .txt, se abre en modo binario para consistencia
+    // con el resto del módulo y evitar conversiones de salto de línea en Windows.
+    FILE *f = fopen(ruta, "wb");
+    if (!f) {
+        fprintf(stderr, "Error: no se pudo crear %s\n", ruta);
+        return;
+    }
 
     fprintf(f,
         "input %d\nm %d\nn %d\nl %d\n"
@@ -89,8 +124,19 @@ void guardar_parametros(const char *dir, int input, int m, int n, int l) {
     printf("Params guardados en %s\n", ruta);
 }
 
-// Organiza la generación de ambas matrices.
-void generar_matrices(const char *dir, int m, int n) {
+/// Orquesta la generación de A, Z y el archivo de parámetros.
+///
+/// Llama a gen_A_bin(), gen_Z_bin() y guardar_parametros() en ese orden,
+/// construyendo las rutas de salida a partir del directorio base.
+///
+/// # Argumentos
+/// - `dir`: Directorio de salida para todos los archivos generados.
+/// - `input`: Exponente dado por el usuario (m = 2^input).
+/// - `m`: Tamaño de A [m x m] y número de filas de Z.
+/// - `n`: Número de columnas de Z (128).
+/// - `l`: (2*m)/n.
+///
+void generar_matrices(const char *dir, int input, int m, int n, int l) {
 
     char ruta[256];
 
@@ -101,4 +147,6 @@ void generar_matrices(const char *dir, int m, int n) {
     printf("Generando Z [%d x %d]...\n", m, n);
     snprintf(ruta, sizeof(ruta), "%s/Z.bin", dir);
     gen_Z_bin(ruta, m, n);
+
+    guardar_parametros(dir, input, m, n, l);
 }

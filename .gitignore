@@ -16,6 +16,7 @@ a.out
 # Directorios de ejecución
 cpu_*/
 run_*/
+gpu_*/
 
 # Archivos de depuración
 *.dSYM/

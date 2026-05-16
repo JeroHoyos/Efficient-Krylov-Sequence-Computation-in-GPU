@@ -1,3 +1,17 @@
+//! gen_main.c - Lectura de argumentos, generación de matrices A y Z, y guardado de parámetros.
+//!
+//! Este programa toma el argumento EXP y cálcula m = 2^EXP, n = 128, l = (2*m)/n.
+//! Luego genera la matriz A de tamaño [m x m] y la matriz Z de tamaño [m x n], ambas con valores aleatorios entre 0 y 1. 
+//! Finalmente, guarda las matrices en formato binario y los parámetros en un archivo de texto dentro del directorio "data".
+//!
+//! Cómo funciona
+//!
+//! 1. Revisa si es válido el argumento EXP y calcula m, n, l.
+//! 2. Cálcula el tamaño aproximado de la matriz A y solicita confirmación para continuar.
+//! 3. Genera la matriz A y la matriz Z, guardándolas en formato binario.
+//! 4. Guarda los parámetros en un archivo de texto y muestra un mensaje de éxito al finalizar.
+//!
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -11,9 +25,8 @@ int main(int argc, char *argv[]) {
         return 1;
     }
 
+    // atoi() devuelve 0 para "0" y para cadenas no numéricas.
     int input = atoi(argv[1]);
-
-    // atoi() devuelve 0 para "0" y para cadenas no numéricas — rechaza ambos.
     if (input <= 0) {
         fprintf(stderr, "Error: EXP debe ser un entero positivo\n");
         return 1;
@@ -32,7 +45,6 @@ int main(int argc, char *argv[]) {
 
     printf("\nSe generará A [%d x %d]\n", m, m);
 
-    // Muestra la unidad más grande cuyo valor sea >= 1.0.
     if (tb_A >= 1.0) {
         printf("Tamaño aproximado: %.2f TB\n", tb_A);
     }
@@ -55,13 +67,11 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // _mkdir() falla si el directorio ya existe, pero no es un error — se ignora.
+    // _mkdir() falla si el directorio ya existe, se ignora el error.
     const char *dir = "data";
     _mkdir(dir);
 
-    
-    guardar_parametros(dir, input, m, n, l);
-    generar_matrices(dir, m, n);
+    generar_matrices(dir, input, m, n, l);
 
     printf("\nMatrices generadas correctamente en '%s/'\n", dir);
     return 0;
