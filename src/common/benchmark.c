@@ -6,7 +6,7 @@
 #include "metricas.h"
 #include "parametros.h"
 #if defined(USE_CUDA)
-    #include "block_mul_gpu.h"
+    #include "matmul_gpu.h"
 #else
     #include "matmul_cpu.h"
 #endif
@@ -52,7 +52,6 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
 // Itera p.l multiplicaciones en GPU. El swap de buffers ocurre dentro
 // de gpu_multiplicar(); aquí solo se mide el tiempo y se baja el snapshot.
 void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas *met) {
-
 
     // Flops, bytes leídos y bytes escritos teóricos de una multiplicación A×Z.
     long long flops       = 2LL * p.m * p.m * p.n;
