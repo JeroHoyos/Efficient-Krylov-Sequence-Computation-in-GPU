@@ -36,7 +36,6 @@ COMMON_SRCS = $(SRC_COM)/parametros.c \
               $(SRC_COM)/metricas.c    \
               $(SRC_COM)/perfil.c
 
-# main.c y benchmark.c se compilan distinto según CPU/GPU (ver abajo).
 BENCH_SHARED = $(SRC_COM)/main.c      \
                $(SRC_COM)/benchmark.c \
                $(COMMON_SRCS)
@@ -47,8 +46,6 @@ GEN_SRCS = $(SRC_COM)/gen_main.c \
 GEN_BIN   = $(BINDIR)/gen_matrices$(EXE_EXT)
 BENCH_BIN = $(BINDIR)/bench$(EXE_EXT)
 
-# EXP controla el tamaño de la matriz (m = 2^EXP).
-# DATA es el directorio donde gen_matrices escribe los .bin.
 EXP  ?= 8
 DATA ?= data
 
@@ -56,10 +53,8 @@ DATA ?= data
 #  Selección CPU / GPU
 # ============================================================
 ifdef GPU
-  # nvcc compila en un solo paso todos los .c y .cu juntos;
-  # no hace falta separar objetos intermedios.
   BENCH_BIN := $(BINDIR)/bench_gpu$(EXE_EXT)
-  MUL_SRC    = $(SRC_GPU)/block_mul_gpu.cu
+  MUL_SRC    = $(SRC_GPU)/matmul_gpu.cu
 
   $(BENCH_BIN): $(BENCH_SHARED) $(MUL_SRC) | $(BINDIR)
 	$(NVCC) $(NVFLAGS) $(IFLAGS_GPU) -DUSE_CUDA \
@@ -67,7 +62,7 @@ ifdef GPU
 	@echo "[OK] Benchmark GPU compilado -> $@"
 
 else
-  MUL_SRC = $(SRC_CPU)/block_mul_cpu.c
+  MUL_SRC = $(SRC_CPU)/matmul_cpu.c
 
   $(BENCH_BIN): $(BENCH_SHARED) $(MUL_SRC) | $(BINDIR)
 	$(CC) $(CFLAGS) $(IFLAGS_CPU) \
@@ -82,8 +77,6 @@ endif
 
 all: $(BENCH_BIN) $(GEN_BIN)
 
-# '| $(BINDIR)' es una dependencia de orden: crea el directorio
-# si no existe, pero no re-linka si su timestamp cambia.
 $(BINDIR):
 	$(MKDIR)
 

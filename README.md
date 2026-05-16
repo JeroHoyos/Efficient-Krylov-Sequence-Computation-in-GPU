@@ -4,7 +4,7 @@
 
 ![C](https://img.shields.io/badge/C-00599C?style=flat&logo=c&logoColor=white)
 ![CUDA](https://img.shields.io/badge/CUDA-76B900?style=flat&logo=nvidia&logoColor=white)
-![Estado](https://img.shields.io/badge/estado-en%20progreso-yellow)
+![Plataforma](https://img.shields.io/badge/plataforma-Windows-blue)
 
 ---
 
