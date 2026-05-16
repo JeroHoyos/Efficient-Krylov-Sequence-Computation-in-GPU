@@ -32,6 +32,6 @@ void   metricas_guardar_csv(const Metricas *m, const char *outdir,
 void   metricas_free(Metricas *m);
 
 /* Helpers de tiempo portables */
-double tiempo_ms_ahora(void);   /* devuelve ms de un reloj monotonico */
+double tiempo_actual_ms(void);   /* devuelve ms de un reloj monotonico */
 
 #endif

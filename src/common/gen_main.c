@@ -11,7 +11,6 @@
 //! 3. Genera la matriz A y la matriz Z, guardándolas en formato binario.
 //! 4. Guarda los parámetros en un archivo de texto y muestra un mensaje de éxito al finalizar.
 //!
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

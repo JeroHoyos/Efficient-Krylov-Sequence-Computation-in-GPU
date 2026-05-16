@@ -3,7 +3,6 @@
 //! Este módulo contiene funciones para imprimir los parámetros de entrada, leerlos desde un archivo de texto y 
 //! crear un directorio de salida basado en el input y la fecha/hora actual.
 //!
-
 #include <stdio.h>
 #include <time.h>
 #include <direct.h>

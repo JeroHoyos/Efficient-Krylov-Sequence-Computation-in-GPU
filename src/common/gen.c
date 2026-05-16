@@ -1,9 +1,8 @@
-//! gen.c - Generación de los binarios de las matrices A y Z, y guardar los parámetros en un archivo de texto.
+//! gen.c - Funciones para generar los binarios de las matrices A y Z, y guardar los parámetros en un archivo de texto.
 //!
 //! Este módulo contiene las funciones para generar la matriz A, Z y guardar los parámetros de la sesión.
 //! La función main() se encuentra en gen_main.c, que organiza el flujo general del programa.
 //!
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <direct.h>
@@ -91,10 +90,7 @@ void gen_Z_bin(const char *ruta, int m, int n) {
 ///
 /// # Argumentos
 /// - `dir`: Directorio donde se guardará el archivo de parámetros.
-/// - `input`: Exponente dado por el usuario (m = 2^input).
-/// - `m`: Número de filas y columnas de A; número de filas de Z.
-/// - `n`: Número de columnas de Z (128).
-/// - `l`: (2*m)/n.
+/// - `input`, `m`, `n`, `l`: Parámetros de la sesión.
 ///
 void guardar_parametros(const char *dir, int input, int m, int n, int l) {
 
@@ -131,10 +127,7 @@ void guardar_parametros(const char *dir, int input, int m, int n, int l) {
 ///
 /// # Argumentos
 /// - `dir`: Directorio de salida para todos los archivos generados.
-/// - `input`: Exponente dado por el usuario (m = 2^input).
-/// - `m`: Tamaño de A [m x m] y número de filas de Z.
-/// - `n`: Número de columnas de Z (128).
-/// - `l`: (2*m)/n.
+/// - `input`, `m`, `n`, `l`: Parámetros de la sesión.
 ///
 void generar_matrices(const char *dir, int input, int m, int n, int l) {
 

@@ -9,7 +9,6 @@
 //! 2. Crea un directorio de salida con un nombre basado en el input y la fecha/hora actual, y guarda su nombre en ".last_outdir".
 //! 3. Llama a benchmark() pasando los parámetros leídos, el directorio de matrices y el directorio de salida.
 //!
-
 #include <stdio.h>
 #include <stdlib.h>
 #include "parametros.h"

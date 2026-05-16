@@ -1,4 +1,4 @@
-## Características de las Máquinas Usadas
+## Características del Hardware usado
 
 | Componente | Máquina A | Máquina B |
 | :--- | :--- | :--- |

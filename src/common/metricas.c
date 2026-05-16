@@ -1,16 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <windows.h>
 #include "metricas.h"
 
-#if defined(_WIN32)
-  #include <windows.h>
-#else
-  #include <time.h>
-#endif
 
 // Temporizador monotonico de pared: mide tiempo real transcurrido.
-double tiempo_ms_ahora(void) {
-#if defined(_WIN32)
+double tiempo_actual_ms(void) {
     static LARGE_INTEGER freq;
     static int initialized = 0;
     LARGE_INTEGER now;
@@ -22,11 +17,6 @@ double tiempo_ms_ahora(void) {
 
     QueryPerformanceCounter(&now);
     return (double)now.QuadPart * 1000.0 / (double)freq.QuadPart;
-#else
-    struct timespec now;
-    clock_gettime(CLOCK_MONOTONIC, &now);
-    return (double)now.tv_sec * 1000.0 + (double)now.tv_nsec / 1000000.0;
-#endif
 }
 
 void metricas_init(Metricas *m, int capacidad) {
