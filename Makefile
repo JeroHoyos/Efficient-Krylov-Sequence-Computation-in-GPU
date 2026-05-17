@@ -15,7 +15,14 @@ CC      = gcc
 NVCC    = nvcc
 CFLAGS  = -O2 -Wall -Wextra
 NVARCH  ?= sm_89              # RTX 40xx; se puede cambiar con NVARCH=sm_XX
-NVFLAGS = -O2 -arch=$(NVARCH)
+# Optimizaciones de nvcc deshabilitadas a propósito en GPU para medir el
+# rendimiento de la implementación tal cual está escrita.
+#   -O0               : sin optimizaciones de nvcc a nivel device.
+#   -Xptxas -O0       : sin optimizaciones del ensamblador PTX (refuerza -O0).
+#   -Xcompiler /Od    : pasa /Od a cl.exe para que el código host (.c
+#                       enlazados por nvcc) tampoco se optimice.
+# CFLAGS (gcc, build CPU) queda con -O2 como estaba.
+NVFLAGS = -O0 -Xptxas -O0 -Xcompiler /Od -arch=$(NVARCH)
 LIBS    = -lm
 
 EXE_EXT := .exe
