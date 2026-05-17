@@ -11,6 +11,13 @@
     #include "matmul_cpu.h"
 #endif
 
+// Imprime la línea por iteración con la misma información que se persiste en el CSV:
+// índice, tiempo en ms, GFLOPs y GB/s estimado.
+static void imprimir_metrica_iter(int iter, const Muestra *s) {
+    printf("  iter %4d  %8.3f ms  %8.3f GFLOPs  %8.3f GB/s\n",
+           iter, s->tiempo_ms, s->gflops, s->gbps_estimado);
+}
+
 #if !defined(USE_CUDA) // Usar CPU
 
 void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, Metricas *met) {
@@ -41,7 +48,7 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
         Z_cur = Z_nxt;
         Z_nxt = tmp;
 
-        printf("  iter %4d  %7.2f ms\n", iter, dt);
+        imprimir_metrica_iter(iter, &met->muestras[met->n - 1]);
     }
 
     liberar_matriz(Z_alt, p.m);
@@ -68,7 +75,7 @@ void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas 
         gpu_copiar_snapshot(ctx, snap);
         guardar_snapshot(snap, p.n, i, outdir);
 
-        printf("  iter %4d  %7.2f ms\n", i, dt);
+        imprimir_metrica_iter(i, &met->muestras[met->n - 1]);
     }
 
     liberar_matriz(snap, p.n);
@@ -98,11 +105,24 @@ void benchmark(Parametros p, const char *matrices_dir, const char *outdir) {
             liberar_matriz(Z, p.m);
             return;
         }
-        // Libera host RAM antes del bucle — las matrices ya viven en VRAM.
-        liberar_matriz(A, p.m);
+
+        // Z ya está en VRAM, se puede liberar siempre tras init.
         liberar_matriz(Z, p.m);
+
+        // En modo FULL A ya está en VRAM y se puede liberar la copia pageable.
+        // En modo SLAB ctx mantiene una referencia a A, hay que liberarla
+        // después de gpu_ctx_free().
+        GpuExecMode mode = ctx.mode;
+        if (mode == GPU_EXEC_FULL) {
+            liberar_matriz(A, p.m);
+        }
+
         ejecutar_bucle_gpu(&ctx, p, outdir, &met);
         gpu_ctx_free(&ctx);
+
+        if (mode == GPU_EXEC_SLAB) {
+            liberar_matriz(A, p.m);
+        }
     #else
         ejecutar_bucle_cpu(A, Z, p, outdir, &met);
         liberar_matriz(A, p.m);
