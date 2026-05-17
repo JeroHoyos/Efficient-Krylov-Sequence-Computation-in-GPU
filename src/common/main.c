@@ -16,6 +16,16 @@
 
 int main(void) {
 
+    // Solo build GPU: stdout sin buffer para poder monitorear cada iteración
+    // en tiempo real cuando la salida se redirige a archivo o pipe. Se usa
+    // _IONBF en vez de _IOLBF porque la CRT de MSVC (con la que se enlaza
+    // bench_gpu.exe via nvcc/cl.exe) trata _IOLBF como buffer completo y,
+    // con size=0, corrompe el FILE de stdout — provocando un crash al exit.
+    // El build CPU no se modifica.
+#if defined(USE_CUDA)
+    setvbuf(stdout, NULL, _IONBF, 0);
+#endif
+
     const char *matrices_dir = "data";
     Parametros p;
 
