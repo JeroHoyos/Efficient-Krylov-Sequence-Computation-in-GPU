@@ -7,9 +7,11 @@
 //!   - Modo FULL: A, Z_cur y Z_nxt residen por completo en VRAM. Cada iteración
 //!                lanza un único kernel con tiles en memoria compartida (32×32).
 //!
-//!   - Modo SLAB: cuando A no cabe en VRAM se almacena en memoria host pinned y
+//!   - Modo SLAB: cuando A no cabe en VRAM se mantiene en RAM pageable del host y
 //!                se procesa en slabs horizontales con doble buffer y dos streams
-//!                CUDA, solapando transferencias PCIe con cómputo en la GPU.
+//!                CUDA. Cada slab se copia primero a un buffer pinned de staging
+//!                (mucho menor que A) y de ahí se hace H2D async hacia VRAM,
+//!                solapando transferencias PCIe con cómputo en la GPU.
 //!
 //! Cómo funciona:
 //!
@@ -24,11 +26,18 @@
 #include <string.h>
 
 #include "matmul_gpu.h"
+#include "metricas.h"
 
 #define BLOCK_SIZE  32
 #define TILE_SIZE   32
 #define VRAM_SAFETY_NUM 85
 #define VRAM_SAFETY_DEN 100
+
+// Tamaño máximo (bytes) de cada buffer pinned de staging de slabs.
+// Limita la cantidad de RAM pinned reservada en modo SLAB para evitar
+// fallos cuando A excede la RAM pinneable disponible en el sistema.
+// Total pinned para staging ~= 2 × SLAB_STAGE_MAX_BYTES.
+#define SLAB_STAGE_MAX_BYTES ((size_t)256 * 1024 * 1024)
 
 /// Kernel tiled de multiplicación de matrices: d_A_slab × d_Z_in → d_Z_out.
 ///
@@ -187,24 +196,26 @@ static int copy_matrix_to_device(float *dst, float **src, int rows, int cols)
     return 0;
 }
 
-/// Copia una matriz 2D (arreglo de punteros) fila por fila al buffer lineal dst en memoria pinned.
+/// Copia un slab de filas (en RAM pageable como arreglo de punteros) a un
+/// buffer lineal pinned listo para enviarse al device por DMA.
+///
+/// Se ejecuta en el CPU; corre solapado con el cómputo del slab anterior en GPU
+/// gracias al doble buffer staging[2] alimentado por dos streams CUDA distintos.
 ///
 /// Argumentos:
-/// - dst:  buffer destino contiguo en host pinned con capacidad rows×cols floats.
-/// - src:  matriz 2D en host; src[i] apunta a la fila i con cols floats.
-/// - rows: número de filas a copiar.
-/// - cols: número de columnas por fila.
+/// - stage:      buffer destino pinned contiguo de tamaño >= rows×cols floats.
+/// - A_2d:       matriz 2D pageable; A_2d[i] apunta a la fila i con cols floats.
+/// - row_offset: índice global de la primera fila a copiar.
+/// - rows:       número de filas a copiar.
+/// - cols:       número de columnas por fila.
 ///
-static int copy_matrix_to_pinned(float *dst, float **src, int rows, int cols)
+static void fill_stage_from_pageable(float *stage, float **A_2d,
+                                     int row_offset, int rows, int cols)
 {
     for (int i = 0; i < rows; i++) {
-        if (!src[i]) {
-            fprintf(stderr, "Fila host nula copiando matriz pinned\n");
-            return -1;
-        }
-        memcpy(dst + (size_t)i * cols, src[i], (size_t)cols * sizeof(float));
+        memcpy(stage + (size_t)i * cols, A_2d[row_offset + i],
+               (size_t)cols * sizeof(float));
     }
-    return 0;
 }
 
 /// Inicializa el contexto GPU en modo FULL: reserva A, Z_cur, Z_nxt y snapshot completos
@@ -248,38 +259,41 @@ static int init_full_mode(GpuCtx *ctx, float **A, float **Z,
     return 0;
 }
 
-/// Inicializa el contexto GPU en modo SLAB: A va a memoria host pinned, Z_cur y Z_nxt a VRAM.
-/// Crea dos buffers de slab de A en VRAM y dos streams CUDA para el pipeline de doble buffer.
+/// Inicializa el contexto GPU en modo SLAB.
+///
+/// Diseño de memoria:
+///   - A se mantiene como matriz 2D en RAM pageable del host; ctx guarda una
+///     referencia no-owning a sus filas en h_A_2d.
+///   - Dos buffers pinned de staging h_A_stage[0..1] (tamaño slab_bytes c/u)
+///     reciben los slabs de A por CPU memcpy antes del H2D DMA hacia VRAM.
+///   - En VRAM viven Z_cur, Z_nxt, snapshot y dos buffers d_A_slab[0..1] que
+///     alternan en el pipeline de doble buffer alimentado por dos streams.
 ///
 /// Argumentos:
 /// - ctx:        contexto GPU a inicializar (campos m y n ya establecidos).
-/// - A:          matriz A [m × m] en host.
-/// - Z:          matriz Z inicial [m × n] en host.
-/// - bytes_A:    tamaño en bytes de A (para alojar en host pinned).
+/// - A:          matriz A [m × m] en host pageable. ctx mantiene referencia.
+/// - Z:          matriz Z inicial [m × n] en host (se copia a VRAM).
 /// - bytes_Z:    tamaño en bytes de Z (VRAM y host pinned de salida).
 /// - bytes_snap: tamaño en bytes del buffer de snapshot [n × n].
-/// - slab_rows:  número máximo de filas de A en cada slab de VRAM.
+/// - slab_rows:  número máximo de filas de A en cada slab.
 ///
 /// Retorna 0 en éxito, -1 en error.
 ///
 static int init_slab_mode(GpuCtx *ctx, float **A, float **Z,
-                          size_t bytes_A, size_t bytes_Z,
-                          size_t bytes_snap, int slab_rows)
+                          size_t bytes_Z, size_t bytes_snap, int slab_rows)
 {
     ctx->mode = GPU_EXEC_SLAB;
     ctx->slab_rows = slab_rows;
+    ctx->h_A_2d = A;
 
     const size_t slab_bytes = (size_t)slab_rows * ctx->m * sizeof(float);
 
-    if (cuda_check(cudaMallocHost((void **)&ctx->h_A_pinned, bytes_A),
-                   "Error reservando A pinned en host") != 0 ||
+    if (cuda_check(cudaMallocHost((void **)&ctx->h_A_stage[0], slab_bytes),
+                   "Error reservando staging A[0] pinned en host") != 0 ||
+        cuda_check(cudaMallocHost((void **)&ctx->h_A_stage[1], slab_bytes),
+                   "Error reservando staging A[1] pinned en host") != 0 ||
         cuda_check(cudaMallocHost((void **)&ctx->h_Z_out_pinned, bytes_Z),
                    "Error reservando Z_out pinned en host") != 0) {
-        gpu_ctx_free(ctx);
-        return -1;
-    }
-
-    if (copy_matrix_to_pinned(ctx->h_A_pinned, A, ctx->m, ctx->m) != 0) {
         gpu_ctx_free(ctx);
         return -1;
     }
@@ -379,24 +393,44 @@ int gpu_ctx_init(GpuCtx *ctx, float **A, float **Z, int m, int n)
     }
 
     const size_t row_bytes = (size_t)m * sizeof(float);
-    const size_t slab_budget = budget - z_required;
-    size_t slab_rows = slab_budget / (2 * row_bytes);
+    const size_t slab_budget_vram = budget - z_required;
+    size_t slab_rows_vram = slab_budget_vram / (2 * row_bytes);
+    size_t slab_rows_pin  = SLAB_STAGE_MAX_BYTES / row_bytes;
 
-    if (slab_rows == 0) {
-        fprintf(stderr, "VRAM insuficiente para un slab doble de A\n");
-        return -1;
-    }
-
+    // El slab se limita por VRAM, por presupuesto de RAM pinned y por m.
+    size_t slab_rows = slab_rows_vram < slab_rows_pin ? slab_rows_vram
+                                                      : slab_rows_pin;
     if (slab_rows > (size_t)m) {
         slab_rows = (size_t)m;
     }
 
-    printf("  Modo GPU: slabs horizontales de A con doble buffer\n");
-    printf("  Slab maximo seguro: %zu filas (%.2f GiB por buffer)\n",
-           slab_rows, bytes_to_gib(slab_rows * row_bytes));
+    // Alinea a múltiplo de TILE_SIZE para que el kernel tiled trabaje en tiles
+    // completos en todos los slabs intermedios.
+    if (slab_rows >= TILE_SIZE) {
+        slab_rows = (slab_rows / TILE_SIZE) * TILE_SIZE;
+    }
 
-    return init_slab_mode(ctx, A, Z, bytes_A, bytes_Z, bytes_snap,
-                          (int)slab_rows);
+    if (slab_rows == 0) {
+        fprintf(stderr,
+                "VRAM o RAM pinned insuficiente para un slab doble de A "
+                "(fila de A = %.2f MiB)\n",
+                (double)row_bytes / (1024.0 * 1024.0));
+        return -1;
+    }
+
+    const size_t slab_bytes      = slab_rows * row_bytes;
+    const size_t pinned_total    = 2 * slab_bytes + bytes_Z;
+    const int    num_slabs       = (int)(((size_t)m + slab_rows - 1) / slab_rows);
+
+    printf("  Modo GPU: slabs horizontales de A con doble buffer + staging pinned\n");
+    printf("  Slab: %zu filas (%.2f MiB por buffer, %d slabs por iter Krylov)\n",
+           slab_rows, (double)slab_bytes / (1024.0 * 1024.0), num_slabs);
+    printf("  RAM pinned reservada (2 staging A + Z_out): %.2f MiB\n",
+           (double)pinned_total / (1024.0 * 1024.0));
+    printf("  RAM pageable de A (referenciada): %.2f GiB\n",
+           bytes_to_gib(bytes_A));
+
+    return init_slab_mode(ctx, A, Z, bytes_Z, bytes_snap, (int)slab_rows);
 }
 
 /// Ejecuta una iteración A×Z en modo FULL: lanza el kernel tiled sobre la matriz A completa
@@ -457,69 +491,42 @@ static double gpu_multiplicar_full(GpuCtx *ctx)
     return (double)ms;
 }
 
-/// Ejecuta una iteración A×Z en modo SLAB mediante un pipeline explícito de doble buffer.
+/// Ejecuta una iteración A×Z en modo SLAB mediante un pipeline explícito de
+/// doble buffer con staging pinned.
 ///
-/// Pipeline:
-///   1. Pre-carga el slab 0 en d_A_slab[0] sobre streams[0].
-///   2. En cada iteración del bucle: lanza el kernel en cur_stream (que espera la
-///      transferencia ya encolada) y simultáneamente prefetcha el siguiente slab en
-///      nxt_stream, solapando el motor DMA con el motor de cómputo de la GPU.
-///   3. Al terminar todos los slabs, vuelca Z_out completo al host pinned.
+/// Pipeline por slab:
+///   1. CPU memcpy de filas pageable de A → buffer pinned h_A_stage[k].
+///   2. cudaMemcpyAsync H2D pinned → d_A_slab[k] sobre stream[k] (DMA).
+///   3. Kernel tiled lanzado sobre stream[k] (espera la copia in-order).
 ///
-/// Retorna el tiempo total (transferencias + cómputo) medido con eventos CUDA en ms.
+/// Se usan dos staging buffers y dos streams para que mientras un slab se está
+/// procesando en GPU (cómputo + transferencia anterior), el siguiente slab se
+/// vaya rellenando en el otro buffer staging y se encole su H2D. La CPU sólo
+/// se bloquea cuando hay que sobrescribir un staging cuyo H2D anterior todavía
+/// no terminó (esto se evita en estado estacionario gracias al doble buffer).
+///
+/// El tiempo se mide con el reloj del host porque el coste de los memcpy CPU
+/// →pinned es parte del wall-clock real de cada iteración Krylov.
+///
+/// Retorna el tiempo total (transferencias + memcpy CPU + cómputo) en ms.
 ///
 static double gpu_multiplicar_slab(GpuCtx *ctx)
 {
-    cudaEvent_t start    = NULL;
-    cudaEvent_t stop     = NULL;
-    cudaEvent_t done[2]  = {NULL, NULL};
-    cudaStream_t timing_stream = NULL;
-    float ms = 0.0f;
+    const double t0 = tiempo_actual_ms();
 
-    if (cuda_check(cudaStreamCreateWithFlags(&timing_stream,
-                                             cudaStreamNonBlocking),
-                   "Error creando stream de timing") != 0 ||
-        cuda_check(cudaEventCreate(&start),    "Error creando evento start")    != 0 ||
-        cuda_check(cudaEventCreate(&stop),     "Error creando evento stop")     != 0 ||
-        cuda_check(cudaEventCreate(&done[0]),  "Error creando evento done[0]")  != 0 ||
-        cuda_check(cudaEventCreate(&done[1]),  "Error creando evento done[1]")  != 0) {
-        cudaStreamDestroy(timing_stream);
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
-        cudaEventDestroy(done[0]);
-        cudaEventDestroy(done[1]);
+    // Pre-rellena staging[0] con el primer slab y encola su H2D en stream[0].
+    // El kernel del slab 0 (también en stream[0]) esperará por in-order.
+    int first_rows = ctx->slab_rows < ctx->m ? ctx->slab_rows : ctx->m;
+    const size_t first_bytes = (size_t)first_rows * ctx->m * sizeof(float);
+
+    fill_stage_from_pageable(ctx->h_A_stage[0], ctx->h_A_2d,
+                             0, first_rows, ctx->m);
+
+    if (cuda_check(cudaMemcpyAsync(ctx->d_A_slab[0], ctx->h_A_stage[0],
+                                   first_bytes, cudaMemcpyHostToDevice,
+                                   ctx->streams[0]),
+                   "Error precargando slab 0") != 0) {
         exit(EXIT_FAILURE);
-    }
-
-    // Registra el inicio en el stream de timing; los dos streams de cómputo esperan antes de trabajar.
-    if (cuda_check(cudaEventRecord(start, timing_stream),
-                   "Error iniciando timing CUDA") != 0) {
-        cudaStreamDestroy(timing_stream);
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
-        cudaEventDestroy(done[0]);
-        cudaEventDestroy(done[1]);
-        exit(EXIT_FAILURE);
-    }
-    for (int i = 0; i < 2; i++) {
-        if (cuda_check(cudaStreamWaitEvent(ctx->streams[i], start, 0),
-                       "Error sincronizando stream con start") != 0) {
-            exit(EXIT_FAILURE);
-        }
-    }
-
-    // Pre-carga el slab 0 en buf[0] sobre streams[0].
-    // El kernel del slab 0 (también en streams[0]) esperará automáticamente
-    // esta transferencia gracias a la semántica in-order del stream.
-    {
-        int first_rows = ctx->slab_rows < ctx->m ? ctx->slab_rows : ctx->m;
-        const size_t first_bytes = (size_t)first_rows * ctx->m * sizeof(float);
-        if (cuda_check(cudaMemcpyAsync(ctx->d_A_slab[0], ctx->h_A_pinned,
-                                       first_bytes, cudaMemcpyHostToDevice,
-                                       ctx->streams[0]),
-                       "Error precargando slab 0") != 0) {
-            exit(EXIT_FAILURE);
-        }
     }
 
     dim3 block(TILE_SIZE, TILE_SIZE, 1);
@@ -537,10 +544,9 @@ static double gpu_multiplicar_slab(GpuCtx *ctx)
         if (row_offset + rows_this_slab > ctx->m)
             rows_this_slab = ctx->m - row_offset;
 
-        // CÓMPUTO: lanza el kernel del slab N en cur_stream.
-        // La transferencia del slab N a d_A_slab[cur_buf] fue encolada en cur_stream
-        // (ya sea como pre-carga inicial o como prefetch de la iteración anterior),
-        // por lo que el kernel espera automáticamente vía semántica in-order del stream.
+        // CÓMPUTO: kernel del slab actual sobre cur_stream. La H2D del slab ya
+        // fue encolada (pre-carga inicial o prefetch previo); in-order garantiza
+        // que el kernel arranque después de que d_A_slab[cur_buf] esté listo.
         dim3 grid((ctx->n + TILE_SIZE - 1) / TILE_SIZE,
                   (rows_this_slab + TILE_SIZE - 1) / TILE_SIZE, 1);
 
@@ -553,11 +559,15 @@ static double gpu_multiplicar_slab(GpuCtx *ctx)
             exit(EXIT_FAILURE);
         }
 
-        // PREFETCH: transfiere el slab N+1 a d_A_slab[nxt_buf] en nxt_stream.
-        // Se ejecuta de forma concurrente con el kernel anterior (streams distintos):
-        // el motor DMA (copia H2D) solapa con el motor de cómputo (kernel).
-        // nxt_stream serializa esta copia detrás de cualquier kernel previo que usó
-        // nxt_buf, evitando sobrescribir el buffer antes de que ese cómputo termine.
+        // PREFETCH del siguiente slab:
+        //   - Espera a que termine la H2D previa fuera de h_A_stage[nxt_buf]
+        //     (encolada en nxt_stream): así la CPU puede sobrescribir el
+        //     staging sin riesgo. En estado estacionario esa H2D ya terminó.
+        //   - CPU memcpy pageable → h_A_stage[nxt_buf]. Corre en paralelo con
+        //     el kernel del slab actual (que está en cur_stream).
+        //   - cudaMemcpyAsync H2D staging → d_A_slab[nxt_buf] sobre nxt_stream;
+        //     in-order asegura que el kernel previo del nxt_stream (si lo hay)
+        //     termine antes de tocar d_A_slab[nxt_buf].
         const int nxt_row_offset = row_offset + ctx->slab_rows;
         if (nxt_row_offset < ctx->m) {
             int nxt_rows = ctx->slab_rows;
@@ -565,56 +575,48 @@ static double gpu_multiplicar_slab(GpuCtx *ctx)
                 nxt_rows = ctx->m - nxt_row_offset;
             const size_t nxt_bytes = (size_t)nxt_rows * ctx->m * sizeof(float);
 
-            if (cuda_check(cudaMemcpyAsync(
-                    ctx->d_A_slab[nxt_buf],
-                    ctx->h_A_pinned + (size_t)nxt_row_offset * ctx->m,
-                    nxt_bytes, cudaMemcpyHostToDevice, nxt_stream),
-                   "Error prefetching slab") != 0) {
+            if (cuda_check(cudaStreamSynchronize(nxt_stream),
+                           "Error sincronizando nxt_stream para reusar staging") != 0) {
+                exit(EXIT_FAILURE);
+            }
+
+            fill_stage_from_pageable(ctx->h_A_stage[nxt_buf], ctx->h_A_2d,
+                                     nxt_row_offset, nxt_rows, ctx->m);
+
+            if (cuda_check(cudaMemcpyAsync(ctx->d_A_slab[nxt_buf],
+                                           ctx->h_A_stage[nxt_buf],
+                                           nxt_bytes,
+                                           cudaMemcpyHostToDevice, nxt_stream),
+                           "Error prefetching slab") != 0) {
                 exit(EXIT_FAILURE);
             }
         }
     }
 
-    // Fusiona ambos streams de cómputo en el stream de timing antes de la copia D2H.
+    // Espera todo el cómputo del último slab antes de tocar Z_nxt.
     for (int i = 0; i < 2; i++) {
-        if (cuda_check(cudaEventRecord(done[i], ctx->streams[i]),
-                       "Error marcando fin de stream") != 0 ||
-            cuda_check(cudaStreamWaitEvent(timing_stream, done[i], 0),
-                       "Error esperando fin de stream") != 0) {
+        if (cuda_check(cudaStreamSynchronize(ctx->streams[i]),
+                       "Error sincronizando streams al cierre del slab") != 0) {
             exit(EXIT_FAILURE);
         }
     }
 
-    // Copia Z_out completo al host pinned una vez que todos los slabs terminaron.
+    // Sólo se necesita el bloque n×n del comienzo de Z_nxt para el snapshot;
+    // copiarlo (y no los m×n completos) ahorra ~m/n veces de ancho de banda PCIe.
+    const size_t snap_bytes = (size_t)ctx->n * ctx->n * sizeof(float);
     if (ctx->h_Z_out_pinned) {
-        if (cuda_check(cudaMemcpyAsync(ctx->h_Z_out_pinned, ctx->d_Z_nxt,
-                                       ctx->bytes_Z, cudaMemcpyDeviceToHost,
-                                       timing_stream),
-                       "Error copiando Z_out completo a host") != 0) {
+        if (cuda_check(cudaMemcpy(ctx->h_Z_out_pinned, ctx->d_Z_nxt,
+                                  snap_bytes, cudaMemcpyDeviceToHost),
+                       "Error copiando snapshot a host pinned") != 0) {
             exit(EXIT_FAILURE);
         }
     }
-
-    if (cuda_check(cudaEventRecord(stop, timing_stream),
-                   "Error deteniendo timing CUDA") != 0 ||
-        cuda_check(cudaEventSynchronize(stop),
-                   "Error sincronizando ejecucion por slabs") != 0 ||
-        cuda_check(cudaEventElapsedTime(&ms, start, stop),
-                   "Error midiendo tiempo por slabs") != 0) {
-        exit(EXIT_FAILURE);
-    }
-
-    cudaStreamDestroy(timing_stream);
-    cudaEventDestroy(start);
-    cudaEventDestroy(stop);
-    cudaEventDestroy(done[0]);
-    cudaEventDestroy(done[1]);
 
     float *tmp   = ctx->d_Z_cur;
     ctx->d_Z_cur = ctx->d_Z_nxt;
     ctx->d_Z_nxt = tmp;
 
-    return (double)ms;
+    return tiempo_actual_ms() - t0;
 }
 
 /// Despacha la multiplicación A×Z al modo correcto (FULL o SLAB) según ctx->mode.
@@ -697,8 +699,11 @@ void gpu_ctx_free(GpuCtx *ctx)
     cudaFree(ctx->d_A_slab[0]);
     cudaFree(ctx->d_A_slab[1]);
 
-    cudaFreeHost(ctx->h_A_pinned);
+    cudaFreeHost(ctx->h_A_stage[0]);
+    cudaFreeHost(ctx->h_A_stage[1]);
     cudaFreeHost(ctx->h_Z_out_pinned);
+
+    // h_A_2d es una referencia no-owning; el caller libera A despues de gpu_ctx_free.
 
     memset(ctx, 0, sizeof(*ctx));
 }
