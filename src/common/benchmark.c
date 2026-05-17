@@ -11,7 +11,7 @@
     #include "matmul_cpu.h"
 #endif
 
-#if !defined(USE_CUDA)
+#if !defined(USE_CUDA) // Usar CPU
 
 void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, Metricas *met) {
 
@@ -47,7 +47,7 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
     liberar_matriz(Z_alt, p.m);
 }
 
-#else  /* USE_CUDA */
+#else // Usar GPU
 
 // Itera p.l multiplicaciones en GPU. El swap de buffers ocurre dentro
 // de gpu_multiplicar(); aquí solo se mide el tiempo y se baja el snapshot.

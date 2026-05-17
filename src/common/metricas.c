@@ -1,12 +1,25 @@
+//! metricas.c - Metricas de rendimiento para el benchmark, incluyendo tiempo, GFLOPs y GB/s estimados.
+//!
+//! Este modulo define las estructuras y funciones para registrar, imprimir y guardar métricas de rendimiento durante el benchmark de multiplicación de matrices.
+//! Las métricas incluyen el tiempo de ejecución en milisegundos, el rendimiento en GFLOPs y una estimación de GB/s basada en los bytes leídos y escritos.
+//! El tiempo se mide usando QueryPerformanceCounter de Windows para alta resolución.
+//!
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
 #include "metricas.h"
 
-
-// Temporizador monotonico de pared: mide tiempo real transcurrido.
+/// Toma el tiempo actual en milisegundos usando QueryPerformanceCounter de Windows.
+/// 
+/// Argumentos:
+///   - Ninguno.
+/// Retorna:
+///   - El tiempo actual en milisegundos como un double.
+///
 double tiempo_actual_ms(void) {
-    static LARGE_INTEGER freq;
+    // ticks por segundo, se consulta una sola vez.
+    static LARGE_INTEGER freq;    
+
     static int initialized = 0;
     LARGE_INTEGER now;
 
@@ -15,60 +28,101 @@ double tiempo_actual_ms(void) {
         initialized = 1;
     }
 
-    QueryPerformanceCounter(&now);
+    // ticks desde que arrancó el sistema.
+    QueryPerformanceCounter(&now); 
     return (double)now.QuadPart * 1000.0 / (double)freq.QuadPart;
 }
 
+/// Inicializa el contenedor de métricas con una capacidad inicial dada.
+/// 
+/// Argumentos:
+///   - m: puntero a la estructura Metricas a inicializar.
+///   - capacidad: número inicial de muestras que puede contener sin realloc.
+///
 void metricas_init(Metricas *m, int capacidad) {
     m->muestras = malloc(capacidad * sizeof(Muestra));
     m->n        = 0;
     m->cap      = capacidad;
 }
 
-// Si el buffer se llena, duplica la capacidad: mismo patron que un vector dinamico.
-void metricas_registrar(Metricas *m, double tiempo_ms, long long flops,
-                        long long bytes_leidos, long long bytes_escritos) {
+/// Registra una nueva muestra de métricas en el contenedor, calculando GFLOPs y GB/s estimados.
+/// 
+/// Si el buffer de muestras se llena, se duplica su capacidad automáticamente.
+///
+/// Argumentos:
+///   - m: puntero a la estructura Metricas donde se registrará la muestra.
+///   - tiempo_ms: duración de la operación en milisegundos.
+///   - flops: número total de operaciones de punto flotante realizadas.
+///   - bytes_leidos: número total de bytes leídos durante la operación.
+///   - bytes_escritos: número total de bytes escritos durante la operación.
+///
+void metricas_registrar(Metricas *m, double tiempo_ms, long long flops, long long bytes_leidos, long long bytes_escritos) {
+
+    // Si el buffer se llena, duplica la capacidad.
     if (m->n >= m->cap) {
-        m->cap     *= 2;
+        m->cap *= 2;
         m->muestras = realloc(m->muestras, m->cap * sizeof(Muestra));
     }
 
-    Muestra *s = &m->muestras[m->n++];
-    s->tiempo_ms = tiempo_ms;
-    s->flops = flops;
-    s->bytes_leidos = bytes_leidos;
+    // Rellena la muestra actual y avanza el contador.
+    Muestra *s        = &m->muestras[m->n++];
+    s->tiempo_ms      = tiempo_ms;
+    s->flops          = flops;
+    s->bytes_leidos   = bytes_leidos;
     s->bytes_escritos = bytes_escritos;
-    s->bytes_totales = bytes_leidos + bytes_escritos;
+    s->bytes_totales  = bytes_leidos + bytes_escritos;
 
-    // Guarda 0.0 si tiempo_ms es 0 para evitar division por cero.
-    s->gflops = (tiempo_ms > 0)
-                ? (double)flops / (tiempo_ms / 1000.0) / 1e9
-                : 0.0;
-    s->gbps_estimado = (tiempo_ms > 0)
-                       ? (double)s->bytes_totales / (tiempo_ms / 1000.0) / 1e9
-                       : 0.0;
+    // Rendimiento teórico — 0.0 si tiempo es 0 para evitar división por cero.
+    double seg = tiempo_ms / 1000.0;
+    if (seg > 0) {
+        s->gflops        = (double)flops             / seg / 1e9;
+        s->gbps_estimado = (double)s->bytes_totales  / seg / 1e9;
+    } else {
+        s->gflops        = 0.0;
+        s->gbps_estimado = 0.0;
+    }
 }
 
+/// Libera la memoria usada por el contenedor de métricas y resetea sus campos.
+///
+/// Argumentos:
+///   - m: puntero a la estructura Metricas a liberar.
+///
 void metricas_free(Metricas *m) {
     free(m->muestras);
     m->muestras = NULL;
     m->n = m->cap = 0;
 }
 
+/// Imprime un resumen de las métricas registradas, incluyendo tiempo promedio, mínimo, máximo, GFLOPs promedio y GB/s estimado promedio.
+///
+/// Argumentos:
+///   - m: puntero a la estructura Metricas que contiene las muestras a imprimir.
+///
 void metricas_imprimir(const Metricas *m) {
-    if (m->n == 0) { printf("  (sin muestras)\n"); return; }
+
+    if (m->n == 0) { 
+        printf("  (sin muestras)\n"); 
+        return; 
+    }
 
     double suma_t = 0, suma_g = 0, suma_b = 0;
     double min_t = m->muestras[0].tiempo_ms;
     double max_t = min_t;
 
     for (int i = 0; i < m->n; i++) {
+
         double t = m->muestras[i].tiempo_ms;
         suma_t += t;
         suma_g += m->muestras[i].gflops;
         suma_b += m->muestras[i].gbps_estimado;
-        if (t < min_t) min_t = t;
-        if (t > max_t) max_t = t;
+
+        if (t < min_t) {
+            min_t = t;
+        }
+        if (t > max_t) {
+            max_t = t;
+        }
     }
 
     printf("\n=== Metricas (%d iter.) ===\n", m->n);
@@ -79,8 +133,17 @@ void metricas_imprimir(const Metricas *m) {
     printf("  GB/s estimado   : %8.3f\n",    suma_b / m->n);
 }
 
-void metricas_guardar_csv(const Metricas *m, const char *outdir,
-                          double benchmark_total_ms) {
+/// Guarda las métricas registradas en un archivo CSV.
+///
+/// Contiene un resumen con promedio, mínimo, máximo y el tiempo total del benchmark.
+///
+/// Argumentos:
+///   - m: puntero a la estructura Metricas que contiene las muestras a guardar.
+///   - outdir: ruta del directorio donde se guardará el archivo CSV.
+///   - benchmark_total_ms: tiempo total del benchmark en milisegundos, que se
+///      
+void metricas_guardar_csv(const Metricas *m, const char *outdir, double benchmark_total_ms) {
+
     char ruta[256];
     snprintf(ruta, sizeof(ruta), "%s/metricas.csv", outdir);
 
@@ -91,6 +154,8 @@ void metricas_guardar_csv(const Metricas *m, const char *outdir,
     }
 
     fprintf(f, "tipo,iter,tiempo_ms,gflops,gbps_estimado\n");
+
+    // Sin muestras, solo guarda el tiempo total.
     if (m->n == 0) {
         fprintf(f, "total,,%.6f,,\n", benchmark_total_ms);
         fclose(f);
@@ -98,6 +163,15 @@ void metricas_guardar_csv(const Metricas *m, const char *outdir,
         return;
     }
 
+    // Escribe una fila por iteración.
+    for (int i = 0; i < m->n; i++) {
+        fprintf(f, "iteracion,%d,%.6f,%.6f,%.6f\n",
+                i, m->muestras[i].tiempo_ms,
+                m->muestras[i].gflops,
+                m->muestras[i].gbps_estimado);
+    }
+
+    // Calcula estadísticas sobre todas las muestras.
     double suma_t = 0.0, suma_g = 0.0, suma_b = 0.0;
     double min_t = m->muestras[0].tiempo_ms;
     double max_t = min_t;
@@ -110,24 +184,21 @@ void metricas_guardar_csv(const Metricas *m, const char *outdir,
         double t = m->muestras[i].tiempo_ms;
         double g = m->muestras[i].gflops;
         double b = m->muestras[i].gbps_estimado;
+
         suma_t += t;
         suma_g += g;
         suma_b += b;
-        if (t < min_t) min_t = t;
-        if (t > max_t) max_t = t;
-        if (g < min_g) min_g = g;
-        if (g > max_g) max_g = g;
-        if (b < min_b) min_b = b;
-        if (b > max_b) max_b = b;
+
+        if (t < min_t) { min_t = t; }
+        if (t > max_t) { max_t = t; }
+        if (g < min_g) { min_g = g; }
+        if (g > max_g) { max_g = g; }
+        if (b < min_b) { min_b = b; }
+        if (b > max_b) { max_b = b; }
     }
 
-    for (int i = 0; i < m->n; i++)
-        fprintf(f, "iteracion,%d,%.6f,%.6f,%.6f\n",
-                i, m->muestras[i].tiempo_ms, m->muestras[i].gflops,
-                m->muestras[i].gbps_estimado);
-
-    fprintf(f, "promedio,,%.6f,%.6f,%.6f\n",
-            suma_t / m->n, suma_g / m->n, suma_b / m->n);
+    // Escribe resumen estadístico al final del CSV.
+    fprintf(f, "promedio,,%.6f,%.6f,%.6f\n", suma_t / m->n, suma_g / m->n, suma_b / m->n);
     fprintf(f, "min,,%.6f,%.6f,%.6f\n", min_t, min_g, min_b);
     fprintf(f, "max,,%.6f,%.6f,%.6f\n", max_t, max_g, max_b);
     fprintf(f, "total,,%.6f,,\n", benchmark_total_ms);
