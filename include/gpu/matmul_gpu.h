@@ -17,15 +17,18 @@ typedef enum {
 
 // Contexto GPU.
 // FULL: A, Z_cur y Z_nxt viven completos en VRAM.
-// SLAB: Z_cur y Z_nxt viven completos en VRAM; A vive en host pinned y
-//       se procesa por slabs horizontales con doble buffer en VRAM.
+// SLAB: Z_cur y Z_nxt viven completos en VRAM; A vive en RAM pageable del host
+//       (referenciada por h_A_2d) y se procesa por slabs horizontales con doble
+//       buffer en VRAM. Cada transferencia H2D pasa primero por un buffer pinned
+//       pequeño de staging (h_A_stage[0]/h_A_stage[1]).
 typedef struct {
     float *d_A;      // A [m x m] en VRAM, solo en modo FULL.
     float *d_Z_cur;  // Z activo [m x n] en VRAM.
     float *d_Z_nxt;  // Z proximo [m x n] en VRAM.
     float *d_snap;   // snapshot [n x n] en VRAM.
 
-    float *h_A_pinned;      // A [m x m] en host pinned, solo modo SLAB.
+    float **h_A_2d;         // Referencia (no-owning) a A [m x m] pageable; solo modo SLAB.
+    float *h_A_stage[2];    // Staging pinned de un slab por buffer; solo modo SLAB.
     float *h_Z_out_pinned;  // Z_out [m x n] en host pinned, solo modo SLAB.
     float *d_A_slab[2];     // Doble buffer de slabs de A en VRAM.
     cudaStream_t streams[2];
@@ -36,7 +39,10 @@ typedef struct {
     size_t bytes_Z;
 } GpuCtx;
 
-// Reserva memoria y copia A y Z desde host.
+// Reserva memoria y copia/referencia A y Z desde host.
+// FULL: copia A a VRAM (el caller puede liberar A inmediatamente).
+// SLAB: ctx guarda una referencia no-owning a A; el caller debe mantener A vivo
+//       hasta despues de gpu_ctx_free() (revisar ctx.mode para decidir).
 // Retorna 0 en exito, -1 en error CUDA.
 int gpu_ctx_init(GpuCtx *ctx, float **A, float **Z, int m, int n);
 

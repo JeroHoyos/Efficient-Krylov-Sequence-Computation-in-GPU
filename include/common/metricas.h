@@ -1,6 +1,10 @@
 #ifndef METRICAS_H
 #define METRICAS_H
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     double    tiempo_ms;
     double    gflops;
@@ -13,8 +17,8 @@ typedef struct {
 
 typedef struct {
     Muestra *muestras;
-    int      n;   
-    int      cap; 
+    int      n;
+    int      cap;
 } Metricas;
 
 void   metricas_init(Metricas *m, int capacidad);
@@ -23,5 +27,9 @@ void   metricas_imprimir(const Metricas *m);
 void   metricas_guardar_csv(const Metricas *m, const char *outdir, double benchmark_total_ms);
 void   metricas_free(Metricas *m);
 double tiempo_actual_ms(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
