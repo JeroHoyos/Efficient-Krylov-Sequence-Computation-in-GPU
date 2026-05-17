@@ -1,6 +1,6 @@
 //! matmul_cpu.c - Multiplicación de matrices en CPU.
 //!
-//! Se utiliza una implementación hola mundo de multiplicación de matrices, sin ninguna optimización.
+//! Se utiliza una implementación "hola mundo" de multiplicación de matrices, sin ninguna optimización.
 //! El objetivo es tener una referencia de rendimiento para comparar con la versión GPU.
 //!
 #include <string.h>
@@ -22,7 +22,7 @@ void matmul_cpu(float **A, int m, int n, float **Zin, float **Zout) {
         memset(Zout[i], 0, n * sizeof(float));
     }
 
-    // El hola mundo de la multiplicación de matrices.
+    // El "hola mundo" de la multiplicación de matrices.
     for (int i = 0; i < m; i++) 
         for (int k_ = 0; k_ < m; k_++)
             for (int j = 0; j < n; j++)

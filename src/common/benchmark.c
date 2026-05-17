@@ -29,9 +29,9 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
 
     for (int iter = 0; iter < p.l; iter++) {
 
-        double t0 = tiempo_ms_ahora();
+        double t0 = tiempo_actual_ms();
         matmul_cpu(A, p.m,p.n, Z_cur, Z_nxt);
-        double dt = tiempo_ms_ahora() - t0;
+        double dt = tiempo_actual_ms() - t0;
 
         metricas_registrar(met, dt, flops, bytes_read, bytes_write);
         guardar_snapshot(Z_nxt, p.n, iter, outdir);
@@ -57,6 +57,7 @@ void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas 
     long long flops       = 2LL * p.m * p.m * p.n;
     long long bytes_read  = 2LL * p.m * p.m * p.n * (long long)sizeof(float);
     long long bytes_write = 1LL * p.m * p.n * (long long)sizeof(float);
+    float **snap = crear_matriz(p.n, p.n);
 
     printf("\n=== Ejecucion GPU (%d iter.) ===\n", p.l);
 
@@ -70,6 +71,7 @@ void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas 
         printf("  iter %4d  %7.2f ms\n", i, dt);
     }
 
+    liberar_matriz(snap, p.n);
 }
 
 #endif /* USE_CUDA */

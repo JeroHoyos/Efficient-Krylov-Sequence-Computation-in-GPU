@@ -1,6 +1,9 @@
 #ifndef MATMUL_CPU_H
 #define MATMUL_CPU_H
 
-void multiplicar_en(float **A,  int m_a, int k,float **Zin, int n,float **Zout);
+/*
+ * Multiplica A [m x m] por Z_in [m x n] y guarda en Z_out [m x n].
+ */
+void matmul_cpu(float **A, int m, int n, float **Zin, float **Zout);
 
 #endif
