@@ -53,7 +53,6 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
 // de gpu_multiplicar(); aquí solo se mide el tiempo y se baja el snapshot.
 void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas *met) {
 
-
     // Flops, bytes leídos y bytes escritos teóricos de una multiplicación A×Z.
     long long flops       = 2LL * p.m * p.m * p.n;
     long long bytes_read  = 2LL * p.m * p.m * p.n * (long long)sizeof(float);
