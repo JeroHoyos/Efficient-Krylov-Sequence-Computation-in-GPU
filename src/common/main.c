@@ -16,6 +16,13 @@
 
 int main(void) {
 
+    // stdout sin buffer: si la salida se redirige a archivo o pipe, cada línea
+    // se escribe inmediatamente en vez de quedarse en un buffer hasta que
+    // termine el programa. Imprescindible para monitorear benchmarks largos.
+    // Se usa _IONBF en lugar de _IOLBF porque la CRT de MSVC trata _IOLBF
+    // como buffer completo y corrompe el FILE si se le pasa size=0.
+    setvbuf(stdout, NULL, _IONBF, 0);
+
     const char *matrices_dir = "data";
     Parametros p;
 
