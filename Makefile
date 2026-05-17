@@ -102,12 +102,11 @@ run: $(BENCH_BIN)
 # Genera y ejecuta el benchmark para cada tamaño EXP=12..16.
 # Pasar GPU=1 para correr en GPU: make bench-all GPU=1
 bench-all: $(BENCH_BIN) $(GEN_BIN)
-	@for exp in 12 13 14 15 16; do \
-		echo ""; \
-		echo "=== Benchmark EXP=$$exp (m=2^$$exp) ==="; \
-		echo s | ./$(GEN_BIN) $$exp; \
-		./$(BENCH_BIN); \
-	done
+	@echo "=== Benchmark EXP=12 (m=2^12) ===" && echo s | ./$(GEN_BIN) 12 && ./$(BENCH_BIN)
+	@echo "=== Benchmark EXP=13 (m=2^13) ===" && echo s | ./$(GEN_BIN) 13 && ./$(BENCH_BIN)
+	@echo "=== Benchmark EXP=14 (m=2^14) ===" && echo s | ./$(GEN_BIN) 14 && ./$(BENCH_BIN)
+	@echo "=== Benchmark EXP=15 (m=2^15) ===" && echo s | ./$(GEN_BIN) 15 && ./$(BENCH_BIN)
+	@echo "=== Benchmark EXP=16 (m=2^16) ===" && echo s | ./$(GEN_BIN) 16 && ./$(BENCH_BIN)
 
 all-run: all run
 
