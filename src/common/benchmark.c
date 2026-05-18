@@ -13,17 +13,12 @@
 
 #if !defined(USE_CUDA) // Usar CPU
 
-void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, Metricas *met) {
+void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, Metricas *met, CostoTeorico costo) {
 
     // Iniciar el doble buffer Z_cur es entrada, Z_nxt es salida, se intercambian cada iteración.
     float **Z_alt = crear_matriz(p.m, p.n);
     float **Z_cur = Z;
     float **Z_nxt = Z_alt;
-
-    // Flops, bytes leídos y bytes escritos teóricos de una multiplicación A×Z.
-    long long flops       = 2LL * p.m * p.m * p.n;
-    long long bytes_read  = 2LL * p.m * p.m * p.n * (long long)sizeof(float);
-    long long bytes_write = 1LL * p.m * p.n * (long long)sizeof(float);
 
     printf("\n=== Ejecucion CPU (%d iter.) ===\n", p.l);
 
@@ -33,8 +28,10 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
         matmul_cpu(A, p.m,p.n, Z_cur, Z_nxt);
         double dt = tiempo_actual_ms() - t0;
 
-        metricas_registrar(met, dt, flops, bytes_read, bytes_write);
+        metricas_registrar(met, dt, costo.flops, costo.bytes_read, costo.bytes_write);
         guardar_snapshot(Z_nxt, p.n, iter, outdir);
+
+        imprimir_metrica_iter(iter, &met->muestras[met->n - 1]);
 
         // Intercambia punteros.
         float **tmp = Z_cur;
@@ -49,21 +46,9 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
 
 #else // Usar GPU
 
-// Imprime la línea por iteración con la misma información que se persiste en el CSV:
-// índice, tiempo en ms, GFLOPs y GB/s estimado. Solo se usa en la rama GPU.
-static void imprimir_metrica_iter(int iter, const Muestra *s) {
-    printf("  iter %4d  %8.3f ms  %8.3f GFLOPs  %8.3f GB/s\n",
-           iter, s->tiempo_ms, s->gflops, s->gbps_estimado);
-}
 
-// Itera p.l multiplicaciones en GPU. El swap de buffers ocurre dentro
-// de gpu_multiplicar(); aquí solo se mide el tiempo y se baja el snapshot.
-void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas *met) {
+void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas *met, CostoTeorico costo) {
 
-    // Flops, bytes leídos y bytes escritos teóricos de una multiplicación A×Z.
-    long long flops       = 2LL * p.m * p.m * p.n;
-    long long bytes_read  = 2LL * p.m * p.m * p.n * (long long)sizeof(float);
-    long long bytes_write = 1LL * p.m * p.n * (long long)sizeof(float);
     float **snap = crear_matriz(p.n, p.n);
 
     printf("\n=== Ejecucion GPU (%d iter.) ===\n", p.l);
@@ -71,7 +56,7 @@ void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas 
     for (int i = 0; i < p.l; i++) {
         double dt = gpu_multiplicar(ctx);
 
-        metricas_registrar(met, dt, flops, bytes_read, bytes_write);
+        metricas_registrar(met, dt, costo.flops, costo.bytes_read, costo.bytes_write);
         gpu_copiar_snapshot(ctx, snap);
         guardar_snapshot(snap, p.n, i, outdir);
 
@@ -95,6 +80,8 @@ void benchmark(Parametros p, const char *matrices_dir, const char *outdir) {
     Metricas met;
     metricas_init(&met, p.l);
 
+    CostoTeorico costo = costo_teorico(p.m, p.n);
+
     double t0 = tiempo_actual_ms();
 
     #if defined(USE_CUDA)
@@ -117,14 +104,14 @@ void benchmark(Parametros p, const char *matrices_dir, const char *outdir) {
             liberar_matriz(A, p.m);
         }
 
-        ejecutar_bucle_gpu(&ctx, p, outdir, &met);
+        ejecutar_bucle_gpu(&ctx, p, outdir, &met, costo);
         gpu_ctx_free(&ctx);
 
         if (mode == GPU_EXEC_SLAB) {
             liberar_matriz(A, p.m);
         }
     #else
-        ejecutar_bucle_cpu(A, Z, p, outdir, &met);
+        ejecutar_bucle_cpu(A, Z, p, outdir, &met, costo);
         liberar_matriz(A, p.m);
         liberar_matriz(Z, p.m);
     #endif

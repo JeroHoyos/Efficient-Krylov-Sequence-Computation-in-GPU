@@ -100,3 +100,16 @@ int crear_outdir(int input, char *outdir, size_t size) {
     printf("Directorio de salida: %s\n", outdir);
     return 0;
 }
+
+/// Calcula el costo teórico de la operación de multiplicación de matrices.
+///
+/// Argumentos:
+/// - `m`,`n`: dimensiones de las matrices involucradas en la operación.
+///
+CostoTeorico costo_teorico(int m, int n) {
+    return (CostoTeorico){
+        .flops       = 2LL * m * m * n,
+        .bytes_read  = 2LL * m * m * n * (long long)sizeof(float),
+        .bytes_write = 1LL * m * n * (long long)sizeof(float),
+    };
+}

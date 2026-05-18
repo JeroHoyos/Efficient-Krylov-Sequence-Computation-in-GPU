@@ -206,3 +206,15 @@ void metricas_guardar_csv(const Metricas *m, const char *outdir, double benchmar
     fclose(f);
     printf("  Metricas CSV: %s\n", ruta);
 }
+
+
+/// Imprime las métricas de una iteración de forma formateada en la consola.
+///
+/// Argumentos:
+///   - iter: número de iteración actual (0-indexed).
+///   - s: puntero a la muestra de métricas de la iteración actual.
+///
+void imprimir_metrica_iter(int iter, const Muestra *s) {
+    printf("  iter %4d  %8.3f ms  %8.3f GFLOPs  %8.3f GB/s\n",
+           iter, s->tiempo_ms, s->gflops, s->gbps_estimado);
+}

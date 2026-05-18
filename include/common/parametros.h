@@ -8,6 +8,14 @@ typedef struct {
     int l; 
 } Parametros;
 
+typedef struct {
+    long long flops;
+    long long bytes_read;
+    long long bytes_write;
+} CostoTeorico;
+
+CostoTeorico costo_teorico(int m, int n);
+
 void print_parametros(Parametros p);
 
 int leer_params(const char *dir, Parametros *p);
