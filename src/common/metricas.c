@@ -206,3 +206,12 @@ void metricas_guardar_csv(const Metricas *m, const char *outdir, double benchmar
     fclose(f);
     printf("  Metricas CSV: %s\n", ruta);
 }
+
+/// Convierte bytes a GiB (gibibytes) para mostrar en mensajes de diagnóstico.
+///
+/// Argumentos:
+/// - bytes: cantidad de bytes a convertir.
+///
+double bytes_to_gib(size_t bytes) {
+    return (double)bytes / (1024.0 * 1024.0 * 1024.0);
+}

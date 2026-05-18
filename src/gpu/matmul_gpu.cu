@@ -1,25 +1,3 @@
-//! matmul_gpu.cu - Multiplicación de matrices en GPU mediante CUDA.
-//!
-//! Implementa la multiplicación iterativa A×Z necesaria para la secuencia de Krylov
-//! A^l × Z usando CUDA. El modo de ejecución se selecciona automáticamente según
-//! la VRAM disponible al inicializar el contexto:
-//!
-//!   - Modo FULL: A, Z_cur y Z_nxt residen por completo en VRAM. Cada iteración
-//!                lanza un único kernel con tiles en memoria compartida (32×32).
-//!
-//!   - Modo SLAB: cuando A no cabe en VRAM se mantiene en RAM pageable del host y
-//!                se procesa en slabs horizontales con doble buffer y dos streams
-//!                CUDA. Cada slab se copia primero a un buffer pinned de staging
-//!                (mucho menor que A) y de ahí se hace H2D async hacia VRAM,
-//!                solapando transferencias PCIe con cómputo en la GPU.
-//!
-//! Cómo funciona:
-//!
-//! 1. gpu_ctx_init() consulta la VRAM libre con cudaMemGetInfo y elige el modo.
-//! 2. gpu_multiplicar() delega al helper interno correspondiente (full o slab).
-//! 3. gpu_copiar_snapshot() descarga las primeras n×n filas de Z_cur al host.
-//! 4. gpu_ctx_free() libera todos los recursos CUDA reservados.
-//!
 #include <cuda_runtime.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,15 +6,9 @@
 #include "matmul_gpu.h"
 #include "metricas.h"
 
+#define PORCENTAJE_VRAM_LIBRE 85
 #define BLOCK_SIZE  32
 #define TILE_SIZE   32
-#define VRAM_SAFETY_NUM 85
-#define VRAM_SAFETY_DEN 100
-
-// Tamaño máximo (bytes) de cada buffer pinned de staging de slabs.
-// Limita la cantidad de RAM pinned reservada en modo SLAB para evitar
-// fallos cuando A excede la RAM pinneable disponible en el sistema.
-// Total pinned para staging ~= 2 × SLAB_STAGE_MAX_BYTES.
 #define SLAB_STAGE_MAX_BYTES ((size_t)256 * 1024 * 1024)
 
 /// Kernel tiled de multiplicación de matrices: d_A_slab × d_Z_in → d_Z_out.
@@ -58,8 +30,7 @@ __global__ void tiled_mat_mul_kernel(const float *__restrict__ d_A_slab,
                                      const float *__restrict__ d_Z_in,
                                      float *__restrict__ d_Z_out,
                                      int row_offset, int slab_rows,
-                                     int cols, int inner)
-{
+                                     int cols, int inner) {
     __shared__ float As[TILE_SIZE][TILE_SIZE];
     __shared__ float Bs[TILE_SIZE][TILE_SIZE];
 
@@ -120,61 +91,6 @@ static int cuda_check(cudaError_t err, const char *msg)
     return 0;
 }
 
-/// Calcula el presupuesto seguro de VRAM aplicando el margen VRAM_SAFETY_NUM/VRAM_SAFETY_DEN
-/// sobre los bytes libres reportados por cudaMemGetInfo.
-///
-/// Argumentos:
-/// - free_bytes: bytes de VRAM libres reportados por cudaMemGetInfo.
-///
-static size_t safe_vram_budget(size_t free_bytes)
-{
-    return (free_bytes / VRAM_SAFETY_DEN) * VRAM_SAFETY_NUM;
-}
-
-/// Convierte bytes a GiB (gibibytes) para mostrar en mensajes de diagnóstico.
-///
-/// Argumentos:
-/// - bytes: cantidad de bytes a convertir.
-///
-static double bytes_to_gib(size_t bytes)
-{
-    return (double)bytes / (1024.0 * 1024.0 * 1024.0);
-}
-
-/// Calcula el tamaño en bytes de una matriz rows×cols de floats con detección de overflow.
-///
-/// Argumentos:
-/// - rows: número de filas de la matriz.
-/// - cols: número de columnas de la matriz.
-/// - out:  puntero donde se escribe el resultado en bytes.
-///
-/// Retorna 0 en éxito, -1 si las dimensiones producen overflow.
-///
-static int matrix_bytes(int rows, int cols, size_t *out)
-{
-    if (rows <= 0 || cols <= 0) {
-        fprintf(stderr, "Dimensiones invalidas: %d x %d\n", rows, cols);
-        return -1;
-    }
-
-    const size_t r = (size_t)rows;
-    const size_t c = (size_t)cols;
-
-    if (r != 0 && c > ((size_t)-1) / r) {
-        fprintf(stderr, "Overflow calculando cantidad de elementos\n");
-        return -1;
-    }
-
-    const size_t elems = r * c;
-    if (elems > ((size_t)-1) / sizeof(float)) {
-        fprintf(stderr, "Overflow calculando bytes de matriz\n");
-        return -1;
-    }
-
-    *out = elems * sizeof(float);
-    return 0;
-}
-
 /// Copia una matriz 2D (arreglo de punteros) fila por fila al buffer lineal dst en VRAM.
 ///
 /// Argumentos:
@@ -223,34 +139,26 @@ static void fill_stage_from_pageable(float *stage, float **A_2d,
 ///
 /// Argumentos:
 /// - ctx:        contexto GPU a inicializar (campos m y n ya establecidos).
-/// - A:          matriz A [m × m] en host.
-/// - Z:          matriz Z inicial [m × n] en host.
-/// - bytes_A:    tamaño en bytes de A.
-/// - bytes_Z:    tamaño en bytes de Z.
-/// - bytes_snap: tamaño en bytes del buffer de snapshot [n × n].
+/// - A, Z, bytes_A, bytes_Z, bytes_snap: matrices A y Z en host y sus tamaños en bytes.
 ///
 /// Retorna 0 en éxito, -1 en error.
 ///
-static int init_full_mode(GpuCtx *ctx, float **A, float **Z,
-                          size_t bytes_A, size_t bytes_Z,
-                          size_t bytes_snap)
+int init_full_mode(GpuCtx *ctx, float **A, float **Z,size_t bytes_A, size_t bytes_Z, size_t bytes_snap)
 {
     ctx->mode = GPU_EXEC_FULL;
     ctx->slab_rows = ctx->m;
 
-    if (cuda_check(cudaMalloc((void **)&ctx->d_A, bytes_A),
-                   "Error reservando A en GPU") != 0 ||
-        cuda_check(cudaMalloc((void **)&ctx->d_Z_cur, bytes_Z),
-                   "Error reservando Z_cur en GPU") != 0 ||
-        cuda_check(cudaMalloc((void **)&ctx->d_Z_nxt, bytes_Z),
-                   "Error reservando Z_nxt en GPU") != 0 ||
-        cuda_check(cudaMalloc((void **)&ctx->d_snap, bytes_snap),
-                   "Error reservando snapshot en GPU") != 0) {
+    // Reserva los buffers en VRAM.
+    if (cuda_check(cudaMalloc((void **)&ctx->d_A,     bytes_A),    "Error reservando A en GPU")        != 0 ||
+        cuda_check(cudaMalloc((void **)&ctx->d_Z_cur, bytes_Z),    "Error reservando Z_cur en GPU")    != 0 ||
+        cuda_check(cudaMalloc((void **)&ctx->d_Z_nxt, bytes_Z),    "Error reservando Z_nxt en GPU")    != 0 ||
+        cuda_check(cudaMalloc((void **)&ctx->d_snap,  bytes_snap), "Error reservando snapshot en GPU") != 0) {
         gpu_ctx_free(ctx);
         return -1;
     }
 
-    if (copy_matrix_to_device(ctx->d_A, A, ctx->m, ctx->m) != 0 ||
+    // Copia A y Z desde el host a VRAM.
+    if (copy_matrix_to_device(ctx->d_A,     A, ctx->m, ctx->m) != 0 ||
         copy_matrix_to_device(ctx->d_Z_cur, Z, ctx->m, ctx->n) != 0) {
         gpu_ctx_free(ctx);
         return -1;
@@ -279,47 +187,41 @@ static int init_full_mode(GpuCtx *ctx, float **A, float **Z,
 ///
 /// Retorna 0 en éxito, -1 en error.
 ///
-static int init_slab_mode(GpuCtx *ctx, float **A, float **Z,
-                          size_t bytes_Z, size_t bytes_snap, int slab_rows)
-{
-    ctx->mode = GPU_EXEC_SLAB;
+int init_slab_mode(GpuCtx *ctx, float **A, float **Z, size_t bytes_Z, size_t bytes_snap, int slab_rows) {
+    // Configura el modo y guarda referencia no-owning a A en host.
+    ctx->mode      = GPU_EXEC_SLAB;
     ctx->slab_rows = slab_rows;
-    ctx->h_A_2d = A;
+    ctx->h_A_2d    = A;
 
     const size_t slab_bytes = (size_t)slab_rows * ctx->m * sizeof(float);
 
-    if (cuda_check(cudaMallocHost((void **)&ctx->h_A_stage[0], slab_bytes),
-                   "Error reservando staging A[0] pinned en host") != 0 ||
-        cuda_check(cudaMallocHost((void **)&ctx->h_A_stage[1], slab_bytes),
-                   "Error reservando staging A[1] pinned en host") != 0 ||
-        cuda_check(cudaMallocHost((void **)&ctx->h_Z_out_pinned, bytes_Z),
-                   "Error reservando Z_out pinned en host") != 0) {
+    // Reserva los buffers pinned en host: dos staging de A y el buffer de salida Z.
+    if (cuda_check(cudaMallocHost((void **)&ctx->h_A_stage[0],   slab_bytes), "Error reservando staging A[0] pinned en host") != 0 ||
+        cuda_check(cudaMallocHost((void **)&ctx->h_A_stage[1],   slab_bytes), "Error reservando staging A[1] pinned en host") != 0 ||
+        cuda_check(cudaMallocHost((void **)&ctx->h_Z_out_pinned, bytes_Z),   "Error reservando Z_out pinned en host")         != 0) {
         gpu_ctx_free(ctx);
         return -1;
     }
 
-    if (cuda_check(cudaMalloc((void **)&ctx->d_Z_cur, bytes_Z),
-                   "Error reservando Z_cur en GPU") != 0 ||
-        cuda_check(cudaMalloc((void **)&ctx->d_Z_nxt, bytes_Z),
-                   "Error reservando Z_nxt en GPU") != 0 ||
-        cuda_check(cudaMalloc((void **)&ctx->d_snap, bytes_snap),
-                   "Error reservando snapshot en GPU") != 0 ||
-        cuda_check(cudaMalloc((void **)&ctx->d_A_slab[0], slab_bytes),
-                   "Error reservando slab A[0] en GPU") != 0 ||
-        cuda_check(cudaMalloc((void **)&ctx->d_A_slab[1], slab_bytes),
-                   "Error reservando slab A[1] en GPU") != 0) {
+    // Reserva los buffers en VRAM: Z_cur, Z_nxt, snapshot y los dos slabs de A.
+    if (cuda_check(cudaMalloc((void **)&ctx->d_Z_cur,     bytes_Z),    "Error reservando Z_cur en GPU")     != 0 ||
+        cuda_check(cudaMalloc((void **)&ctx->d_Z_nxt,     bytes_Z),    "Error reservando Z_nxt en GPU")     != 0 ||
+        cuda_check(cudaMalloc((void **)&ctx->d_snap,      bytes_snap), "Error reservando snapshot en GPU")  != 0 ||
+        cuda_check(cudaMalloc((void **)&ctx->d_A_slab[0], slab_bytes), "Error reservando slab A[0] en GPU") != 0 ||
+        cuda_check(cudaMalloc((void **)&ctx->d_A_slab[1], slab_bytes), "Error reservando slab A[1] en GPU") != 0) {
         gpu_ctx_free(ctx);
         return -1;
     }
 
+    // Copia Z inicial desde host a VRAM.
     if (copy_matrix_to_device(ctx->d_Z_cur, Z, ctx->m, ctx->n) != 0) {
         gpu_ctx_free(ctx);
         return -1;
     }
 
+    // Crea los dos streams CUDA para el pipeline de doble buffer.
     for (int i = 0; i < 2; i++) {
-        if (cuda_check(cudaStreamCreateWithFlags(&ctx->streams[i],
-                                                 cudaStreamNonBlocking),
+        if (cuda_check(cudaStreamCreateWithFlags(&ctx->streams[i], cudaStreamNonBlocking),
                        "Error creando stream CUDA") != 0) {
             gpu_ctx_free(ctx);
             return -1;
@@ -329,55 +231,40 @@ static int init_slab_mode(GpuCtx *ctx, float **A, float **Z,
     return 0;
 }
 
-/// Inicializa el contexto GPU consultando la VRAM disponible y eligiendo el modo de ejecución.
-///
-/// Si A + Z_in + Z_out + snapshot caben en el presupuesto seguro de VRAM se usa modo FULL;
-/// de lo contrario se calcula el tamaño máximo de slab y se inicializa el modo SLAB.
-///
-/// Argumentos:
-/// - ctx: estructura de contexto a inicializar.
-/// - A:   matriz de entrada [m × m] en host.
-/// - Z:   vector de estado inicial [m × n] en host.
-/// - m:   número de filas y columnas de A.
-/// - n:   número de columnas de Z.
-///
-/// Retorna 0 en éxito, -1 en error.
-///
-int gpu_ctx_init(GpuCtx *ctx, float **A, float **Z, int m, int n)
-{
+
+int gpu_ctx_init(GpuCtx *ctx, float **A, float **Z, int m, int n) {
+
+    // Inicializa el contexto GPU en 0 y establece m, n. 
     memset(ctx, 0, sizeof(*ctx));
     ctx->m = m;
     ctx->n = n;
 
-    size_t bytes_A = 0;
-    size_t bytes_Z = 0;
-    size_t bytes_snap = 0;
-
-    if (matrix_bytes(m, m, &bytes_A) != 0 ||
-        matrix_bytes(m, n, &bytes_Z) != 0 ||
-        matrix_bytes(n, n, &bytes_snap) != 0) {
-        return -1;
-    }
+    // Calcula los tamaños en bytes de A, Z y snapshot. 
+    const size_t bytes_A = (size_t)m * m * sizeof(float);
+    const size_t bytes_Z = (size_t)m * n * sizeof(float);
+    const size_t bytes_snap = (size_t)n * n * sizeof(float);
 
     ctx->bytes_Z = bytes_Z;
 
+    // Consulta la VRAM disponible.
     size_t free_vram = 0;
     size_t total_vram = 0;
-    if (cuda_check(cudaMemGetInfo(&free_vram, &total_vram),
-                   "Error consultando VRAM disponible") != 0) {
+    if (cuda_check(cudaMemGetInfo(&free_vram, &total_vram), "Error consultando, VRAM disponible") != 0) {
         return -1;
     }
 
-    const size_t budget = safe_vram_budget(free_vram);
-    const size_t z_required = 2 * bytes_Z + bytes_snap;
-    const size_t full_required = bytes_A + 2 * bytes_Z;
-    const size_t full_required_with_snap = full_required + bytes_snap;
+    // Calcula el límite seguro de VRAM y los requisitos de cada modo,
+    // luego decide entre modo FULL, modo SLAB o error por memoria insuficiente.
+
+    const size_t budget = (free_vram / 100) * PORCENTAJE_VRAM_LIBRE; 
+    const size_t z_required = 2 * bytes_Z + bytes_snap; // Z_cur + Z_nxt + snapshot
+    const size_t full_required = bytes_A + 2 * bytes_Z; // A + Z_cur + Z_nxt
+    const size_t full_required_with_snap = full_required + bytes_snap; // A + Z_cur + Z_nxt + snapshot
 
     printf("  VRAM GPU libre: %.2f GiB / %.2f GiB; presupuesto seguro: %.2f GiB\n",
-           bytes_to_gib(free_vram), bytes_to_gib(total_vram),
-           bytes_to_gib(budget));
+            bytes_to_gib(free_vram), bytes_to_gib(total_vram),bytes_to_gib(budget));
     printf("  Memoria A + Z_in + Z_out: %.2f GiB\n",
-           bytes_to_gib(full_required));
+            bytes_to_gib(full_required));
 
     if (full_required_with_snap <= budget) {
         printf("  Modo GPU: full VRAM, multiplicacion single-pass\n");
@@ -386,109 +273,88 @@ int gpu_ctx_init(GpuCtx *ctx, float **A, float **Z, int m, int n)
 
     if (z_required >= budget) {
         fprintf(stderr,
-                "VRAM insuficiente: Z_in + Z_out + snapshot requieren %.2f GiB "
-                "y el presupuesto seguro es %.2f GiB\n",
+                "VRAM insuficiente: Z_in + Z_out + snapshot requieren %.2f GiB y el presupuesto seguro es %.2f GiB\n",
                 bytes_to_gib(z_required), bytes_to_gib(budget));
         return -1;
     }
 
-    const size_t row_bytes = (size_t)m * sizeof(float);
-    const size_t slab_budget_vram = budget - z_required;
-    size_t slab_rows_vram = slab_budget_vram / (2 * row_bytes);
-    size_t slab_rows_pin  = SLAB_STAGE_MAX_BYTES / row_bytes;
+    const size_t row_bytes = (size_t)m * sizeof(float); // bytes por fila de A
+    const size_t slab_budget_vram = budget - z_required; // VRAM disponible para los slabs de A
+    size_t slab_rows_vram = slab_budget_vram / (2 * row_bytes); // filas por slab limitado por VRAM 
+    size_t slab_rows_pin  = SLAB_STAGE_MAX_BYTES / row_bytes; // filas por slab limitado por el tamaño máximo del staging pinned (RAM)
 
-    // El slab se limita por VRAM, por presupuesto de RAM pinned y por m.
-    size_t slab_rows = slab_rows_vram < slab_rows_pin ? slab_rows_vram
-                                                      : slab_rows_pin;
+    // El slab se limita por VRAM, por límite de RAM pinned y por m.
+    size_t slab_rows;
+    if (slab_rows_vram < slab_rows_pin) {
+        slab_rows = slab_rows_vram;
+    } else {
+        slab_rows = slab_rows_pin;
+    }
+
+    // El slab no puede tener más filas que m.
     if (slab_rows > (size_t)m) {
         slab_rows = (size_t)m;
     }
 
-    // Alinea a múltiplo de TILE_SIZE para que el kernel tiled trabaje en tiles
-    // completos en todos los slabs intermedios.
+    // Para facilitar la lógica del kernel y aprovechar la memoria compartida, se ajusta slab_rows
     if (slab_rows >= TILE_SIZE) {
         slab_rows = (slab_rows / TILE_SIZE) * TILE_SIZE;
     }
 
     if (slab_rows == 0) {
         fprintf(stderr,
-                "VRAM o RAM pinned insuficiente para un slab doble de A "
-                "(fila de A = %.2f MiB)\n",
+                "VRAM o RAM pinned insuficiente para un slab doble de A (fila de A = %.2f MiB)\n",
                 (double)row_bytes / (1024.0 * 1024.0));
         return -1;
     }
 
-    const size_t slab_bytes      = slab_rows * row_bytes;
-    const size_t pinned_total    = 2 * slab_bytes + bytes_Z;
-    const int    num_slabs       = (int)(((size_t)m + slab_rows - 1) / slab_rows);
+    const size_t slab_bytes = slab_rows * row_bytes; // bytes por slab de A
+    const size_t pinned_total = 2 * slab_bytes + bytes_Z; // RAM pinned total para staging de A y Z_out
+    const int num_slabs = (int)(((size_t)m + slab_rows - 1) / slab_rows); // número de slabs necesarios para cubrir A
 
     printf("  Modo GPU: slabs horizontales de A con doble buffer + staging pinned\n");
+
     printf("  Slab: %zu filas (%.2f MiB por buffer, %d slabs por iter Krylov)\n",
            slab_rows, (double)slab_bytes / (1024.0 * 1024.0), num_slabs);
+
     printf("  RAM pinned reservada (2 staging A + Z_out): %.2f MiB\n",
            (double)pinned_total / (1024.0 * 1024.0));
+
     printf("  RAM pageable de A (referenciada): %.2f GiB\n",
            bytes_to_gib(bytes_A));
 
     return init_slab_mode(ctx, A, Z, bytes_Z, bytes_snap, (int)slab_rows);
 }
 
-/// Ejecuta una iteración A×Z en modo FULL: lanza el kernel tiled sobre la matriz A completa
-/// en VRAM y luego intercambia los punteros Z_cur ↔ Z_nxt.
+/// Ejecuta una iteración A×Z en modo FULL
 ///
-/// Retorna el tiempo de ejecución del kernel medido con eventos CUDA en ms.
+/// Argumentos:
+/// - ctx: Estructura con los parametros para ejecutar
 ///
-static double gpu_multiplicar_full(GpuCtx *ctx)
+void gpu_multiplicar_full(GpuCtx *ctx)
 {
-    cudaEvent_t start = NULL;
-    cudaEvent_t stop  = NULL;
-    float ms = 0.0f;
-
-    if (cuda_check(cudaEventCreate(&start), "Error creando evento CUDA") != 0 ||
-        cuda_check(cudaEventCreate(&stop),  "Error creando evento CUDA") != 0) {
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
-        exit(EXIT_FAILURE);
-    }
-
+    // Configura el grid y el bloque para cubrir la matriz completa.
     dim3 block(TILE_SIZE, TILE_SIZE, 1);
     dim3 grid((ctx->n + TILE_SIZE - 1) / TILE_SIZE,
               (ctx->m + TILE_SIZE - 1) / TILE_SIZE, 1);
 
-    if (cuda_check(cudaEventRecord(start), "Error iniciando evento CUDA") != 0) {
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
-        exit(EXIT_FAILURE);
-    }
-
-    // row_offset=0 y slab_rows=ctx->m: el kernel unificado cubre la matriz completa.
-    tiled_mat_mul_kernel<<<grid, block>>>(ctx->d_A, ctx->d_Z_cur, ctx->d_Z_nxt,
-                                          0, ctx->m, ctx->n, ctx->m);
+    // Ejecuta el kernel de la multiplicación de matrices
+    tiled_mat_mul_kernel<<<grid, block>>>(ctx->d_A, ctx->d_Z_cur, ctx->d_Z_nxt,0, ctx->m, ctx->n, ctx->m);
 
     cudaError_t err = cudaGetLastError();
     if (cuda_check(err, "Error lanzando tiled_mat_mul_kernel (full)") != 0) {
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
         exit(EXIT_FAILURE);
     }
 
-    if (cuda_check(cudaEventRecord(stop), "Error deteniendo evento CUDA") != 0 ||
-        cuda_check(cudaEventSynchronize(stop), "Error sincronizando kernel CUDA") != 0 ||
-        cuda_check(cudaEventElapsedTime(&ms, start, stop),
-                   "Error midiendo tiempo CUDA") != 0) {
-        cudaEventDestroy(start);
-        cudaEventDestroy(stop);
+    // Espera a que el kernel termine antes de intercambiar los punteros.
+    if (cuda_check(cudaDeviceSynchronize(), "Error sincronizando kernel CUDA") != 0) {
         exit(EXIT_FAILURE);
     }
 
-    cudaEventDestroy(start);
-    cudaEventDestroy(stop);
-
+    // Intercambia Z_cur y Z_nxt para la siguiente iteración.
     float *tmp   = ctx->d_Z_cur;
     ctx->d_Z_cur = ctx->d_Z_nxt;
     ctx->d_Z_nxt = tmp;
-
-    return (double)ms;
 }
 
 static void gpu_multiplicar_slab(GpuCtx *ctx) {
@@ -603,16 +469,12 @@ static void gpu_multiplicar_slab(GpuCtx *ctx) {
     ctx->d_Z_nxt = tmp;
 }
 
-/// Despacha la multiplicación A×Z al modo correcto (FULL o SLAB) según ctx->mode.
-/// Intercambia internamente Z_cur y Z_nxt tras cada iteración.
+/// Llama la función de multiplicación según el modo
 ///
 /// Argumentos:
 /// - ctx: contexto GPU inicializado con gpu_ctx_init().
 ///
-/// Retorna el tiempo de ejecución en ms medido con eventos CUDA.
-///
-double gpu_multiplicar(GpuCtx *ctx)
-{
+void gpu_multiplicar(GpuCtx *ctx) {
     if (ctx->mode == GPU_EXEC_SLAB) {
         return gpu_multiplicar_slab(ctx);
     }
