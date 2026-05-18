@@ -1,0 +1,1051 @@
+[Modo: GPU / CUDA]
+
+================================================
+            PARAMETROS DE ENTRADA
+================================================
+  Exponente (input)  : 15
+  Dimension A        : 32768 x 32768
+  Columnas Z (n)     : 128
+  Iteraciones (l)    : 512
+================================================
+Directorio de salida: gpu_15_0518_135948
+  Cargando A...
+  Cargando Z...
+  VRAM GPU libre: 6.93 GiB / 8.00 GiB; presupuesto seguro: 5.89 GiB
+  Memoria A + Z_in + Z_out: 4.03 GiB
+  Modo GPU: full VRAM, multiplicacion single-pass
+
+=== Ejecucion GPU (512 iter.) ===
+  Guardado: gpu_15_0518_135948/resultado_0000.txt
+  iter    0   473.829 ms   580.120 GFLOPs  2320.515 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0001.txt
+  iter    1   473.753 ms   580.214 GFLOPs  2320.892 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0002.txt
+  iter    2   474.102 ms   579.786 GFLOPs  2319.180 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0003.txt
+  iter    3   473.758 ms   580.207 GFLOPs  2320.863 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0004.txt
+  iter    4   473.251 ms   580.829 GFLOPs  2323.350 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0005.txt
+  iter    5   472.438 ms   581.828 GFLOPs  2327.349 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0006.txt
+  iter    6   474.289 ms   579.557 GFLOPs  2318.265 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0007.txt
+  iter    7   473.730 ms   580.242 GFLOPs  2321.002 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0008.txt
+  iter    8   474.246 ms   579.610 GFLOPs  2318.475 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0009.txt
+  iter    9   476.076 ms   577.382 GFLOPs  2309.563 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0010.txt
+  iter   10   477.437 ms   575.736 GFLOPs  2302.980 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0011.txt
+  iter   11   473.700 ms   580.279 GFLOPs  2321.151 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0012.txt
+  iter   12   474.201 ms   579.666 GFLOPs  2318.698 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0013.txt
+  iter   13   473.029 ms   581.102 GFLOPs  2324.443 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0014.txt
+  iter   14   475.868 ms   577.634 GFLOPs  2310.572 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0015.txt
+  iter   15   474.148 ms   579.730 GFLOPs  2318.954 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0016.txt
+  iter   16   474.523 ms   579.271 GFLOPs  2317.121 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0017.txt
+  iter   17   474.288 ms   579.559 GFLOPs  2318.270 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0018.txt
+  iter   18   474.552 ms   579.237 GFLOPs  2316.984 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0019.txt
+  iter   19   474.231 ms   579.629 GFLOPs  2318.551 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0020.txt
+  iter   20   474.628 ms   579.144 GFLOPs  2316.611 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0021.txt
+  iter   21   474.203 ms   579.662 GFLOPs  2318.685 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0022.txt
+  iter   22   473.391 ms   580.657 GFLOPs  2322.664 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0023.txt
+  iter   23   475.067 ms   578.608 GFLOPs  2314.469 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0024.txt
+  iter   24   474.642 ms   579.127 GFLOPs  2316.543 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0025.txt
+  iter   25   474.476 ms   579.329 GFLOPs  2317.353 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0026.txt
+  iter   26   474.160 ms   579.715 GFLOPs  2318.896 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0027.txt
+  iter   27   473.888 ms   580.048 GFLOPs  2320.227 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0028.txt
+  iter   28   474.160 ms   579.715 GFLOPs  2318.897 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0029.txt
+  iter   29   474.544 ms   579.247 GFLOPs  2317.022 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0030.txt
+  iter   30   473.888 ms   580.048 GFLOPs  2320.227 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0031.txt
+  iter   31   473.553 ms   580.458 GFLOPs  2321.868 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0032.txt
+  iter   32   474.261 ms   579.592 GFLOPs  2318.402 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0033.txt
+  iter   33   474.692 ms   579.066 GFLOPs  2316.300 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0034.txt
+  iter   34   474.419 ms   579.399 GFLOPs  2317.632 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0035.txt
+  iter   35   474.984 ms   578.709 GFLOPs  2314.872 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0036.txt
+  iter   36   474.440 ms   579.373 GFLOPs  2317.527 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0037.txt
+  iter   37   474.601 ms   579.177 GFLOPs  2316.744 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0038.txt
+  iter   38   474.319 ms   579.521 GFLOPs  2318.119 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0039.txt
+  iter   39   473.526 ms   580.492 GFLOPs  2322.002 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0040.txt
+  iter   40   472.919 ms   581.236 GFLOPs  2324.981 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0041.txt
+  iter   41   474.653 ms   579.113 GFLOPs  2316.488 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0042.txt
+  iter   42   474.220 ms   579.642 GFLOPs  2318.604 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0043.txt
+  iter   43   474.557 ms   579.231 GFLOPs  2316.959 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0044.txt
+  iter   44   474.290 ms   579.557 GFLOPs  2318.261 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0045.txt
+  iter   45   474.648 ms   579.119 GFLOPs  2316.512 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0046.txt
+  iter   46   474.228 ms   579.632 GFLOPs  2318.563 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0047.txt
+  iter   47   474.621 ms   579.152 GFLOPs  2316.644 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0048.txt
+  iter   48   472.970 ms   581.175 GFLOPs  2324.734 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0049.txt
+  iter   49   474.676 ms   579.086 GFLOPs  2316.379 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0050.txt
+  iter   50   474.320 ms   579.520 GFLOPs  2318.115 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0051.txt
+  iter   51   474.679 ms   579.082 GFLOPs  2316.362 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0052.txt
+  iter   52   474.330 ms   579.508 GFLOPs  2318.067 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0053.txt
+  iter   53   474.650 ms   579.117 GFLOPs  2316.502 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0054.txt
+  iter   54   474.325 ms   579.514 GFLOPs  2318.091 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0055.txt
+  iter   55   474.316 ms   579.525 GFLOPs  2318.134 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0056.txt
+  iter   56   473.863 ms   580.079 GFLOPs  2320.352 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0057.txt
+  iter   57   473.781 ms   580.179 GFLOPs  2320.751 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0058.txt
+  iter   58   474.758 ms   578.985 GFLOPs  2315.976 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0059.txt
+  iter   59   474.293 ms   579.554 GFLOPs  2318.250 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0060.txt
+  iter   60   474.608 ms   579.168 GFLOPs  2316.709 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0061.txt
+  iter   61   474.196 ms   579.672 GFLOPs  2318.722 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0062.txt
+  iter   62   474.582 ms   579.200 GFLOPs  2316.834 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0063.txt
+  iter   63   474.337 ms   579.499 GFLOPs  2318.031 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0064.txt
+  iter   64   474.588 ms   579.193 GFLOPs  2316.806 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0065.txt
+  iter   65   472.941 ms   581.210 GFLOPs  2324.877 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0066.txt
+  iter   66   473.331 ms   580.731 GFLOPs  2322.958 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0067.txt
+  iter   67   474.231 ms   579.629 GFLOPs  2318.552 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0068.txt
+  iter   68   475.431 ms   578.166 GFLOPs  2312.699 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0069.txt
+  iter   69   474.154 ms   579.723 GFLOPs  2318.928 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0070.txt
+  iter   70   474.767 ms   578.975 GFLOPs  2315.935 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0071.txt
+  iter   71   474.220 ms   579.642 GFLOPs  2318.603 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0072.txt
+  iter   72   474.633 ms   579.138 GFLOPs  2316.585 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0073.txt
+  iter   73   474.748 ms   578.997 GFLOPs  2316.025 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0074.txt
+  iter   74   473.388 ms   580.661 GFLOPs  2322.678 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0075.txt
+  iter   75   474.586 ms   579.195 GFLOPs  2316.815 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0076.txt
+  iter   76   474.637 ms   579.133 GFLOPs  2316.566 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0077.txt
+  iter   77   474.232 ms   579.627 GFLOPs  2318.544 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0078.txt
+  iter   78   475.780 ms   577.741 GFLOPs  2311.001 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0079.txt
+  iter   79   474.280 ms   579.569 GFLOPs  2318.312 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0080.txt
+  iter   80   474.717 ms   579.036 GFLOPs  2316.178 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0081.txt
+  iter   81   474.286 ms   579.561 GFLOPs  2318.279 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0082.txt
+  iter   82   474.565 ms   579.221 GFLOPs  2316.919 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0083.txt
+  iter   83   472.935 ms   581.217 GFLOPs  2324.905 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0084.txt
+  iter   84   474.546 ms   579.245 GFLOPs  2317.014 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0085.txt
+  iter   85   474.402 ms   579.420 GFLOPs  2317.716 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0086.txt
+  iter   86   474.170 ms   579.703 GFLOPs  2318.847 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0087.txt
+  iter   87   474.609 ms   579.167 GFLOPs  2316.705 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0088.txt
+  iter   88   474.143 ms   579.736 GFLOPs  2318.980 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0089.txt
+  iter   89   474.657 ms   579.108 GFLOPs  2316.468 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0090.txt
+  iter   90   474.252 ms   579.603 GFLOPs  2318.449 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0091.txt
+  iter   91   473.236 ms   580.848 GFLOPs  2323.427 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0092.txt
+  iter   92   473.085 ms   581.032 GFLOPs  2324.165 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0093.txt
+  iter   93   474.599 ms   579.179 GFLOPs  2316.750 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0094.txt
+  iter   94   475.008 ms   578.680 GFLOPs  2314.756 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0095.txt
+  iter   95   474.731 ms   579.018 GFLOPs  2316.107 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0096.txt
+  iter   96   474.895 ms   578.818 GFLOPs  2315.309 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0097.txt
+  iter   97   474.665 ms   579.098 GFLOPs  2316.428 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0098.txt
+  iter   98   474.477 ms   579.328 GFLOPs  2317.348 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0099.txt
+  iter   99   474.724 ms   579.027 GFLOPs  2316.144 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0100.txt
+  iter  100   472.946 ms   581.203 GFLOPs  2324.849 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0101.txt
+  iter  101   474.623 ms   579.150 GFLOPs  2316.637 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0102.txt
+  iter  102   474.275 ms   579.575 GFLOPs  2318.335 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0103.txt
+  iter  103   474.642 ms   579.127 GFLOPs  2316.542 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0104.txt
+  iter  104   474.258 ms   579.596 GFLOPs  2318.417 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0105.txt
+  iter  105   474.561 ms   579.226 GFLOPs  2316.940 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0106.txt
+  iter  106   474.273 ms   579.577 GFLOPs  2318.343 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0107.txt
+  iter  107   475.014 ms   578.673 GFLOPs  2314.727 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0108.txt
+  iter  108   473.398 ms   580.648 GFLOPs  2322.628 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0109.txt
+  iter  109   473.348 ms   580.710 GFLOPs  2322.876 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0110.txt
+  iter  110   474.279 ms   579.571 GFLOPs  2318.318 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0111.txt
+  iter  111   474.656 ms   579.110 GFLOPs  2316.474 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0112.txt
+  iter  112   474.213 ms   579.650 GFLOPs  2318.637 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0113.txt
+  iter  113   474.570 ms   579.215 GFLOPs  2316.895 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0114.txt
+  iter  114   474.192 ms   579.677 GFLOPs  2318.743 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0115.txt
+  iter  115   474.273 ms   579.577 GFLOPs  2318.344 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0116.txt
+  iter  116   474.377 ms   579.450 GFLOPs  2317.835 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0117.txt
+  iter  117   472.975 ms   581.168 GFLOPs  2324.707 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0118.txt
+  iter  118   473.394 ms   580.654 GFLOPs  2322.651 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0119.txt
+  iter  119   474.294 ms   579.552 GFLOPs  2318.242 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0120.txt
+  iter  120   474.582 ms   579.200 GFLOPs  2316.836 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0121.txt
+  iter  121   474.444 ms   579.368 GFLOPs  2317.509 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0122.txt
+  iter  122   474.535 ms   579.257 GFLOPs  2317.063 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0123.txt
+  iter  123   474.244 ms   579.613 GFLOPs  2318.489 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0124.txt
+  iter  124   474.534 ms   579.258 GFLOPs  2317.068 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0125.txt
+  iter  125   474.245 ms   579.611 GFLOPs  2318.480 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0126.txt
+  iter  126   473.522 ms   580.496 GFLOPs  2322.021 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0127.txt
+  iter  127   474.233 ms   579.626 GFLOPs  2318.540 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0128.txt
+  iter  128   474.687 ms   579.072 GFLOPs  2316.322 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0129.txt
+  iter  129   474.201 ms   579.665 GFLOPs  2318.695 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0130.txt
+  iter  130   474.608 ms   579.168 GFLOPs  2316.709 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0131.txt
+  iter  131   474.216 ms   579.648 GFLOPs  2318.626 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0132.txt
+  iter  132   474.594 ms   579.185 GFLOPs  2316.775 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0133.txt
+  iter  133   474.459 ms   579.351 GFLOPs  2317.437 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0134.txt
+  iter  134   474.581 ms   579.201 GFLOPs  2316.838 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0135.txt
+  iter  135   472.927 ms   581.227 GFLOPs  2324.944 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0136.txt
+  iter  136   474.617 ms   579.157 GFLOPs  2316.664 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0137.txt
+  iter  137   474.345 ms   579.490 GFLOPs  2317.994 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0138.txt
+  iter  138   475.785 ms   577.736 GFLOPs  2310.979 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0139.txt
+  iter  139   474.275 ms   579.575 GFLOPs  2318.336 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0140.txt
+  iter  140   474.610 ms   579.166 GFLOPs  2316.700 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0141.txt
+  iter  141   474.337 ms   579.499 GFLOPs  2318.031 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0142.txt
+  iter  142   474.685 ms   579.075 GFLOPs  2316.335 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0143.txt
+  iter  143   473.214 ms   580.875 GFLOPs  2323.534 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0144.txt
+  iter  144   473.241 ms   580.842 GFLOPs  2323.401 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0145.txt
+  iter  145   474.219 ms   579.644 GFLOPs  2318.609 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0146.txt
+  iter  146   474.260 ms   579.593 GFLOPs  2318.409 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0147.txt
+  iter  147   474.686 ms   579.073 GFLOPs  2316.327 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0148.txt
+  iter  148   474.319 ms   579.522 GFLOPs  2318.121 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0149.txt
+  iter  149   474.657 ms   579.108 GFLOPs  2316.468 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0150.txt
+  iter  150   474.402 ms   579.419 GFLOPs  2317.712 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0151.txt
+  iter  151   474.813 ms   578.918 GFLOPs  2315.706 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0152.txt
+  iter  152   472.902 ms   581.258 GFLOPs  2325.067 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0153.txt
+  iter  153   474.839 ms   578.887 GFLOPs  2315.583 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0154.txt
+  iter  154   474.228 ms   579.633 GFLOPs  2318.566 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0155.txt
+  iter  155   475.183 ms   578.467 GFLOPs  2313.903 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0156.txt
+  iter  156   474.116 ms   579.769 GFLOPs  2319.111 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0157.txt
+  iter  157   474.723 ms   579.028 GFLOPs  2316.148 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0158.txt
+  iter  158   474.153 ms   579.724 GFLOPs  2318.929 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0159.txt
+  iter  159   474.817 ms   578.913 GFLOPs  2315.688 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0160.txt
+  iter  160   474.432 ms   579.383 GFLOPs  2317.568 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0161.txt
+  iter  161   473.366 ms   580.687 GFLOPs  2322.785 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0162.txt
+  iter  162   474.415 ms   579.404 GFLOPs  2317.652 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0163.txt
+  iter  163   474.553 ms   579.236 GFLOPs  2316.978 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0164.txt
+  iter  164   474.201 ms   579.665 GFLOPs  2318.697 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0165.txt
+  iter  165   474.535 ms   579.258 GFLOPs  2317.067 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0166.txt
+  iter  166   474.227 ms   579.634 GFLOPs  2318.571 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0167.txt
+  iter  167   474.606 ms   579.171 GFLOPs  2316.718 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0168.txt
+  iter  168   474.279 ms   579.570 GFLOPs  2318.317 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0169.txt
+  iter  169   473.368 ms   580.686 GFLOPs  2322.778 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0170.txt
+  iter  170   474.307 ms   579.536 GFLOPs  2318.181 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0171.txt
+  iter  171   474.574 ms   579.210 GFLOPs  2316.877 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0172.txt
+  iter  172   474.158 ms   579.718 GFLOPs  2318.907 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0173.txt
+  iter  173   474.298 ms   579.546 GFLOPs  2318.221 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0174.txt
+  iter  174   474.856 ms   578.866 GFLOPs  2315.501 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0175.txt
+  iter  175   474.191 ms   579.678 GFLOPs  2318.747 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0176.txt
+  iter  176   475.295 ms   578.332 GFLOPs  2313.362 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0177.txt
+  iter  177   473.374 ms   580.678 GFLOPs  2322.746 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0178.txt
+  iter  178   473.380 ms   580.671 GFLOPs  2322.720 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0179.txt
+  iter  179   474.135 ms   579.746 GFLOPs  2319.019 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0180.txt
+  iter  180   474.618 ms   579.156 GFLOPs  2316.659 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0181.txt
+  iter  181   474.195 ms   579.672 GFLOPs  2318.724 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0182.txt
+  iter  182   474.567 ms   579.218 GFLOPs  2316.909 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0183.txt
+  iter  183   474.202 ms   579.665 GFLOPs  2318.693 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0184.txt
+  iter  184   474.888 ms   578.827 GFLOPs  2315.342 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0185.txt
+  iter  185   474.276 ms   579.574 GFLOPs  2318.331 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0186.txt
+  iter  186   473.590 ms   580.413 GFLOPs  2321.686 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0187.txt
+  iter  187   474.508 ms   579.290 GFLOPs  2317.195 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0188.txt
+  iter  188   474.643 ms   579.126 GFLOPs  2316.539 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0189.txt
+  iter  189   474.128 ms   579.754 GFLOPs  2319.053 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0190.txt
+  iter  190   474.810 ms   578.922 GFLOPs  2315.722 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0191.txt
+  iter  191   474.200 ms   579.667 GFLOPs  2318.704 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0192.txt
+  iter  192   474.510 ms   579.288 GFLOPs  2317.189 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0193.txt
+  iter  193   474.244 ms   579.613 GFLOPs  2318.488 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0194.txt
+  iter  194   475.014 ms   578.673 GFLOPs  2314.726 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0195.txt
+  iter  195   473.113 ms   580.998 GFLOPs  2324.029 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0196.txt
+  iter  196   474.628 ms   579.143 GFLOPs  2316.609 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0197.txt
+  iter  197   474.239 ms   579.620 GFLOPs  2318.513 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0198.txt
+  iter  198   474.667 ms   579.096 GFLOPs  2316.421 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0199.txt
+  iter  199   474.229 ms   579.631 GFLOPs  2318.560 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0200.txt
+  iter  200   474.617 ms   579.158 GFLOPs  2316.666 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0201.txt
+  iter  201   474.287 ms   579.561 GFLOPs  2318.279 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0202.txt
+  iter  202   474.735 ms   579.013 GFLOPs  2316.087 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0203.txt
+  iter  203   472.917 ms   581.239 GFLOPs  2324.990 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0204.txt
+  iter  204   474.748 ms   578.998 GFLOPs  2316.028 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0205.txt
+  iter  205   474.235 ms   579.624 GFLOPs  2318.531 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0206.txt
+  iter  206   474.178 ms   579.693 GFLOPs  2318.808 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0207.txt
+  iter  207   476.066 ms   577.394 GFLOPs  2309.613 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0208.txt
+  iter  208   474.133 ms   579.749 GFLOPs  2319.032 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0209.txt
+  iter  209   474.749 ms   578.997 GFLOPs  2316.022 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0210.txt
+  iter  210   474.128 ms   579.755 GFLOPs  2319.056 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0211.txt
+  iter  211   473.406 ms   580.639 GFLOPs  2322.593 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0212.txt
+  iter  212   474.587 ms   579.194 GFLOPs  2316.812 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0213.txt
+  iter  213   474.471 ms   579.336 GFLOPs  2317.379 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0214.txt
+  iter  214   474.268 ms   579.583 GFLOPs  2318.369 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0215.txt
+  iter  215   474.606 ms   579.170 GFLOPs  2316.717 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0216.txt
+  iter  216   474.108 ms   579.780 GFLOPs  2319.154 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0217.txt
+  iter  217   474.588 ms   579.193 GFLOPs  2316.806 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0218.txt
+  iter  218   474.123 ms   579.761 GFLOPs  2319.079 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0219.txt
+  iter  219   474.786 ms   578.951 GFLOPs  2315.841 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0220.txt
+  iter  220   472.920 ms   581.235 GFLOPs  2324.975 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0221.txt
+  iter  221   474.748 ms   578.997 GFLOPs  2316.025 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0222.txt
+  iter  222   474.695 ms   579.062 GFLOPs  2316.283 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0223.txt
+  iter  223   474.529 ms   579.265 GFLOPs  2317.095 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0224.txt
+  iter  224   474.206 ms   579.659 GFLOPs  2318.671 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0225.txt
+  iter  225   474.642 ms   579.127 GFLOPs  2316.544 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0226.txt
+  iter  226   474.210 ms   579.655 GFLOPs  2318.654 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0227.txt
+  iter  227   474.601 ms   579.177 GFLOPs  2316.744 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0228.txt
+  iter  228   472.947 ms   581.202 GFLOPs  2324.844 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0229.txt
+  iter  229   474.721 ms   579.031 GFLOPs  2316.158 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0230.txt
+  iter  230   474.622 ms   579.151 GFLOPs  2316.639 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0231.txt
+  iter  231   474.768 ms   578.973 GFLOPs  2315.926 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0232.txt
+  iter  232   474.088 ms   579.804 GFLOPs  2319.252 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0233.txt
+  iter  233   474.484 ms   579.319 GFLOPs  2317.312 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0234.txt
+  iter  234   474.157 ms   579.719 GFLOPs  2318.911 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0235.txt
+  iter  235   474.587 ms   579.194 GFLOPs  2316.810 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0236.txt
+  iter  236   473.406 ms   580.639 GFLOPs  2322.591 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0237.txt
+  iter  237   472.962 ms   581.183 GFLOPs  2324.769 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0238.txt
+  iter  238   474.541 ms   579.250 GFLOPs  2317.033 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0239.txt
+  iter  239   474.096 ms   579.794 GFLOPs  2319.210 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0240.txt
+  iter  240   474.588 ms   579.193 GFLOPs  2316.807 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0241.txt
+  iter  241   474.240 ms   579.617 GFLOPs  2318.504 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0242.txt
+  iter  242   474.652 ms   579.115 GFLOPs  2316.494 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0243.txt
+  iter  243   475.046 ms   578.634 GFLOPs  2314.573 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0244.txt
+  iter  244   474.536 ms   579.257 GFLOPs  2317.062 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0245.txt
+  iter  245   473.076 ms   581.044 GFLOPs  2324.210 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0246.txt
+  iter  246   474.799 ms   578.936 GFLOPs  2315.778 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0247.txt
+  iter  247   474.152 ms   579.725 GFLOPs  2318.937 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0248.txt
+  iter  248   474.476 ms   579.329 GFLOPs  2317.352 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0249.txt
+  iter  249   474.312 ms   579.529 GFLOPs  2318.152 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0250.txt
+  iter  250   474.646 ms   579.123 GFLOPs  2316.525 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0251.txt
+  iter  251   474.391 ms   579.434 GFLOPs  2317.771 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0252.txt
+  iter  252   474.724 ms   579.027 GFLOPs  2316.142 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0253.txt
+  iter  253   473.996 ms   579.916 GFLOPs  2319.701 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0254.txt
+  iter  254   473.235 ms   580.848 GFLOPs  2323.428 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0255.txt
+  iter  255   474.369 ms   579.460 GFLOPs  2317.874 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0256.txt
+  iter  256   474.670 ms   579.092 GFLOPs  2316.404 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0257.txt
+  iter  257   474.199 ms   579.667 GFLOPs  2318.704 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0258.txt
+  iter  258   474.529 ms   579.265 GFLOPs  2317.095 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0259.txt
+  iter  259   474.209 ms   579.655 GFLOPs  2318.656 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0260.txt
+  iter  260   474.532 ms   579.261 GFLOPs  2317.079 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0261.txt
+  iter  261   474.309 ms   579.534 GFLOPs  2318.171 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0262.txt
+  iter  262   474.672 ms   579.090 GFLOPs  2316.394 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0263.txt
+  iter  263   474.284 ms   579.564 GFLOPs  2318.291 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0264.txt
+  iter  264   474.552 ms   579.237 GFLOPs  2316.983 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0265.txt
+  iter  265   474.448 ms   579.364 GFLOPs  2317.492 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0266.txt
+  iter  266   474.503 ms   579.297 GFLOPs  2317.222 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0267.txt
+  iter  267   474.277 ms   579.572 GFLOPs  2318.325 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0268.txt
+  iter  268   474.324 ms   579.515 GFLOPs  2318.094 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0269.txt
+  iter  269   474.974 ms   578.722 GFLOPs  2314.924 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0270.txt
+  iter  270   474.418 ms   579.400 GFLOPs  2317.634 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0271.txt
+  iter  271   473.272 ms   580.803 GFLOPs  2323.249 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0272.txt
+  iter  272   474.158 ms   579.718 GFLOPs  2318.909 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0273.txt
+  iter  273   474.770 ms   578.971 GFLOPs  2315.919 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0274.txt
+  iter  274   474.143 ms   579.736 GFLOPs  2318.980 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0275.txt
+  iter  275   474.647 ms   579.121 GFLOPs  2316.520 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0276.txt
+  iter  276   474.908 ms   578.802 GFLOPs  2315.244 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0277.txt
+  iter  277   474.571 ms   579.214 GFLOPs  2316.890 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0278.txt
+  iter  278   474.083 ms   579.810 GFLOPs  2319.275 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0279.txt
+  iter  279   473.308 ms   580.759 GFLOPs  2323.073 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0280.txt
+  iter  280   474.236 ms   579.623 GFLOPs  2318.527 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0281.txt
+  iter  281   474.611 ms   579.165 GFLOPs  2316.696 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0282.txt
+  iter  282   473.851 ms   580.093 GFLOPs  2320.408 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0283.txt
+  iter  283   474.591 ms   579.189 GFLOPs  2316.792 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0284.txt
+  iter  284   474.133 ms   579.748 GFLOPs  2319.028 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0285.txt
+  iter  285   474.543 ms   579.247 GFLOPs  2317.025 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0286.txt
+  iter  286   474.244 ms   579.613 GFLOPs  2318.488 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0287.txt
+  iter  287   473.359 ms   580.697 GFLOPs  2322.822 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0288.txt
+  iter  288   474.569 ms   579.216 GFLOPs  2316.899 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0289.txt
+  iter  289   474.756 ms   578.988 GFLOPs  2315.989 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0290.txt
+  iter  290   474.066 ms   579.830 GFLOPs  2319.356 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0291.txt
+  iter  291   474.615 ms   579.160 GFLOPs  2316.675 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0292.txt
+  iter  292   474.147 ms   579.731 GFLOPs  2318.961 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0293.txt
+  iter  293   474.557 ms   579.231 GFLOPs  2316.959 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0294.txt
+  iter  294   474.142 ms   579.737 GFLOPs  2318.985 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0295.txt
+  iter  295   474.512 ms   579.285 GFLOPs  2317.176 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0296.txt
+  iter  296   472.902 ms   581.257 GFLOPs  2325.064 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0297.txt
+  iter  297   474.254 ms   579.601 GFLOPs  2318.439 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0298.txt
+  iter  298   474.551 ms   579.238 GFLOPs  2316.988 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0299.txt
+  iter  299   474.147 ms   579.731 GFLOPs  2318.959 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0300.txt
+  iter  300   474.488 ms   579.315 GFLOPs  2317.297 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0301.txt
+  iter  301   474.390 ms   579.434 GFLOPs  2317.772 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0302.txt
+  iter  302   474.591 ms   579.189 GFLOPs  2316.791 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0303.txt
+  iter  303   474.199 ms   579.668 GFLOPs  2318.709 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0304.txt
+  iter  304   474.678 ms   579.083 GFLOPs  2316.368 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0305.txt
+  iter  305   472.856 ms   581.314 GFLOPs  2325.290 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0306.txt
+  iter  306   474.560 ms   579.227 GFLOPs  2316.943 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0307.txt
+  iter  307   474.327 ms   579.512 GFLOPs  2318.082 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0308.txt
+  iter  308   474.696 ms   579.060 GFLOPs  2316.277 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0309.txt
+  iter  309   474.157 ms   579.719 GFLOPs  2318.912 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0310.txt
+  iter  310   474.596 ms   579.183 GFLOPs  2316.769 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0311.txt
+  iter  311   474.262 ms   579.591 GFLOPs  2318.399 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0312.txt
+  iter  312   474.614 ms   579.161 GFLOPs  2316.677 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0313.txt
+  iter  313   472.992 ms   581.147 GFLOPs  2324.624 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0314.txt
+  iter  314   473.276 ms   580.798 GFLOPs  2323.229 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0315.txt
+  iter  315   474.234 ms   579.625 GFLOPs  2318.536 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0316.txt
+  iter  316   474.614 ms   579.161 GFLOPs  2316.680 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0317.txt
+  iter  317   474.185 ms   579.685 GFLOPs  2318.776 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0318.txt
+  iter  318   475.502 ms   578.079 GFLOPs  2312.353 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0319.txt
+  iter  319   474.332 ms   579.505 GFLOPs  2318.057 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0320.txt
+  iter  320   474.595 ms   579.184 GFLOPs  2316.772 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0321.txt
+  iter  321   474.058 ms   579.841 GFLOPs  2319.399 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0322.txt
+  iter  322   473.372 ms   580.680 GFLOPs  2322.756 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0323.txt
+  iter  323   474.149 ms   579.729 GFLOPs  2318.952 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0324.txt
+  iter  324   474.748 ms   578.998 GFLOPs  2316.026 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0325.txt
+  iter  325   474.283 ms   579.565 GFLOPs  2318.295 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0326.txt
+  iter  326   474.465 ms   579.342 GFLOPs  2317.404 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0327.txt
+  iter  327   474.226 ms   579.635 GFLOPs  2318.576 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0328.txt
+  iter  328   475.070 ms   578.605 GFLOPs  2314.457 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0329.txt
+  iter  329   474.571 ms   579.214 GFLOPs  2316.890 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0330.txt
+  iter  330   474.222 ms   579.640 GFLOPs  2318.595 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0331.txt
+  iter  331   473.240 ms   580.843 GFLOPs  2323.407 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0332.txt
+  iter  332   474.343 ms   579.492 GFLOPs  2318.002 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0333.txt
+  iter  333   475.288 ms   578.339 GFLOPs  2313.392 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0334.txt
+  iter  334   474.338 ms   579.498 GFLOPs  2318.027 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0335.txt
+  iter  335   474.774 ms   578.965 GFLOPs  2315.896 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0336.txt
+  iter  336   474.041 ms   579.861 GFLOPs  2319.480 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0337.txt
+  iter  337   474.684 ms   579.076 GFLOPs  2316.338 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0338.txt
+  iter  338   474.600 ms   579.179 GFLOPs  2316.750 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0339.txt
+  iter  339   474.633 ms   579.137 GFLOPs  2316.584 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0340.txt
+  iter  340   473.095 ms   581.021 GFLOPs  2324.119 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0341.txt
+  iter  341   474.727 ms   579.023 GFLOPs  2316.128 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0342.txt
+  iter  342   474.210 ms   579.654 GFLOPs  2318.653 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0343.txt
+  iter  343   474.649 ms   579.119 GFLOPs  2316.510 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0344.txt
+  iter  344   474.216 ms   579.647 GFLOPs  2318.624 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0345.txt
+  iter  345   474.593 ms   579.187 GFLOPs  2316.783 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0346.txt
+  iter  346   474.158 ms   579.718 GFLOPs  2318.907 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0347.txt
+  iter  347   474.597 ms   579.182 GFLOPs  2316.762 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0348.txt
+  iter  348   474.069 ms   579.827 GFLOPs  2319.343 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0349.txt
+  iter  349   473.357 ms   580.699 GFLOPs  2322.831 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0350.txt
+  iter  350   474.441 ms   579.373 GFLOPs  2317.526 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0351.txt
+  iter  351   475.213 ms   578.431 GFLOPs  2313.761 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0352.txt
+  iter  352   474.202 ms   579.665 GFLOPs  2318.693 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0353.txt
+  iter  353   474.624 ms   579.149 GFLOPs  2316.633 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0354.txt
+  iter  354   474.195 ms   579.673 GFLOPs  2318.727 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0355.txt
+  iter  355   474.664 ms   579.100 GFLOPs  2316.435 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0356.txt
+  iter  356   474.250 ms   579.605 GFLOPs  2318.455 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0357.txt
+  iter  357   473.384 ms   580.666 GFLOPs  2322.699 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0358.txt
+  iter  358   473.196 ms   580.896 GFLOPs  2323.620 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0359.txt
+  iter  359   474.589 ms   579.191 GFLOPs  2316.800 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0360.txt
+  iter  360   474.658 ms   579.108 GFLOPs  2316.466 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0361.txt
+  iter  361   474.363 ms   579.467 GFLOPs  2317.905 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0362.txt
+  iter  362   474.496 ms   579.305 GFLOPs  2317.256 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0363.txt
+  iter  363   474.354 ms   579.479 GFLOPs  2317.950 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0364.txt
+  iter  364   474.616 ms   579.159 GFLOPs  2316.670 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0365.txt
+  iter  365   474.191 ms   579.677 GFLOPs  2318.745 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0366.txt
+  iter  366   473.387 ms   580.662 GFLOPs  2322.684 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0367.txt
+  iter  367   472.995 ms   581.144 GFLOPs  2324.610 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0368.txt
+  iter  368   474.802 ms   578.931 GFLOPs  2315.760 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0369.txt
+  iter  369   474.129 ms   579.753 GFLOPs  2319.047 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0370.txt
+  iter  370   474.579 ms   579.204 GFLOPs  2316.852 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0371.txt
+  iter  371   474.184 ms   579.686 GFLOPs  2318.781 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0372.txt
+  iter  372   474.711 ms   579.042 GFLOPs  2316.205 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0373.txt
+  iter  373   474.249 ms   579.607 GFLOPs  2318.461 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0374.txt
+  iter  374   474.538 ms   579.253 GFLOPs  2317.049 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0375.txt
+  iter  375   472.927 ms   581.227 GFLOPs  2324.942 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0376.txt
+  iter  376   474.978 ms   578.717 GFLOPs  2314.905 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0377.txt
+  iter  377   474.133 ms   579.748 GFLOPs  2319.028 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0378.txt
+  iter  378   474.513 ms   579.284 GFLOPs  2317.170 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0379.txt
+  iter  379   474.111 ms   579.776 GFLOPs  2319.139 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0380.txt
+  iter  380   474.587 ms   579.194 GFLOPs  2316.810 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0381.txt
+  iter  381   474.196 ms   579.671 GFLOPs  2318.721 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0382.txt
+  iter  382   475.525 ms   578.052 GFLOPs  2312.242 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0383.txt
+  iter  383   474.317 ms   579.524 GFLOPs  2318.131 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0384.txt
+  iter  384   473.331 ms   580.731 GFLOPs  2322.958 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0385.txt
+  iter  385   475.582 ms   577.982 GFLOPs  2311.962 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0386.txt
+  iter  386   474.820 ms   578.910 GFLOPs  2315.676 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0387.txt
+  iter  387   474.393 ms   579.430 GFLOPs  2317.757 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0388.txt
+  iter  388   474.592 ms   579.188 GFLOPs  2316.789 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0389.txt
+  iter  389   474.186 ms   579.684 GFLOPs  2318.772 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0390.txt
+  iter  390   474.612 ms   579.164 GFLOPs  2316.691 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0391.txt
+  iter  391   474.164 ms   579.711 GFLOPs  2318.878 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0392.txt
+  iter  392   474.735 ms   579.013 GFLOPs  2316.089 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0393.txt
+  iter  393   473.584 ms   580.421 GFLOPs  2321.717 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0394.txt
+  iter  394   474.500 ms   579.300 GFLOPs  2317.234 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0395.txt
+  iter  395   474.746 ms   578.999 GFLOPs  2316.033 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0396.txt
+  iter  396   474.021 ms   579.886 GFLOPs  2319.578 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0397.txt
+  iter  397   474.671 ms   579.092 GFLOPs  2316.402 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0398.txt
+  iter  398   474.106 ms   579.782 GFLOPs  2319.163 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0399.txt
+  iter  399   474.730 ms   579.020 GFLOPs  2316.114 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0400.txt
+  iter  400   474.158 ms   579.718 GFLOPs  2318.909 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0401.txt
+  iter  401   474.580 ms   579.202 GFLOPs  2316.844 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0402.txt
+  iter  402   473.010 ms   581.125 GFLOPs  2324.536 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0403.txt
+  iter  403   474.934 ms   578.771 GFLOPs  2315.117 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0404.txt
+  iter  404   474.219 ms   579.644 GFLOPs  2318.610 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0405.txt
+  iter  405   474.636 ms   579.135 GFLOPs  2316.573 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0406.txt
+  iter  406   474.171 ms   579.702 GFLOPs  2318.845 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0407.txt
+  iter  407   474.636 ms   579.134 GFLOPs  2316.573 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0408.txt
+  iter  408   474.109 ms   579.778 GFLOPs  2319.146 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0409.txt
+  iter  409   474.806 ms   578.926 GFLOPs  2315.741 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0410.txt
+  iter  410   474.122 ms   579.762 GFLOPs  2319.085 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0411.txt
+  iter  411   473.405 ms   580.640 GFLOPs  2322.594 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0412.txt
+  iter  412   474.563 ms   579.223 GFLOPs  2316.928 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0413.txt
+  iter  413   474.532 ms   579.261 GFLOPs  2317.077 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0414.txt
+  iter  414   474.334 ms   579.503 GFLOPs  2318.049 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0415.txt
+  iter  415   474.737 ms   579.010 GFLOPs  2316.077 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0416.txt
+  iter  416   474.141 ms   579.739 GFLOPs  2318.992 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0417.txt
+  iter  417   474.651 ms   579.116 GFLOPs  2316.498 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0418.txt
+  iter  418   474.163 ms   579.712 GFLOPs  2318.882 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0419.txt
+  iter  419   474.529 ms   579.265 GFLOPs  2317.096 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0420.txt
+  iter  420   473.059 ms   581.064 GFLOPs  2324.292 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0421.txt
+  iter  421   474.683 ms   579.077 GFLOPs  2316.343 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0422.txt
+  iter  422   474.303 ms   579.541 GFLOPs  2318.201 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0423.txt
+  iter  423   474.615 ms   579.160 GFLOPs  2316.675 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0424.txt
+  iter  424   474.160 ms   579.716 GFLOPs  2318.900 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0425.txt
+  iter  425   474.200 ms   579.666 GFLOPs  2318.701 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0426.txt
+  iter  426   474.622 ms   579.151 GFLOPs  2316.641 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0427.txt
+  iter  427   474.285 ms   579.563 GFLOPs  2318.289 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0428.txt
+  iter  428   473.380 ms   580.671 GFLOPs  2322.721 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0429.txt
+  iter  429   473.084 ms   581.035 GFLOPs  2324.174 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0430.txt
+  iter  430   474.475 ms   579.330 GFLOPs  2317.357 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0431.txt
+  iter  431   474.250 ms   579.606 GFLOPs  2318.459 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0432.txt
+  iter  432   474.542 ms   579.249 GFLOPs  2317.029 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0433.txt
+  iter  433   474.268 ms   579.583 GFLOPs  2318.368 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0434.txt
+  iter  434   474.479 ms   579.326 GFLOPs  2317.338 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0435.txt
+  iter  435   474.319 ms   579.521 GFLOPs  2318.120 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0436.txt
+  iter  436   474.900 ms   578.812 GFLOPs  2315.285 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0437.txt
+  iter  437   472.876 ms   581.290 GFLOPs  2325.196 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0438.txt
+  iter  438   474.748 ms   578.997 GFLOPs  2316.024 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0439.txt
+  iter  439   474.149 ms   579.729 GFLOPs  2318.951 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0440.txt
+  iter  440   474.526 ms   579.268 GFLOPs  2317.107 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0441.txt
+  iter  441   474.438 ms   579.376 GFLOPs  2317.541 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0442.txt
+  iter  442   474.737 ms   579.011 GFLOPs  2316.078 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0443.txt
+  iter  443   474.207 ms   579.658 GFLOPs  2318.666 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0444.txt
+  iter  444   474.644 ms   579.124 GFLOPs  2316.532 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0445.txt
+  iter  445   474.259 ms   579.594 GFLOPs  2318.412 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0446.txt
+  iter  446   473.358 ms   580.698 GFLOPs  2322.827 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0447.txt
+  iter  447   474.314 ms   579.528 GFLOPs  2318.146 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0448.txt
+  iter  448   474.892 ms   578.822 GFLOPs  2315.324 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0449.txt
+  iter  449   474.154 ms   579.722 GFLOPs  2318.925 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0450.txt
+  iter  450   474.545 ms   579.245 GFLOPs  2317.017 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0451.txt
+  iter  451   474.985 ms   578.709 GFLOPs  2314.871 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0452.txt
+  iter  452   474.584 ms   579.197 GFLOPs  2316.825 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0453.txt
+  iter  453   474.121 ms   579.764 GFLOPs  2319.090 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0454.txt
+  iter  454   474.456 ms   579.354 GFLOPs  2317.450 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0455.txt
+  iter  455   472.985 ms   581.156 GFLOPs  2324.659 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0456.txt
+  iter  456   474.171 ms   579.702 GFLOPs  2318.845 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0457.txt
+  iter  457   474.599 ms   579.180 GFLOPs  2316.755 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0458.txt
+  iter  458   474.117 ms   579.768 GFLOPs  2319.105 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0459.txt
+  iter  459   474.711 ms   579.043 GFLOPs  2316.206 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0460.txt
+  iter  460   474.358 ms   579.473 GFLOPs  2317.927 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0461.txt
+  iter  461   474.573 ms   579.211 GFLOPs  2316.881 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0462.txt
+  iter  462   474.187 ms   579.683 GFLOPs  2318.768 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0463.txt
+  iter  463   473.242 ms   580.840 GFLOPs  2323.397 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0464.txt
+  iter  464   472.933 ms   581.219 GFLOPs  2324.913 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0465.txt
+  iter  465   474.514 ms   579.283 GFLOPs  2317.168 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0466.txt
+  iter  466   474.160 ms   579.715 GFLOPs  2318.896 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0467.txt
+  iter  467   474.777 ms   578.963 GFLOPs  2315.886 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0468.txt
+  iter  468   474.130 ms   579.753 GFLOPs  2319.046 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0469.txt
+  iter  469   474.697 ms   579.060 GFLOPs  2316.276 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0470.txt
+  iter  470   474.280 ms   579.569 GFLOPs  2318.309 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0471.txt
+  iter  471   474.567 ms   579.218 GFLOPs  2316.906 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0472.txt
+  iter  472   473.932 ms   579.995 GFLOPs  2320.015 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0473.txt
+  iter  473   473.330 ms   580.732 GFLOPs  2322.965 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0474.txt
+  iter  474   474.225 ms   579.635 GFLOPs  2318.577 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0475.txt
+  iter  475   475.209 ms   578.436 GFLOPs  2313.778 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0476.txt
+  iter  476   474.093 ms   579.797 GFLOPs  2319.223 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0477.txt
+  iter  477   474.520 ms   579.276 GFLOPs  2317.140 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0478.txt
+  iter  478   474.194 ms   579.674 GFLOPs  2318.730 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0479.txt
+  iter  479   474.599 ms   579.179 GFLOPs  2316.751 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0480.txt
+  iter  480   474.660 ms   579.105 GFLOPs  2316.454 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0481.txt
+  iter  481   473.346 ms   580.713 GFLOPs  2322.887 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0482.txt
+  iter  482   474.405 ms   579.417 GFLOPs  2317.702 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0483.txt
+  iter  483   474.719 ms   579.033 GFLOPs  2316.166 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0484.txt
+  iter  484   474.102 ms   579.786 GFLOPs  2319.181 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0485.txt
+  iter  485   474.482 ms   579.322 GFLOPs  2317.321 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0486.txt
+  iter  486   474.111 ms   579.775 GFLOPs  2319.137 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0487.txt
+  iter  487   474.091 ms   579.800 GFLOPs  2319.236 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0488.txt
+  iter  488   474.680 ms   579.080 GFLOPs  2316.356 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0489.txt
+  iter  489   474.247 ms   579.609 GFLOPs  2318.473 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0490.txt
+  iter  490   473.324 ms   580.740 GFLOPs  2322.996 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0491.txt
+  iter  491   474.191 ms   579.678 GFLOPs  2318.747 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0492.txt
+  iter  492   474.468 ms   579.339 GFLOPs  2317.390 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0493.txt
+  iter  493   474.178 ms   579.693 GFLOPs  2318.807 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0494.txt
+  iter  494   474.586 ms   579.195 GFLOPs  2316.816 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0495.txt
+  iter  495   474.350 ms   579.483 GFLOPs  2317.967 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0496.txt
+  iter  496   474.756 ms   578.987 GFLOPs  2315.985 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0497.txt
+  iter  497   474.151 ms   579.727 GFLOPs  2318.942 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0498.txt
+  iter  498   473.309 ms   580.758 GFLOPs  2323.066 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0499.txt
+  iter  499   472.829 ms   581.348 GFLOPs  2325.426 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0500.txt
+  iter  500   474.666 ms   579.098 GFLOPs  2316.426 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0501.txt
+  iter  501   473.990 ms   579.923 GFLOPs  2319.727 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0502.txt
+  iter  502   484.678 ms   567.135 GFLOPs  2268.576 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0503.txt
+  iter  503   474.318 ms   579.522 GFLOPs  2318.124 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0504.txt
+  iter  504   489.289 ms   561.791 GFLOPs  2247.198 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0505.txt
+  iter  505   482.134 ms   570.128 GFLOPs  2280.546 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0506.txt
+  iter  506   474.206 ms   579.660 GFLOPs  2318.674 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0507.txt
+  iter  507   472.880 ms   581.284 GFLOPs  2325.172 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0508.txt
+  iter  508   473.669 ms   580.316 GFLOPs  2321.299 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0509.txt
+  iter  509   481.832 ms   570.485 GFLOPs  2281.975 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0510.txt
+  iter  510   483.142 ms   568.939 GFLOPs  2275.789 GB/s
+  Guardado: gpu_15_0518_135948/resultado_0511.txt
+  iter  511   482.012 ms   570.271 GFLOPs  2281.120 GB/s
+
+=== Metricas (512 iter.) ===
+  Tiempo promedio :  474.400 ms
+  Tiempo min      :  472.438 ms
+  Tiempo max      :  489.289 ms
+  GFLOPs promedio :  579.426
+  GB/s estimado   : 2317.741
+  Tiempo total benchmark: 252071.955 ms
+  Metricas CSV: gpu_15_0518_135948/metricas.csv
