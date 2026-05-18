@@ -14,9 +14,9 @@ gmon.out
 a.out
 
 # Directorios de ejecución
-#cpu_*/
+cpu_*/
 run_*/
-#gpu_*/
+gpu_*/
 
 # Archivos de depuración
 *.dSYM/
