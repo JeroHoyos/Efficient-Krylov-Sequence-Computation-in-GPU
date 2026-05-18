@@ -1,0 +1,280 @@
+[Modo: CPU]
+
+================================================
+            PARAMETROS DE ENTRADA
+================================================
+  Exponente (input)  : 13
+  Dimension A        : 8192 x 8192
+  Columnas Z (n)     : 128
+  Iteraciones (l)    : 128
+================================================
+Directorio de salida: cpu_13_0518_140605
+  Cargando A...
+  Cargando Z...
+
+=== Ejecucion CPU (128 iter.) ===
+  Guardado: cpu_13_0518_140605/resultado_0000.txt
+  iter    0  3719.09 ms
+  Guardado: cpu_13_0518_140605/resultado_0001.txt
+  iter    1  3790.21 ms
+  Guardado: cpu_13_0518_140605/resultado_0002.txt
+  iter    2  3695.75 ms
+  Guardado: cpu_13_0518_140605/resultado_0003.txt
+  iter    3  3637.01 ms
+  Guardado: cpu_13_0518_140605/resultado_0004.txt
+  iter    4  3613.07 ms
+  Guardado: cpu_13_0518_140605/resultado_0005.txt
+  iter    5  3591.40 ms
+  Guardado: cpu_13_0518_140605/resultado_0006.txt
+  iter    6  3394.59 ms
+  Guardado: cpu_13_0518_140605/resultado_0007.txt
+  iter    7  3394.70 ms
+  Guardado: cpu_13_0518_140605/resultado_0008.txt
+  iter    8  3378.25 ms
+  Guardado: cpu_13_0518_140605/resultado_0009.txt
+  iter    9  3376.48 ms
+  Guardado: cpu_13_0518_140605/resultado_0010.txt
+  iter   10  3377.59 ms
+  Guardado: cpu_13_0518_140605/resultado_0011.txt
+  iter   11  3370.37 ms
+  Guardado: cpu_13_0518_140605/resultado_0012.txt
+  iter   12  3378.17 ms
+  Guardado: cpu_13_0518_140605/resultado_0013.txt
+  iter   13  3377.56 ms
+  Guardado: cpu_13_0518_140605/resultado_0014.txt
+  iter   14  3363.88 ms
+  Guardado: cpu_13_0518_140605/resultado_0015.txt
+  iter   15  3383.56 ms
+  Guardado: cpu_13_0518_140605/resultado_0016.txt
+  iter   16  3389.00 ms
+  Guardado: cpu_13_0518_140605/resultado_0017.txt
+  iter   17  3371.51 ms
+  Guardado: cpu_13_0518_140605/resultado_0018.txt
+  iter   18  3367.34 ms
+  Guardado: cpu_13_0518_140605/resultado_0019.txt
+  iter   19  3370.49 ms
+  Guardado: cpu_13_0518_140605/resultado_0020.txt
+  iter   20  3353.83 ms
+  Guardado: cpu_13_0518_140605/resultado_0021.txt
+  iter   21  3366.52 ms
+  Guardado: cpu_13_0518_140605/resultado_0022.txt
+  iter   22  3377.56 ms
+  Guardado: cpu_13_0518_140605/resultado_0023.txt
+  iter   23  3373.33 ms
+  Guardado: cpu_13_0518_140605/resultado_0024.txt
+  iter   24  3370.13 ms
+  Guardado: cpu_13_0518_140605/resultado_0025.txt
+  iter   25  3371.14 ms
+  Guardado: cpu_13_0518_140605/resultado_0026.txt
+  iter   26  3376.31 ms
+  Guardado: cpu_13_0518_140605/resultado_0027.txt
+  iter   27  3369.32 ms
+  Guardado: cpu_13_0518_140605/resultado_0028.txt
+  iter   28  3352.50 ms
+  Guardado: cpu_13_0518_140605/resultado_0029.txt
+  iter   29  3361.39 ms
+  Guardado: cpu_13_0518_140605/resultado_0030.txt
+  iter   30  3355.37 ms
+  Guardado: cpu_13_0518_140605/resultado_0031.txt
+  iter   31  3358.66 ms
+  Guardado: cpu_13_0518_140605/resultado_0032.txt
+  iter   32  3369.70 ms
+  Guardado: cpu_13_0518_140605/resultado_0033.txt
+  iter   33  3364.12 ms
+  Guardado: cpu_13_0518_140605/resultado_0034.txt
+  iter   34  3362.89 ms
+  Guardado: cpu_13_0518_140605/resultado_0035.txt
+  iter   35  3374.07 ms
+  Guardado: cpu_13_0518_140605/resultado_0036.txt
+  iter   36  3372.26 ms
+  Guardado: cpu_13_0518_140605/resultado_0037.txt
+  iter   37  3393.06 ms
+  Guardado: cpu_13_0518_140605/resultado_0038.txt
+  iter   38  3374.00 ms
+  Guardado: cpu_13_0518_140605/resultado_0039.txt
+  iter   39  3368.62 ms
+  Guardado: cpu_13_0518_140605/resultado_0040.txt
+  iter   40  3365.71 ms
+  Guardado: cpu_13_0518_140605/resultado_0041.txt
+  iter   41  3366.51 ms
+  Guardado: cpu_13_0518_140605/resultado_0042.txt
+  iter   42  3368.53 ms
+  Guardado: cpu_13_0518_140605/resultado_0043.txt
+  iter   43  3374.90 ms
+  Guardado: cpu_13_0518_140605/resultado_0044.txt
+  iter   44  3374.65 ms
+  Guardado: cpu_13_0518_140605/resultado_0045.txt
+  iter   45  3372.19 ms
+  Guardado: cpu_13_0518_140605/resultado_0046.txt
+  iter   46  3364.42 ms
+  Guardado: cpu_13_0518_140605/resultado_0047.txt
+  iter   47  3367.94 ms
+  Guardado: cpu_13_0518_140605/resultado_0048.txt
+  iter   48  3370.03 ms
+  Guardado: cpu_13_0518_140605/resultado_0049.txt
+  iter   49  3372.99 ms
+  Guardado: cpu_13_0518_140605/resultado_0050.txt
+  iter   50  3364.92 ms
+  Guardado: cpu_13_0518_140605/resultado_0051.txt
+  iter   51  3385.97 ms
+  Guardado: cpu_13_0518_140605/resultado_0052.txt
+  iter   52  3367.73 ms
+  Guardado: cpu_13_0518_140605/resultado_0053.txt
+  iter   53  3369.30 ms
+  Guardado: cpu_13_0518_140605/resultado_0054.txt
+  iter   54  3366.84 ms
+  Guardado: cpu_13_0518_140605/resultado_0055.txt
+  iter   55  3362.31 ms
+  Guardado: cpu_13_0518_140605/resultado_0056.txt
+  iter   56  3373.62 ms
+  Guardado: cpu_13_0518_140605/resultado_0057.txt
+  iter   57  3358.50 ms
+  Guardado: cpu_13_0518_140605/resultado_0058.txt
+  iter   58  3360.09 ms
+  Guardado: cpu_13_0518_140605/resultado_0059.txt
+  iter   59  3368.71 ms
+  Guardado: cpu_13_0518_140605/resultado_0060.txt
+  iter   60  3373.34 ms
+  Guardado: cpu_13_0518_140605/resultado_0061.txt
+  iter   61  3365.23 ms
+  Guardado: cpu_13_0518_140605/resultado_0062.txt
+  iter   62  3368.72 ms
+  Guardado: cpu_13_0518_140605/resultado_0063.txt
+  iter   63  3366.39 ms
+  Guardado: cpu_13_0518_140605/resultado_0064.txt
+  iter   64  3369.39 ms
+  Guardado: cpu_13_0518_140605/resultado_0065.txt
+  iter   65  3364.46 ms
+  Guardado: cpu_13_0518_140605/resultado_0066.txt
+  iter   66  3363.58 ms
+  Guardado: cpu_13_0518_140605/resultado_0067.txt
+  iter   67  3370.54 ms
+  Guardado: cpu_13_0518_140605/resultado_0068.txt
+  iter   68  3363.36 ms
+  Guardado: cpu_13_0518_140605/resultado_0069.txt
+  iter   69  3363.06 ms
+  Guardado: cpu_13_0518_140605/resultado_0070.txt
+  iter   70  3373.45 ms
+  Guardado: cpu_13_0518_140605/resultado_0071.txt
+  iter   71  3366.53 ms
+  Guardado: cpu_13_0518_140605/resultado_0072.txt
+  iter   72  3361.70 ms
+  Guardado: cpu_13_0518_140605/resultado_0073.txt
+  iter   73  3371.48 ms
+  Guardado: cpu_13_0518_140605/resultado_0074.txt
+  iter   74  3384.04 ms
+  Guardado: cpu_13_0518_140605/resultado_0075.txt
+  iter   75  3517.84 ms
+  Guardado: cpu_13_0518_140605/resultado_0076.txt
+  iter   76  3482.42 ms
+  Guardado: cpu_13_0518_140605/resultado_0077.txt
+  iter   77  3525.00 ms
+  Guardado: cpu_13_0518_140605/resultado_0078.txt
+  iter   78  3741.27 ms
+  Guardado: cpu_13_0518_140605/resultado_0079.txt
+  iter   79  3436.34 ms
+  Guardado: cpu_13_0518_140605/resultado_0080.txt
+  iter   80  3375.00 ms
+  Guardado: cpu_13_0518_140605/resultado_0081.txt
+  iter   81  3362.08 ms
+  Guardado: cpu_13_0518_140605/resultado_0082.txt
+  iter   82  3358.12 ms
+  Guardado: cpu_13_0518_140605/resultado_0083.txt
+  iter   83  3377.85 ms
+  Guardado: cpu_13_0518_140605/resultado_0084.txt
+  iter   84  3374.63 ms
+  Guardado: cpu_13_0518_140605/resultado_0085.txt
+  iter   85  3375.12 ms
+  Guardado: cpu_13_0518_140605/resultado_0086.txt
+  iter   86  3373.15 ms
+  Guardado: cpu_13_0518_140605/resultado_0087.txt
+  iter   87  3368.57 ms
+  Guardado: cpu_13_0518_140605/resultado_0088.txt
+  iter   88  3369.75 ms
+  Guardado: cpu_13_0518_140605/resultado_0089.txt
+  iter   89  3365.03 ms
+  Guardado: cpu_13_0518_140605/resultado_0090.txt
+  iter   90  3376.18 ms
+  Guardado: cpu_13_0518_140605/resultado_0091.txt
+  iter   91  3372.10 ms
+  Guardado: cpu_13_0518_140605/resultado_0092.txt
+  iter   92  3358.79 ms
+  Guardado: cpu_13_0518_140605/resultado_0093.txt
+  iter   93  3370.16 ms
+  Guardado: cpu_13_0518_140605/resultado_0094.txt
+  iter   94  3383.46 ms
+  Guardado: cpu_13_0518_140605/resultado_0095.txt
+  iter   95  3360.22 ms
+  Guardado: cpu_13_0518_140605/resultado_0096.txt
+  iter   96  3356.44 ms
+  Guardado: cpu_13_0518_140605/resultado_0097.txt
+  iter   97  3364.47 ms
+  Guardado: cpu_13_0518_140605/resultado_0098.txt
+  iter   98  3387.69 ms
+  Guardado: cpu_13_0518_140605/resultado_0099.txt
+  iter   99  3369.53 ms
+  Guardado: cpu_13_0518_140605/resultado_0100.txt
+  iter  100  3371.91 ms
+  Guardado: cpu_13_0518_140605/resultado_0101.txt
+  iter  101  3372.46 ms
+  Guardado: cpu_13_0518_140605/resultado_0102.txt
+  iter  102  3371.66 ms
+  Guardado: cpu_13_0518_140605/resultado_0103.txt
+  iter  103  3369.18 ms
+  Guardado: cpu_13_0518_140605/resultado_0104.txt
+  iter  104  3368.73 ms
+  Guardado: cpu_13_0518_140605/resultado_0105.txt
+  iter  105  3376.15 ms
+  Guardado: cpu_13_0518_140605/resultado_0106.txt
+  iter  106  3369.37 ms
+  Guardado: cpu_13_0518_140605/resultado_0107.txt
+  iter  107  3367.58 ms
+  Guardado: cpu_13_0518_140605/resultado_0108.txt
+  iter  108  3362.03 ms
+  Guardado: cpu_13_0518_140605/resultado_0109.txt
+  iter  109  3363.22 ms
+  Guardado: cpu_13_0518_140605/resultado_0110.txt
+  iter  110  3365.91 ms
+  Guardado: cpu_13_0518_140605/resultado_0111.txt
+  iter  111  3366.67 ms
+  Guardado: cpu_13_0518_140605/resultado_0112.txt
+  iter  112  3354.91 ms
+  Guardado: cpu_13_0518_140605/resultado_0113.txt
+  iter  113  3353.78 ms
+  Guardado: cpu_13_0518_140605/resultado_0114.txt
+  iter  114  3373.30 ms
+  Guardado: cpu_13_0518_140605/resultado_0115.txt
+  iter  115  3373.64 ms
+  Guardado: cpu_13_0518_140605/resultado_0116.txt
+  iter  116  3379.23 ms
+  Guardado: cpu_13_0518_140605/resultado_0117.txt
+  iter  117  3372.76 ms
+  Guardado: cpu_13_0518_140605/resultado_0118.txt
+  iter  118  3376.02 ms
+  Guardado: cpu_13_0518_140605/resultado_0119.txt
+  iter  119  3367.55 ms
+  Guardado: cpu_13_0518_140605/resultado_0120.txt
+  iter  120  3360.81 ms
+  Guardado: cpu_13_0518_140605/resultado_0121.txt
+  iter  121  3365.51 ms
+  Guardado: cpu_13_0518_140605/resultado_0122.txt
+  iter  122  3363.09 ms
+  Guardado: cpu_13_0518_140605/resultado_0123.txt
+  iter  123  3445.56 ms
+  Guardado: cpu_13_0518_140605/resultado_0124.txt
+  iter  124  3383.46 ms
+  Guardado: cpu_13_0518_140605/resultado_0125.txt
+  iter  125  3369.80 ms
+  Guardado: cpu_13_0518_140605/resultado_0126.txt
+  iter  126  3361.93 ms
+  Guardado: cpu_13_0518_140605/resultado_0127.txt
+  iter  127  3379.34 ms
+
+=== Metricas (128 iter.) ===
+  Tiempo promedio : 3391.506 ms
+  Tiempo min      : 3352.496 ms
+  Tiempo max      : 3790.214 ms
+  GFLOPs promedio :    5.068
+  GB/s estimado   :   20.273
+  Tiempo total benchmark: 435528.894 ms
+  Metricas CSV: cpu_13_0518_140605/metricas.csv

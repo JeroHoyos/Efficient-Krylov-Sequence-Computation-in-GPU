@@ -1,0 +1,1053 @@
+D:\Documentos\Nacho\semestre4\TLP\ProyectoPractico\Efficient-Krylov-Sequence-Computation-in-GPU>make run
+./build/bench.exe
+
+[Modo: CPU]
+
+================================================
+            PARAMETROS DE ENTRADA
+================================================
+  Exponente (input)  : 15
+  Dimension A        : 32768 x 32768
+  Columnas Z (n)     : 128
+  Iteraciones (l)    : 512
+================================================
+Directorio de salida: cpu_15_0517_123023
+  Cargando A...
+  Cargando Z...
+
+=== Ejecucion CPU (512 iter.) ===
+  Guardado: cpu_15_0517_123023/resultado_0000.txt
+  iter    0  79540.09 ms
+  Guardado: cpu_15_0517_123023/resultado_0001.txt
+  iter    1  79362.32 ms
+  Guardado: cpu_15_0517_123023/resultado_0002.txt
+  iter    2  77837.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0003.txt
+  iter    3  84127.00 ms
+  Guardado: cpu_15_0517_123023/resultado_0004.txt
+  iter    4  83717.37 ms
+  Guardado: cpu_15_0517_123023/resultado_0005.txt
+  iter    5  79167.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0006.txt
+  iter    6  77600.85 ms
+  Guardado: cpu_15_0517_123023/resultado_0007.txt
+  iter    7  78278.90 ms
+  Guardado: cpu_15_0517_123023/resultado_0008.txt
+  iter    8  77565.71 ms
+  Guardado: cpu_15_0517_123023/resultado_0009.txt
+  iter    9  78316.65 ms
+  Guardado: cpu_15_0517_123023/resultado_0010.txt
+  iter   10  77486.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0011.txt
+  iter   11  78205.87 ms
+  Guardado: cpu_15_0517_123023/resultado_0012.txt
+  iter   12  77226.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0013.txt
+  iter   13  78172.37 ms
+  Guardado: cpu_15_0517_123023/resultado_0014.txt
+  iter   14  76974.17 ms
+  Guardado: cpu_15_0517_123023/resultado_0015.txt
+  iter   15  78720.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0016.txt
+  iter   16  77751.94 ms
+  Guardado: cpu_15_0517_123023/resultado_0017.txt
+  iter   17  78330.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0018.txt
+  iter   18  79099.89 ms
+  Guardado: cpu_15_0517_123023/resultado_0019.txt
+  iter   19  79770.96 ms
+  Guardado: cpu_15_0517_123023/resultado_0020.txt
+  iter   20  77719.51 ms
+  Guardado: cpu_15_0517_123023/resultado_0021.txt
+  iter   21  78847.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0022.txt
+  iter   22  77521.17 ms
+  Guardado: cpu_15_0517_123023/resultado_0023.txt
+  iter   23  78311.38 ms
+  Guardado: cpu_15_0517_123023/resultado_0024.txt
+  iter   24  77567.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0025.txt
+  iter   25  78246.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0026.txt
+  iter   26  77557.81 ms
+  Guardado: cpu_15_0517_123023/resultado_0027.txt
+  iter   27  78778.43 ms
+  Guardado: cpu_15_0517_123023/resultado_0028.txt
+  iter   28  77610.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0029.txt
+  iter   29  78387.17 ms
+  Guardado: cpu_15_0517_123023/resultado_0030.txt
+  iter   30  80303.28 ms
+  Guardado: cpu_15_0517_123023/resultado_0031.txt
+  iter   31  78657.40 ms
+  Guardado: cpu_15_0517_123023/resultado_0032.txt
+  iter   32  77695.83 ms
+  Guardado: cpu_15_0517_123023/resultado_0033.txt
+  iter   33  78267.91 ms
+  Guardado: cpu_15_0517_123023/resultado_0034.txt
+  iter   34  77667.57 ms
+  Guardado: cpu_15_0517_123023/resultado_0035.txt
+  iter   35  78514.38 ms
+  Guardado: cpu_15_0517_123023/resultado_0036.txt
+  iter   36  77513.38 ms
+  Guardado: cpu_15_0517_123023/resultado_0037.txt
+  iter   37  78258.67 ms
+  Guardado: cpu_15_0517_123023/resultado_0038.txt
+  iter   38  77965.66 ms
+  Guardado: cpu_15_0517_123023/resultado_0039.txt
+  iter   39  78888.28 ms
+  Guardado: cpu_15_0517_123023/resultado_0040.txt
+  iter   40  77636.73 ms
+  Guardado: cpu_15_0517_123023/resultado_0041.txt
+  iter   41  79522.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0042.txt
+  iter   42  79502.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0043.txt
+  iter   43  78759.50 ms
+  Guardado: cpu_15_0517_123023/resultado_0044.txt
+  iter   44  77730.49 ms
+  Guardado: cpu_15_0517_123023/resultado_0045.txt
+  iter   45  78301.80 ms
+  Guardado: cpu_15_0517_123023/resultado_0046.txt
+  iter   46  77553.94 ms
+  Guardado: cpu_15_0517_123023/resultado_0047.txt
+  iter   47  80624.04 ms
+  Guardado: cpu_15_0517_123023/resultado_0048.txt
+  iter   48  77622.15 ms
+  Guardado: cpu_15_0517_123023/resultado_0049.txt
+  iter   49  78592.87 ms
+  Guardado: cpu_15_0517_123023/resultado_0050.txt
+  iter   50  77926.73 ms
+  Guardado: cpu_15_0517_123023/resultado_0051.txt
+  iter   51  78509.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0052.txt
+  iter   52  77549.60 ms
+  Guardado: cpu_15_0517_123023/resultado_0053.txt
+  iter   53  79288.59 ms
+  Guardado: cpu_15_0517_123023/resultado_0054.txt
+  iter   54  77612.59 ms
+  Guardado: cpu_15_0517_123023/resultado_0055.txt
+  iter   55  78295.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0056.txt
+  iter   56  79872.93 ms
+  Guardado: cpu_15_0517_123023/resultado_0057.txt
+  iter   57  78523.87 ms
+  Guardado: cpu_15_0517_123023/resultado_0058.txt
+  iter   58  77969.37 ms
+  Guardado: cpu_15_0517_123023/resultado_0059.txt
+  iter   59  78367.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0060.txt
+  iter   60  77428.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0061.txt
+  iter   61  78427.43 ms
+  Guardado: cpu_15_0517_123023/resultado_0062.txt
+  iter   62  77574.14 ms
+  Guardado: cpu_15_0517_123023/resultado_0063.txt
+  iter   63  78306.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0064.txt
+  iter   64  77576.56 ms
+  Guardado: cpu_15_0517_123023/resultado_0065.txt
+  iter   65  78351.52 ms
+  Guardado: cpu_15_0517_123023/resultado_0066.txt
+  iter   66  77141.54 ms
+  Guardado: cpu_15_0517_123023/resultado_0067.txt
+  iter   67  77862.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0068.txt
+  iter   68  76988.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0069.txt
+  iter   69  77959.04 ms
+  Guardado: cpu_15_0517_123023/resultado_0070.txt
+  iter   70  77003.73 ms
+  Guardado: cpu_15_0517_123023/resultado_0071.txt
+  iter   71  79338.33 ms
+  Guardado: cpu_15_0517_123023/resultado_0072.txt
+  iter   72  77708.57 ms
+  Guardado: cpu_15_0517_123023/resultado_0073.txt
+  iter   73  78780.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0074.txt
+  iter   74  77570.87 ms
+  Guardado: cpu_15_0517_123023/resultado_0075.txt
+  iter   75  78382.76 ms
+  Guardado: cpu_15_0517_123023/resultado_0076.txt
+  iter   76  77766.83 ms
+  Guardado: cpu_15_0517_123023/resultado_0077.txt
+  iter   77  78763.47 ms
+  Guardado: cpu_15_0517_123023/resultado_0078.txt
+  iter   78  80119.51 ms
+  Guardado: cpu_15_0517_123023/resultado_0079.txt
+  iter   79  78469.89 ms
+  Guardado: cpu_15_0517_123023/resultado_0080.txt
+  iter   80  77810.13 ms
+  Guardado: cpu_15_0517_123023/resultado_0081.txt
+  iter   81  78676.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0082.txt
+  iter   82  77840.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0083.txt
+  iter   83  78329.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0084.txt
+  iter   84  77770.52 ms
+  Guardado: cpu_15_0517_123023/resultado_0085.txt
+  iter   85  78780.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0086.txt
+  iter   86  77538.76 ms
+  Guardado: cpu_15_0517_123023/resultado_0087.txt
+  iter   87  77912.79 ms
+  Guardado: cpu_15_0517_123023/resultado_0088.txt
+  iter   88  77948.91 ms
+  Guardado: cpu_15_0517_123023/resultado_0089.txt
+  iter   89  78511.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0090.txt
+  iter   90  77859.50 ms
+  Guardado: cpu_15_0517_123023/resultado_0091.txt
+  iter   91  78479.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0092.txt
+  iter   92  79989.16 ms
+  Guardado: cpu_15_0517_123023/resultado_0093.txt
+  iter   93  78696.71 ms
+  Guardado: cpu_15_0517_123023/resultado_0094.txt
+  iter   94  77726.60 ms
+  Guardado: cpu_15_0517_123023/resultado_0095.txt
+  iter   95  78755.07 ms
+  Guardado: cpu_15_0517_123023/resultado_0096.txt
+  iter   96  77610.35 ms
+  Guardado: cpu_15_0517_123023/resultado_0097.txt
+  iter   97  78285.88 ms
+  Guardado: cpu_15_0517_123023/resultado_0098.txt
+  iter   98  77424.36 ms
+  Guardado: cpu_15_0517_123023/resultado_0099.txt
+  iter   99  78207.07 ms
+  Guardado: cpu_15_0517_123023/resultado_0100.txt
+  iter  100  79056.64 ms
+  Guardado: cpu_15_0517_123023/resultado_0101.txt
+  iter  101  78503.37 ms
+  Guardado: cpu_15_0517_123023/resultado_0102.txt
+  iter  102  77771.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0103.txt
+  iter  103  80849.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0104.txt
+  iter  104  77802.31 ms
+  Guardado: cpu_15_0517_123023/resultado_0105.txt
+  iter  105  78446.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0106.txt
+  iter  106  77720.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0107.txt
+  iter  107  79185.86 ms
+  Guardado: cpu_15_0517_123023/resultado_0108.txt
+  iter  108  80030.67 ms
+  Guardado: cpu_15_0517_123023/resultado_0109.txt
+  iter  109  78530.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0110.txt
+  iter  110  77556.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0111.txt
+  iter  111  78408.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0112.txt
+  iter  112  77656.19 ms
+  Guardado: cpu_15_0517_123023/resultado_0113.txt
+  iter  113  78487.19 ms
+  Guardado: cpu_15_0517_123023/resultado_0114.txt
+  iter  114  77649.56 ms
+  Guardado: cpu_15_0517_123023/resultado_0115.txt
+  iter  115  78366.09 ms
+  Guardado: cpu_15_0517_123023/resultado_0116.txt
+  iter  116  77681.09 ms
+  Guardado: cpu_15_0517_123023/resultado_0117.txt
+  iter  117  77796.92 ms
+  Guardado: cpu_15_0517_123023/resultado_0118.txt
+  iter  118  77116.57 ms
+  Guardado: cpu_15_0517_123023/resultado_0119.txt
+  iter  119  77885.47 ms
+  Guardado: cpu_15_0517_123023/resultado_0120.txt
+  iter  120  77018.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0121.txt
+  iter  121  77763.32 ms
+  Guardado: cpu_15_0517_123023/resultado_0122.txt
+  iter  122  77087.52 ms
+  Guardado: cpu_15_0517_123023/resultado_0123.txt
+  iter  123  77810.88 ms
+  Guardado: cpu_15_0517_123023/resultado_0124.txt
+  iter  124  76988.49 ms
+  Guardado: cpu_15_0517_123023/resultado_0125.txt
+  iter  125  77842.15 ms
+  Guardado: cpu_15_0517_123023/resultado_0126.txt
+  iter  126  78330.41 ms
+  Guardado: cpu_15_0517_123023/resultado_0127.txt
+  iter  127  78375.59 ms
+  Guardado: cpu_15_0517_123023/resultado_0128.txt
+  iter  128  77574.86 ms
+  Guardado: cpu_15_0517_123023/resultado_0129.txt
+  iter  129  80735.23 ms
+  Guardado: cpu_15_0517_123023/resultado_0130.txt
+  iter  130  78005.73 ms
+  Guardado: cpu_15_0517_123023/resultado_0131.txt
+  iter  131  78979.87 ms
+  Guardado: cpu_15_0517_123023/resultado_0132.txt
+  iter  132  77763.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0133.txt
+  iter  133  78671.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0134.txt
+  iter  134  77885.67 ms
+  Guardado: cpu_15_0517_123023/resultado_0135.txt
+  iter  135  79143.62 ms
+  Guardado: cpu_15_0517_123023/resultado_0136.txt
+  iter  136  77718.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0137.txt
+  iter  137  78714.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0138.txt
+  iter  138  78377.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0139.txt
+  iter  139  78614.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0140.txt
+  iter  140  77584.25 ms
+  Guardado: cpu_15_0517_123023/resultado_0141.txt
+  iter  141  81085.29 ms
+  Guardado: cpu_15_0517_123023/resultado_0142.txt
+  iter  142  77945.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0143.txt
+  iter  143  78442.19 ms
+  Guardado: cpu_15_0517_123023/resultado_0144.txt
+  iter  144  77571.52 ms
+  Guardado: cpu_15_0517_123023/resultado_0145.txt
+  iter  145  78202.81 ms
+  Guardado: cpu_15_0517_123023/resultado_0146.txt
+  iter  146  77644.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0147.txt
+  iter  147  78353.76 ms
+  Guardado: cpu_15_0517_123023/resultado_0148.txt
+  iter  148  77441.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0149.txt
+  iter  149  78374.85 ms
+  Guardado: cpu_15_0517_123023/resultado_0150.txt
+  iter  150  77588.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0151.txt
+  iter  151  78617.13 ms
+  Guardado: cpu_15_0517_123023/resultado_0152.txt
+  iter  152  79860.13 ms
+  Guardado: cpu_15_0517_123023/resultado_0153.txt
+  iter  153  79244.40 ms
+  Guardado: cpu_15_0517_123023/resultado_0154.txt
+  iter  154  77940.15 ms
+  Guardado: cpu_15_0517_123023/resultado_0155.txt
+  iter  155  78573.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0156.txt
+  iter  156  77515.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0157.txt
+  iter  157  78327.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0158.txt
+  iter  158  77560.40 ms
+  Guardado: cpu_15_0517_123023/resultado_0159.txt
+  iter  159  78404.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0160.txt
+  iter  160  77508.38 ms
+  Guardado: cpu_15_0517_123023/resultado_0161.txt
+  iter  161  79412.09 ms
+  Guardado: cpu_15_0517_123023/resultado_0162.txt
+  iter  162  77700.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0163.txt
+  iter  163  78403.69 ms
+  Guardado: cpu_15_0517_123023/resultado_0164.txt
+  iter  164  77775.69 ms
+  Guardado: cpu_15_0517_123023/resultado_0165.txt
+  iter  165  78792.62 ms
+  Guardado: cpu_15_0517_123023/resultado_0166.txt
+  iter  166  79940.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0167.txt
+  iter  167  78634.65 ms
+  Guardado: cpu_15_0517_123023/resultado_0168.txt
+  iter  168  77792.29 ms
+  Guardado: cpu_15_0517_123023/resultado_0169.txt
+  iter  169  78759.77 ms
+  Guardado: cpu_15_0517_123023/resultado_0170.txt
+  iter  170  77822.92 ms
+  Guardado: cpu_15_0517_123023/resultado_0171.txt
+  iter  171  78181.13 ms
+  Guardado: cpu_15_0517_123023/resultado_0172.txt
+  iter  172  77601.30 ms
+  Guardado: cpu_15_0517_123023/resultado_0173.txt
+  iter  173  78444.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0174.txt
+  iter  174  77709.85 ms
+  Guardado: cpu_15_0517_123023/resultado_0175.txt
+  iter  175  78428.46 ms
+  Guardado: cpu_15_0517_123023/resultado_0176.txt
+  iter  176  78432.90 ms
+  Guardado: cpu_15_0517_123023/resultado_0177.txt
+  iter  177  82540.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0178.txt
+  iter  178  78249.46 ms
+  Guardado: cpu_15_0517_123023/resultado_0179.txt
+  iter  179  78627.46 ms
+  Guardado: cpu_15_0517_123023/resultado_0180.txt
+  iter  180  78721.24 ms
+  Guardado: cpu_15_0517_123023/resultado_0181.txt
+  iter  181  80411.51 ms
+  Guardado: cpu_15_0517_123023/resultado_0182.txt
+  iter  182  77713.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0183.txt
+  iter  183  78364.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0184.txt
+  iter  184  77764.83 ms
+  Guardado: cpu_15_0517_123023/resultado_0185.txt
+  iter  185  78906.75 ms
+  Guardado: cpu_15_0517_123023/resultado_0186.txt
+  iter  186  77622.75 ms
+  Guardado: cpu_15_0517_123023/resultado_0187.txt
+  iter  187  78443.39 ms
+  Guardado: cpu_15_0517_123023/resultado_0188.txt
+  iter  188  77628.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0189.txt
+  iter  189  84491.30 ms
+  Guardado: cpu_15_0517_123023/resultado_0190.txt
+  iter  190  77881.44 ms
+  Guardado: cpu_15_0517_123023/resultado_0191.txt
+  iter  191  78502.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0192.txt
+  iter  192  77696.17 ms
+  Guardado: cpu_15_0517_123023/resultado_0193.txt
+  iter  193  78679.45 ms
+  Guardado: cpu_15_0517_123023/resultado_0194.txt
+  iter  194  77518.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0195.txt
+  iter  195  78339.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0196.txt
+  iter  196  77706.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0197.txt
+  iter  197  78267.81 ms
+  Guardado: cpu_15_0517_123023/resultado_0198.txt
+  iter  198  78342.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0199.txt
+  iter  199  78540.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0200.txt
+  iter  200  77694.81 ms
+  Guardado: cpu_15_0517_123023/resultado_0201.txt
+  iter  201  80920.16 ms
+  Guardado: cpu_15_0517_123023/resultado_0202.txt
+  iter  202  77825.42 ms
+  Guardado: cpu_15_0517_123023/resultado_0203.txt
+  iter  203  78470.54 ms
+  Guardado: cpu_15_0517_123023/resultado_0204.txt
+  iter  204  77671.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0205.txt
+  iter  205  78772.64 ms
+  Guardado: cpu_15_0517_123023/resultado_0206.txt
+  iter  206  77567.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0207.txt
+  iter  207  78421.28 ms
+  Guardado: cpu_15_0517_123023/resultado_0208.txt
+  iter  208  77552.30 ms
+  Guardado: cpu_15_0517_123023/resultado_0209.txt
+  iter  209  78237.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0210.txt
+  iter  210  77106.19 ms
+  Guardado: cpu_15_0517_123023/resultado_0211.txt
+  iter  211  77869.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0212.txt
+  iter  212  77019.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0213.txt
+  iter  213  78688.45 ms
+  Guardado: cpu_15_0517_123023/resultado_0214.txt
+  iter  214  77788.59 ms
+  Guardado: cpu_15_0517_123023/resultado_0215.txt
+  iter  215  78512.08 ms
+  Guardado: cpu_15_0517_123023/resultado_0216.txt
+  iter  216  83005.89 ms
+  Guardado: cpu_15_0517_123023/resultado_0217.txt
+  iter  217  78865.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0218.txt
+  iter  218  77989.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0219.txt
+  iter  219  78682.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0220.txt
+  iter  220  77695.38 ms
+  Guardado: cpu_15_0517_123023/resultado_0221.txt
+  iter  221  78416.47 ms
+  Guardado: cpu_15_0517_123023/resultado_0222.txt
+  iter  222  77878.08 ms
+  Guardado: cpu_15_0517_123023/resultado_0223.txt
+  iter  223  79160.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0224.txt
+  iter  224  77608.69 ms
+  Guardado: cpu_15_0517_123023/resultado_0225.txt
+  iter  225  78651.31 ms
+  Guardado: cpu_15_0517_123023/resultado_0226.txt
+  iter  226  80326.80 ms
+  Guardado: cpu_15_0517_123023/resultado_0227.txt
+  iter  227  78403.42 ms
+  Guardado: cpu_15_0517_123023/resultado_0228.txt
+  iter  228  78830.27 ms
+  Guardado: cpu_15_0517_123023/resultado_0229.txt
+  iter  229  83261.18 ms
+  Guardado: cpu_15_0517_123023/resultado_0230.txt
+  iter  230  77945.00 ms
+  Guardado: cpu_15_0517_123023/resultado_0231.txt
+  iter  231  78440.27 ms
+  Guardado: cpu_15_0517_123023/resultado_0232.txt
+  iter  232  79976.31 ms
+  Guardado: cpu_15_0517_123023/resultado_0233.txt
+  iter  233  79014.16 ms
+  Guardado: cpu_15_0517_123023/resultado_0234.txt
+  iter  234  77810.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0235.txt
+  iter  235  78589.62 ms
+  Guardado: cpu_15_0517_123023/resultado_0236.txt
+  iter  236  77460.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0237.txt
+  iter  237  78301.77 ms
+  Guardado: cpu_15_0517_123023/resultado_0238.txt
+  iter  238  77616.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0239.txt
+  iter  239  78281.78 ms
+  Guardado: cpu_15_0517_123023/resultado_0240.txt
+  iter  240  77530.34 ms
+  Guardado: cpu_15_0517_123023/resultado_0241.txt
+  iter  241  78734.89 ms
+  Guardado: cpu_15_0517_123023/resultado_0242.txt
+  iter  242  77610.56 ms
+  Guardado: cpu_15_0517_123023/resultado_0243.txt
+  iter  243  78199.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0244.txt
+  iter  244  79902.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0245.txt
+  iter  245  79070.26 ms
+  Guardado: cpu_15_0517_123023/resultado_0246.txt
+  iter  246  77833.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0247.txt
+  iter  247  78375.03 ms
+  Guardado: cpu_15_0517_123023/resultado_0248.txt
+  iter  248  77533.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0249.txt
+  iter  249  78390.61 ms
+  Guardado: cpu_15_0517_123023/resultado_0250.txt
+  iter  250  77471.91 ms
+  Guardado: cpu_15_0517_123023/resultado_0251.txt
+  iter  251  79007.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0252.txt
+  iter  252  77674.57 ms
+  Guardado: cpu_15_0517_123023/resultado_0253.txt
+  iter  253  78039.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0254.txt
+  iter  254  77096.46 ms
+  Guardado: cpu_15_0517_123023/resultado_0255.txt
+  iter  255  78768.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0256.txt
+  iter  256  77792.93 ms
+  Guardado: cpu_15_0517_123023/resultado_0257.txt
+  iter  257  78840.61 ms
+  Guardado: cpu_15_0517_123023/resultado_0258.txt
+  iter  258  79692.09 ms
+  Guardado: cpu_15_0517_123023/resultado_0259.txt
+  iter  259  78341.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0260.txt
+  iter  260  77928.62 ms
+  Guardado: cpu_15_0517_123023/resultado_0261.txt
+  iter  261  79157.71 ms
+  Guardado: cpu_15_0517_123023/resultado_0262.txt
+  iter  262  78305.59 ms
+  Guardado: cpu_15_0517_123023/resultado_0263.txt
+  iter  263  78297.45 ms
+  Guardado: cpu_15_0517_123023/resultado_0264.txt
+  iter  264  77651.54 ms
+  Guardado: cpu_15_0517_123023/resultado_0265.txt
+  iter  265  78471.99 ms
+  Guardado: cpu_15_0517_123023/resultado_0266.txt
+  iter  266  77493.36 ms
+  Guardado: cpu_15_0517_123023/resultado_0267.txt
+  iter  267  77959.42 ms
+  Guardado: cpu_15_0517_123023/resultado_0268.txt
+  iter  268  77419.49 ms
+  Guardado: cpu_15_0517_123023/resultado_0269.txt
+  iter  269  79678.55 ms
+  Guardado: cpu_15_0517_123023/resultado_0270.txt
+  iter  270  77630.61 ms
+  Guardado: cpu_15_0517_123023/resultado_0271.txt
+  iter  271  78506.90 ms
+  Guardado: cpu_15_0517_123023/resultado_0272.txt
+  iter  272  80669.75 ms
+  Guardado: cpu_15_0517_123023/resultado_0273.txt
+  iter  273  78641.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0274.txt
+  iter  274  77489.88 ms
+  Guardado: cpu_15_0517_123023/resultado_0275.txt
+  iter  275  78323.13 ms
+  Guardado: cpu_15_0517_123023/resultado_0276.txt
+  iter  276  77611.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0277.txt
+  iter  277  78628.05 ms
+  Guardado: cpu_15_0517_123023/resultado_0278.txt
+  iter  278  77402.05 ms
+  Guardado: cpu_15_0517_123023/resultado_0279.txt
+  iter  279  78355.29 ms
+  Guardado: cpu_15_0517_123023/resultado_0280.txt
+  iter  280  77725.80 ms
+  Guardado: cpu_15_0517_123023/resultado_0281.txt
+  iter  281  78157.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0282.txt
+  iter  282  77043.80 ms
+  Guardado: cpu_15_0517_123023/resultado_0283.txt
+  iter  283  77744.57 ms
+  Guardado: cpu_15_0517_123023/resultado_0284.txt
+  iter  284  77128.36 ms
+  Guardado: cpu_15_0517_123023/resultado_0285.txt
+  iter  285  77735.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0286.txt
+  iter  286  76998.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0287.txt
+  iter  287  77749.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0288.txt
+  iter  288  77163.98 ms
+  Guardado: cpu_15_0517_123023/resultado_0289.txt
+  iter  289  77692.51 ms
+  Guardado: cpu_15_0517_123023/resultado_0290.txt
+  iter  290  76909.46 ms
+  Guardado: cpu_15_0517_123023/resultado_0291.txt
+  iter  291  77833.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0292.txt
+  iter  292  77079.73 ms
+  Guardado: cpu_15_0517_123023/resultado_0293.txt
+  iter  293  78024.07 ms
+  Guardado: cpu_15_0517_123023/resultado_0294.txt
+  iter  294  76976.09 ms
+  Guardado: cpu_15_0517_123023/resultado_0295.txt
+  iter  295  77792.94 ms
+  Guardado: cpu_15_0517_123023/resultado_0296.txt
+  iter  296  77028.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0297.txt
+  iter  297  77863.99 ms
+  Guardado: cpu_15_0517_123023/resultado_0298.txt
+  iter  298  76982.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0299.txt
+  iter  299  77871.88 ms
+  Guardado: cpu_15_0517_123023/resultado_0300.txt
+  iter  300  77037.55 ms
+  Guardado: cpu_15_0517_123023/resultado_0301.txt
+  iter  301  77764.60 ms
+  Guardado: cpu_15_0517_123023/resultado_0302.txt
+  iter  302  77026.52 ms
+  Guardado: cpu_15_0517_123023/resultado_0303.txt
+  iter  303  77840.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0304.txt
+  iter  304  78277.80 ms
+  Guardado: cpu_15_0517_123023/resultado_0305.txt
+  iter  305  78429.85 ms
+  Guardado: cpu_15_0517_123023/resultado_0306.txt
+  iter  306  77693.83 ms
+  Guardado: cpu_15_0517_123023/resultado_0307.txt
+  iter  307  83040.25 ms
+  Guardado: cpu_15_0517_123023/resultado_0308.txt
+  iter  308  90505.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0309.txt
+  iter  309  82686.28 ms
+  Guardado: cpu_15_0517_123023/resultado_0310.txt
+  iter  310  77644.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0311.txt
+  iter  311  78531.62 ms
+  Guardado: cpu_15_0517_123023/resultado_0312.txt
+  iter  312  77535.32 ms
+  Guardado: cpu_15_0517_123023/resultado_0313.txt
+  iter  313  78249.53 ms
+  Guardado: cpu_15_0517_123023/resultado_0314.txt
+  iter  314  78360.63 ms
+  Guardado: cpu_15_0517_123023/resultado_0315.txt
+  iter  315  79541.98 ms
+  Guardado: cpu_15_0517_123023/resultado_0316.txt
+  iter  316  77795.78 ms
+  Guardado: cpu_15_0517_123023/resultado_0317.txt
+  iter  317  78491.40 ms
+  Guardado: cpu_15_0517_123023/resultado_0318.txt
+  iter  318  80108.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0319.txt
+  iter  319  78797.45 ms
+  Guardado: cpu_15_0517_123023/resultado_0320.txt
+  iter  320  82590.69 ms
+  Guardado: cpu_15_0517_123023/resultado_0321.txt
+  iter  321  83779.42 ms
+  Guardado: cpu_15_0517_123023/resultado_0322.txt
+  iter  322  79195.85 ms
+  Guardado: cpu_15_0517_123023/resultado_0323.txt
+  iter  323  78864.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0324.txt
+  iter  324  78302.25 ms
+  Guardado: cpu_15_0517_123023/resultado_0325.txt
+  iter  325  80970.61 ms
+  Guardado: cpu_15_0517_123023/resultado_0326.txt
+  iter  326  78222.77 ms
+  Guardado: cpu_15_0517_123023/resultado_0327.txt
+  iter  327  78733.49 ms
+  Guardado: cpu_15_0517_123023/resultado_0328.txt
+  iter  328  77652.94 ms
+  Guardado: cpu_15_0517_123023/resultado_0329.txt
+  iter  329  78414.00 ms
+  Guardado: cpu_15_0517_123023/resultado_0330.txt
+  iter  330  77565.46 ms
+  Guardado: cpu_15_0517_123023/resultado_0331.txt
+  iter  331  78778.51 ms
+  Guardado: cpu_15_0517_123023/resultado_0332.txt
+  iter  332  77638.65 ms
+  Guardado: cpu_15_0517_123023/resultado_0333.txt
+  iter  333  78446.96 ms
+  Guardado: cpu_15_0517_123023/resultado_0334.txt
+  iter  334  77678.20 ms
+  Guardado: cpu_15_0517_123023/resultado_0335.txt
+  iter  335  78365.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0336.txt
+  iter  336  77546.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0337.txt
+  iter  337  78549.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0338.txt
+  iter  338  77665.92 ms
+  Guardado: cpu_15_0517_123023/resultado_0339.txt
+  iter  339  78351.90 ms
+  Guardado: cpu_15_0517_123023/resultado_0340.txt
+  iter  340  77523.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0341.txt
+  iter  341  78556.34 ms
+  Guardado: cpu_15_0517_123023/resultado_0342.txt
+  iter  342  77726.19 ms
+  Guardado: cpu_15_0517_123023/resultado_0343.txt
+  iter  343  78509.96 ms
+  Guardado: cpu_15_0517_123023/resultado_0344.txt
+  iter  344  77647.63 ms
+  Guardado: cpu_15_0517_123023/resultado_0345.txt
+  iter  345  78634.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0346.txt
+  iter  346  77577.08 ms
+  Guardado: cpu_15_0517_123023/resultado_0347.txt
+  iter  347  78409.92 ms
+  Guardado: cpu_15_0517_123023/resultado_0348.txt
+  iter  348  77758.83 ms
+  Guardado: cpu_15_0517_123023/resultado_0349.txt
+  iter  349  78473.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0350.txt
+  iter  350  77602.13 ms
+  Guardado: cpu_15_0517_123023/resultado_0351.txt
+  iter  351  78507.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0352.txt
+  iter  352  77688.45 ms
+  Guardado: cpu_15_0517_123023/resultado_0353.txt
+  iter  353  78470.25 ms
+  Guardado: cpu_15_0517_123023/resultado_0354.txt
+  iter  354  77722.33 ms
+  Guardado: cpu_15_0517_123023/resultado_0355.txt
+  iter  355  78491.88 ms
+  Guardado: cpu_15_0517_123023/resultado_0356.txt
+  iter  356  77876.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0357.txt
+  iter  357  78562.09 ms
+  Guardado: cpu_15_0517_123023/resultado_0358.txt
+  iter  358  77726.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0359.txt
+  iter  359  79090.93 ms
+  Guardado: cpu_15_0517_123023/resultado_0360.txt
+  iter  360  77924.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0361.txt
+  iter  361  79064.33 ms
+  Guardado: cpu_15_0517_123023/resultado_0362.txt
+  iter  362  77892.98 ms
+  Guardado: cpu_15_0517_123023/resultado_0363.txt
+  iter  363  78534.69 ms
+  Guardado: cpu_15_0517_123023/resultado_0364.txt
+  iter  364  77895.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0365.txt
+  iter  365  78525.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0366.txt
+  iter  366  77600.04 ms
+  Guardado: cpu_15_0517_123023/resultado_0367.txt
+  iter  367  78426.91 ms
+  Guardado: cpu_15_0517_123023/resultado_0368.txt
+  iter  368  78002.73 ms
+  Guardado: cpu_15_0517_123023/resultado_0369.txt
+  iter  369  78608.41 ms
+  Guardado: cpu_15_0517_123023/resultado_0370.txt
+  iter  370  77729.62 ms
+  Guardado: cpu_15_0517_123023/resultado_0371.txt
+  iter  371  78530.54 ms
+  Guardado: cpu_15_0517_123023/resultado_0372.txt
+  iter  372  77961.30 ms
+  Guardado: cpu_15_0517_123023/resultado_0373.txt
+  iter  373  78402.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0374.txt
+  iter  374  77589.88 ms
+  Guardado: cpu_15_0517_123023/resultado_0375.txt
+  iter  375  78461.35 ms
+  Guardado: cpu_15_0517_123023/resultado_0376.txt
+  iter  376  77696.79 ms
+  Guardado: cpu_15_0517_123023/resultado_0377.txt
+  iter  377  78356.56 ms
+  Guardado: cpu_15_0517_123023/resultado_0378.txt
+  iter  378  77638.65 ms
+  Guardado: cpu_15_0517_123023/resultado_0379.txt
+  iter  379  78497.57 ms
+  Guardado: cpu_15_0517_123023/resultado_0380.txt
+  iter  380  77680.07 ms
+  Guardado: cpu_15_0517_123023/resultado_0381.txt
+  iter  381  78459.77 ms
+  Guardado: cpu_15_0517_123023/resultado_0382.txt
+  iter  382  77656.17 ms
+  Guardado: cpu_15_0517_123023/resultado_0383.txt
+  iter  383  78484.96 ms
+  Guardado: cpu_15_0517_123023/resultado_0384.txt
+  iter  384  77631.31 ms
+  Guardado: cpu_15_0517_123023/resultado_0385.txt
+  iter  385  78442.25 ms
+  Guardado: cpu_15_0517_123023/resultado_0386.txt
+  iter  386  77579.45 ms
+  Guardado: cpu_15_0517_123023/resultado_0387.txt
+  iter  387  78417.81 ms
+  Guardado: cpu_15_0517_123023/resultado_0388.txt
+  iter  388  77647.94 ms
+  Guardado: cpu_15_0517_123023/resultado_0389.txt
+  iter  389  78560.29 ms
+  Guardado: cpu_15_0517_123023/resultado_0390.txt
+  iter  390  77898.93 ms
+  Guardado: cpu_15_0517_123023/resultado_0391.txt
+  iter  391  78620.65 ms
+  Guardado: cpu_15_0517_123023/resultado_0392.txt
+  iter  392  77693.97 ms
+  Guardado: cpu_15_0517_123023/resultado_0393.txt
+  iter  393  78428.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0394.txt
+  iter  394  77686.51 ms
+  Guardado: cpu_15_0517_123023/resultado_0395.txt
+  iter  395  78484.61 ms
+  Guardado: cpu_15_0517_123023/resultado_0396.txt
+  iter  396  77552.76 ms
+  Guardado: cpu_15_0517_123023/resultado_0397.txt
+  iter  397  78318.23 ms
+  Guardado: cpu_15_0517_123023/resultado_0398.txt
+  iter  398  77661.60 ms
+  Guardado: cpu_15_0517_123023/resultado_0399.txt
+  iter  399  78452.80 ms
+  Guardado: cpu_15_0517_123023/resultado_0400.txt
+  iter  400  77591.20 ms
+  Guardado: cpu_15_0517_123023/resultado_0401.txt
+  iter  401  78361.49 ms
+  Guardado: cpu_15_0517_123023/resultado_0402.txt
+  iter  402  77828.87 ms
+  Guardado: cpu_15_0517_123023/resultado_0403.txt
+  iter  403  78885.50 ms
+  Guardado: cpu_15_0517_123023/resultado_0404.txt
+  iter  404  77608.50 ms
+  Guardado: cpu_15_0517_123023/resultado_0405.txt
+  iter  405  78573.56 ms
+  Guardado: cpu_15_0517_123023/resultado_0406.txt
+  iter  406  78263.91 ms
+  Guardado: cpu_15_0517_123023/resultado_0407.txt
+  iter  407  78815.57 ms
+  Guardado: cpu_15_0517_123023/resultado_0408.txt
+  iter  408  77683.72 ms
+  Guardado: cpu_15_0517_123023/resultado_0409.txt
+  iter  409  78393.38 ms
+  Guardado: cpu_15_0517_123023/resultado_0410.txt
+  iter  410  77876.67 ms
+  Guardado: cpu_15_0517_123023/resultado_0411.txt
+  iter  411  78508.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0412.txt
+  iter  412  77754.13 ms
+  Guardado: cpu_15_0517_123023/resultado_0413.txt
+  iter  413  78494.23 ms
+  Guardado: cpu_15_0517_123023/resultado_0414.txt
+  iter  414  77750.64 ms
+  Guardado: cpu_15_0517_123023/resultado_0415.txt
+  iter  415  78516.39 ms
+  Guardado: cpu_15_0517_123023/resultado_0416.txt
+  iter  416  77631.65 ms
+  Guardado: cpu_15_0517_123023/resultado_0417.txt
+  iter  417  78513.85 ms
+  Guardado: cpu_15_0517_123023/resultado_0418.txt
+  iter  418  77812.15 ms
+  Guardado: cpu_15_0517_123023/resultado_0419.txt
+  iter  419  78483.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0420.txt
+  iter  420  77621.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0421.txt
+  iter  421  78424.03 ms
+  Guardado: cpu_15_0517_123023/resultado_0422.txt
+  iter  422  77691.00 ms
+  Guardado: cpu_15_0517_123023/resultado_0423.txt
+  iter  423  78390.14 ms
+  Guardado: cpu_15_0517_123023/resultado_0424.txt
+  iter  424  77668.68 ms
+  Guardado: cpu_15_0517_123023/resultado_0425.txt
+  iter  425  78481.99 ms
+  Guardado: cpu_15_0517_123023/resultado_0426.txt
+  iter  426  77787.93 ms
+  Guardado: cpu_15_0517_123023/resultado_0427.txt
+  iter  427  78383.81 ms
+  Guardado: cpu_15_0517_123023/resultado_0428.txt
+  iter  428  77582.91 ms
+  Guardado: cpu_15_0517_123023/resultado_0429.txt
+  iter  429  78614.14 ms
+  Guardado: cpu_15_0517_123023/resultado_0430.txt
+  iter  430  77695.05 ms
+  Guardado: cpu_15_0517_123023/resultado_0431.txt
+  iter  431  78447.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0432.txt
+  iter  432  77669.10 ms
+  Guardado: cpu_15_0517_123023/resultado_0433.txt
+  iter  433  78484.56 ms
+  Guardado: cpu_15_0517_123023/resultado_0434.txt
+  iter  434  77565.33 ms
+  Guardado: cpu_15_0517_123023/resultado_0435.txt
+  iter  435  78558.25 ms
+  Guardado: cpu_15_0517_123023/resultado_0436.txt
+  iter  436  77658.27 ms
+  Guardado: cpu_15_0517_123023/resultado_0437.txt
+  iter  437  78492.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0438.txt
+  iter  438  77569.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0439.txt
+  iter  439  78856.16 ms
+  Guardado: cpu_15_0517_123023/resultado_0440.txt
+  iter  440  77744.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0441.txt
+  iter  441  78511.77 ms
+  Guardado: cpu_15_0517_123023/resultado_0442.txt
+  iter  442  77846.22 ms
+  Guardado: cpu_15_0517_123023/resultado_0443.txt
+  iter  443  78890.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0444.txt
+  iter  444  78059.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0445.txt
+  iter  445  78645.84 ms
+  Guardado: cpu_15_0517_123023/resultado_0446.txt
+  iter  446  80047.02 ms
+  Guardado: cpu_15_0517_123023/resultado_0447.txt
+  iter  447  78688.89 ms
+  Guardado: cpu_15_0517_123023/resultado_0448.txt
+  iter  448  78023.33 ms
+  Guardado: cpu_15_0517_123023/resultado_0449.txt
+  iter  449  78824.42 ms
+  Guardado: cpu_15_0517_123023/resultado_0450.txt
+  iter  450  77794.28 ms
+  Guardado: cpu_15_0517_123023/resultado_0451.txt
+  iter  451  78571.84 ms
+  Guardado: cpu_15_0517_123023/resultado_0452.txt
+  iter  452  78763.17 ms
+  Guardado: cpu_15_0517_123023/resultado_0453.txt
+  iter  453  78541.56 ms
+  Guardado: cpu_15_0517_123023/resultado_0454.txt
+  iter  454  77230.75 ms
+  Guardado: cpu_15_0517_123023/resultado_0455.txt
+  iter  455  82712.75 ms
+  Guardado: cpu_15_0517_123023/resultado_0456.txt
+  iter  456  77903.31 ms
+  Guardado: cpu_15_0517_123023/resultado_0457.txt
+  iter  457  78048.79 ms
+  Guardado: cpu_15_0517_123023/resultado_0458.txt
+  iter  458  77214.31 ms
+  Guardado: cpu_15_0517_123023/resultado_0459.txt
+  iter  459  77892.14 ms
+  Guardado: cpu_15_0517_123023/resultado_0460.txt
+  iter  460  77483.73 ms
+  Guardado: cpu_15_0517_123023/resultado_0461.txt
+  iter  461  78554.93 ms
+  Guardado: cpu_15_0517_123023/resultado_0462.txt
+  iter  462  77736.07 ms
+  Guardado: cpu_15_0517_123023/resultado_0463.txt
+  iter  463  78733.60 ms
+  Guardado: cpu_15_0517_123023/resultado_0464.txt
+  iter  464  81012.94 ms
+  Guardado: cpu_15_0517_123023/resultado_0465.txt
+  iter  465  78694.07 ms
+  Guardado: cpu_15_0517_123023/resultado_0466.txt
+  iter  466  77691.92 ms
+  Guardado: cpu_15_0517_123023/resultado_0467.txt
+  iter  467  78461.67 ms
+  Guardado: cpu_15_0517_123023/resultado_0468.txt
+  iter  468  77727.62 ms
+  Guardado: cpu_15_0517_123023/resultado_0469.txt
+  iter  469  78456.43 ms
+  Guardado: cpu_15_0517_123023/resultado_0470.txt
+  iter  470  77654.41 ms
+  Guardado: cpu_15_0517_123023/resultado_0471.txt
+  iter  471  78611.64 ms
+  Guardado: cpu_15_0517_123023/resultado_0472.txt
+  iter  472  77768.01 ms
+  Guardado: cpu_15_0517_123023/resultado_0473.txt
+  iter  473  78474.95 ms
+  Guardado: cpu_15_0517_123023/resultado_0474.txt
+  iter  474  77736.78 ms
+  Guardado: cpu_15_0517_123023/resultado_0475.txt
+  iter  475  78597.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0476.txt
+  iter  476  77652.75 ms
+  Guardado: cpu_15_0517_123023/resultado_0477.txt
+  iter  477  78406.58 ms
+  Guardado: cpu_15_0517_123023/resultado_0478.txt
+  iter  478  77583.38 ms
+  Guardado: cpu_15_0517_123023/resultado_0479.txt
+  iter  479  78512.92 ms
+  Guardado: cpu_15_0517_123023/resultado_0480.txt
+  iter  480  77617.87 ms
+  Guardado: cpu_15_0517_123023/resultado_0481.txt
+  iter  481  78647.32 ms
+  Guardado: cpu_15_0517_123023/resultado_0482.txt
+  iter  482  77687.11 ms
+  Guardado: cpu_15_0517_123023/resultado_0483.txt
+  iter  483  78664.46 ms
+  Guardado: cpu_15_0517_123023/resultado_0484.txt
+  iter  484  77612.74 ms
+  Guardado: cpu_15_0517_123023/resultado_0485.txt
+  iter  485  78381.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0486.txt
+  iter  486  78185.31 ms
+  Guardado: cpu_15_0517_123023/resultado_0487.txt
+  iter  487  78801.06 ms
+  Guardado: cpu_15_0517_123023/resultado_0488.txt
+  iter  488  77658.54 ms
+  Guardado: cpu_15_0517_123023/resultado_0489.txt
+  iter  489  78591.79 ms
+  Guardado: cpu_15_0517_123023/resultado_0490.txt
+  iter  490  77718.82 ms
+  Guardado: cpu_15_0517_123023/resultado_0491.txt
+  iter  491  78659.30 ms
+  Guardado: cpu_15_0517_123023/resultado_0492.txt
+  iter  492  77673.80 ms
+  Guardado: cpu_15_0517_123023/resultado_0493.txt
+  iter  493  78397.49 ms
+  Guardado: cpu_15_0517_123023/resultado_0494.txt
+  iter  494  77843.52 ms
+  Guardado: cpu_15_0517_123023/resultado_0495.txt
+  iter  495  78712.04 ms
+  Guardado: cpu_15_0517_123023/resultado_0496.txt
+  iter  496  77737.23 ms
+  Guardado: cpu_15_0517_123023/resultado_0497.txt
+  iter  497  78678.83 ms
+  Guardado: cpu_15_0517_123023/resultado_0498.txt
+  iter  498  93600.25 ms
+  Guardado: cpu_15_0517_123023/resultado_0499.txt
+  iter  499  92442.70 ms
+  Guardado: cpu_15_0517_123023/resultado_0500.txt
+  iter  500  90573.48 ms
+  Guardado: cpu_15_0517_123023/resultado_0501.txt
+  iter  501  91695.12 ms
+  Guardado: cpu_15_0517_123023/resultado_0502.txt
+  iter  502  90053.42 ms
+  Guardado: cpu_15_0517_123023/resultado_0503.txt
+  iter  503  87800.47 ms
+  Guardado: cpu_15_0517_123023/resultado_0504.txt
+  iter  504  78003.21 ms
+  Guardado: cpu_15_0517_123023/resultado_0505.txt
+  iter  505  78713.19 ms
+  Guardado: cpu_15_0517_123023/resultado_0506.txt
+  iter  506  77710.27 ms
+  Guardado: cpu_15_0517_123023/resultado_0507.txt
+  iter  507  78335.99 ms
+  Guardado: cpu_15_0517_123023/resultado_0508.txt
+  iter  508  77764.44 ms
+  Guardado: cpu_15_0517_123023/resultado_0509.txt
+  iter  509  78960.51 ms
+  Guardado: cpu_15_0517_123023/resultado_0510.txt
+  iter  510  77880.60 ms
+  Guardado: cpu_15_0517_123023/resultado_0511.txt
+  iter  511  78518.96 ms
+
+=== Metricas (512 iter.) ===
+  Tiempo promedio : 78493.263 ms
+  Tiempo min      : 76909.460 ms
+  Tiempo max      : 93600.251 ms
+  GFLOPs promedio :    3.504
+  GB/s estimado   :   14.015
+  Tiempo total benchmark: 40194426.295 ms
+  Metricas CSV: cpu_15_0517_123023/metricas.csv
+
+D:\Documentos\Nacho\semestre4\TLP\ProyectoPractico\Efficient-Krylov-Sequence-Computation-in-GPU>
