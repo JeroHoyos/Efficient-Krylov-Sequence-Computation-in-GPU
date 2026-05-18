@@ -27,7 +27,7 @@ void   metricas_imprimir(const Metricas *m);
 void   metricas_guardar_csv(const Metricas *m, const char *outdir, double benchmark_total_ms);
 void   metricas_free(Metricas *m);
 double tiempo_actual_ms(void);
-void   imprimir_metrica_iter(int iter, const Muestra *s);
+
 
 #ifdef __cplusplus
 }

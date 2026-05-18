@@ -31,14 +31,16 @@ void ejecutar_bucle_cpu(float **A, float **Z, Parametros p, const char *outdir, 
         metricas_registrar(met, dt, costo.flops, costo.bytes_read, costo.bytes_write);
         guardar_snapshot(Z_nxt, p.n, iter, outdir);
 
-        imprimir_metrica_iter(iter, &met->muestras[met->n - 1]);
+        // Imprime métricas de esta iteración.
+        printf("  iter %4d  %8.3f ms  %8.3f GFLOPs  %8.3f GB/s\n",
+                iter, met->muestras[met->n - 1].tiempo_ms,
+                met->muestras[met->n - 1].gflops,
+                met->muestras[met->n - 1].gbps_estimado);
 
         // Intercambia punteros.
         float **tmp = Z_cur;
         Z_cur = Z_nxt;
         Z_nxt = tmp;
-
-        printf("  iter %4d  %7.2f ms\n", iter, dt);
     }
 
     liberar_matriz(Z_alt, p.m);
@@ -53,14 +55,21 @@ void ejecutar_bucle_gpu(GpuCtx *ctx, Parametros p, const char *outdir, Metricas 
 
     printf("\n=== Ejecucion GPU (%d iter.) ===\n", p.l);
 
-    for (int i = 0; i < p.l; i++) {
-        double dt = gpu_multiplicar(ctx);
+    for (int iter = 0; iter < p.l; iter++) {
 
+        double t0 = tiempo_actual_ms();
+        gpu_multiplicar(ctx);
+        double dt = tiempo_actual_ms() - t0;
+        
         metricas_registrar(met, dt, costo.flops, costo.bytes_read, costo.bytes_write);
         gpu_copiar_snapshot(ctx, snap);
-        guardar_snapshot(snap, p.n, i, outdir);
+        guardar_snapshot(snap, p.n, iter, outdir);
 
-        imprimir_metrica_iter(i, &met->muestras[met->n - 1]);
+        // Imprime métricas de esta iteración.
+        printf("  iter %4d  %8.3f ms  %8.3f GFLOPs  %8.3f GB/s\n",
+                iter, met->muestras[met->n - 1].tiempo_ms,
+                met->muestras[met->n - 1].gflops,
+                met->muestras[met->n - 1].gbps_estimado);
     }
 
     liberar_matriz(snap, p.n);
@@ -85,6 +94,8 @@ void benchmark(Parametros p, const char *matrices_dir, const char *outdir) {
     double t0 = tiempo_actual_ms();
 
     #if defined(USE_CUDA)
+
+        // Inicializa contexto GPU, reserva memoria y copia A y Z a VRAM según el modo.
         GpuCtx ctx;
         if (gpu_ctx_init(&ctx, A, Z, p.m, p.n) != 0) {
             fprintf(stderr, "Error inicializando contexto GPU\n");
@@ -96,9 +107,7 @@ void benchmark(Parametros p, const char *matrices_dir, const char *outdir) {
         // Z ya está en VRAM, se puede liberar siempre tras init.
         liberar_matriz(Z, p.m);
 
-        // En modo FULL A ya está en VRAM y se puede liberar la copia pageable.
-        // En modo SLAB ctx mantiene una referencia a A, hay que liberarla
-        // después de gpu_ctx_free().
+        // Revisa el modo de ejecución para decidir cuándo liberar A de RAM.
         GpuExecMode mode = ctx.mode;
         if (mode == GPU_EXEC_FULL) {
             liberar_matriz(A, p.m);

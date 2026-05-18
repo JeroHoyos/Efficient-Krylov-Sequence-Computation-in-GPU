@@ -491,32 +491,18 @@ static double gpu_multiplicar_full(GpuCtx *ctx)
     return (double)ms;
 }
 
-/// Ejecuta una iteración A×Z en modo SLAB mediante un pipeline explícito de
-/// doble buffer con staging pinned.
-///
-/// Pipeline por slab:
-///   1. CPU memcpy de filas pageable de A → buffer pinned h_A_stage[k].
-///   2. cudaMemcpyAsync H2D pinned → d_A_slab[k] sobre stream[k] (DMA).
-///   3. Kernel tiled lanzado sobre stream[k] (espera la copia in-order).
-///
-/// Se usan dos staging buffers y dos streams para que mientras un slab se está
-/// procesando en GPU (cómputo + transferencia anterior), el siguiente slab se
-/// vaya rellenando en el otro buffer staging y se encole su H2D. La CPU sólo
-/// se bloquea cuando hay que sobrescribir un staging cuyo H2D anterior todavía
-/// no terminó (esto se evita en estado estacionario gracias al doble buffer).
-///
-/// El tiempo se mide con el reloj del host porque el coste de los memcpy CPU
-/// →pinned es parte del wall-clock real de cada iteración Krylov.
-///
-/// Retorna el tiempo total (transferencias + memcpy CPU + cómputo) en ms.
-///
-static double gpu_multiplicar_slab(GpuCtx *ctx)
-{
-    const double t0 = tiempo_actual_ms();
+static void gpu_multiplicar_slab(GpuCtx *ctx) {
 
-    // Pre-rellena staging[0] con el primer slab y encola su H2D en stream[0].
-    // El kernel del slab 0 (también en stream[0]) esperará por in-order.
-    int first_rows = ctx->slab_rows < ctx->m ? ctx->slab_rows : ctx->m;
+    /// Se cargan las primeras filas dependiendo de si el slab cabe completo o no.
+    int first_rows;
+    if (ctx->slab_rows < ctx->m) {
+        first_rows = ctx->slab_rows;
+    }
+    else {
+        first_rows = ctx->m;
+    }
+
+
     const size_t first_bytes = (size_t)first_rows * ctx->m * sizeof(float);
 
     fill_stage_from_pageable(ctx->h_A_stage[0], ctx->h_A_2d,
@@ -615,8 +601,6 @@ static double gpu_multiplicar_slab(GpuCtx *ctx)
     float *tmp   = ctx->d_Z_cur;
     ctx->d_Z_cur = ctx->d_Z_nxt;
     ctx->d_Z_nxt = tmp;
-
-    return tiempo_actual_ms() - t0;
 }
 
 /// Despacha la multiplicación A×Z al modo correcto (FULL o SLAB) según ctx->mode.
